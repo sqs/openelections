@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block style %}
+dd li { list-style-type: none; }
+{% endblock %}
+
+{% block content %}
+<h1>{{ issue.display_title }}</h1>
+
+{% if issue.is_special_fee %}
+    <h2>Budget</h2>
+    <p>
+        {{ issue.budget_summary|safe|default:"" }}
+        <a href="{{ issue.budget }}">View the full budget.</a>
+    </p>
+{% endif %}
+
+{% if not issue.is_special_fee %}
+    <h3>{{ issue.office_name }}</h3>
+    {% if issue.image %}
+        <img src="{{issue.image.url}}">
+    {% endif %}
+    {{ issue.profile|linebreaks }}
+{% endif %}
+
+<hr/>
+
+{% if form %}
+<h2>Sign petition</h2>
+<form action="{% url petitions.views.sign issue.id %}" method="post">
+    <p>By signing this petition, TODO...</p>
+    
+    {{ form.non_field_errors }}
+    <dl>
+        <dt>Name: {{ form.name.errors }}</dt>
+        <dd>{{ form.name }}</dd>
+        
+        <dt>SUNet ID: {{ form.sunetid.errors }}</dt>
+        <dd>{{ form.sunetid }}</dd>
+        
+        <dt>Student ID: {{ form.studentid.errors }}</dt>
+        <dd>{{ form.studentid }}</dd>
+        
+        <dt>Enrollment status: {{ form.enrollment_status.errors }}</dt>
+        <dd>{{ form.enrollment_status }}</dd>
+    </dl>
+    <input type="submit" value="Sign petition">
+</form>
+{% endif %}
+
+{% if not form %}
+<p>You've already signed this petition, according to our records. Please <a href="http://elections.stanford.edu/contact">contact the Elections Commission</a> if this is incorrect.</p>
+{% endif %}
+
+<h2>Signatures</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Signer's name</th>
+            <th>SUNet ID</th>
+            <th>Enrollment Status</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for sig in issue.signatures.all reversed %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ sig.name }}</td>
+            <td>{{ sig.sunetid }}</td>
+            <td>{{ sig.get_enrollment_status_display }}</td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="4">Nobody has signed this petition yet.</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

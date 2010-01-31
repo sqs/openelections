@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Election Results</h1>
+
+<ul>
+{% for issue in issues %}
+    <li>{{ issue }}: {{ issue.votes.count }}</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

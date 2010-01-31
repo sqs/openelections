@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block header %}
+    <h1 id="site_title"><a href="/"><img alt="ASSU Elections Commission" src="http://elections.stanford.edu/res/web-logo1.png"></a></h1>
+
+    <div class="nav">
+    <div class="navsection byaudience">
+        <h2>Voter Guide</h2>
+        <ul>
+            <li><a href="{% url issues.views.index %}">All</a></li>
+            <li><a href="{% url issues.views.index %}?show=exec">Executive</a></li>
+            <li><a href="{% url issues.views.index %}?show=gsc">Grad Student Council</a></li>
+            <li><a href="{% url issues.views.index %}?show=classpres">Class Presidents</a></li>
+            <li><a href="{% url issues.views.index %}?show=us">Undergrad Senate</a></li>
+        </ul>
+    </div>
+    </div>
+{% endblock %}

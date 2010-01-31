@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>All petitions</h1>
+
+<ul>
+{% for issue in issues %}
+    <li><a href="{% url petitions.views.detail issue.id %}">{{ issue }}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}

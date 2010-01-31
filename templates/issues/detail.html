@@ -1,0 +1,15 @@
+{% extends "issues/base-issues.html" %}
+
+{% block content %}
+
+<h1>{{ issue.display_title }}</h1>
+<p><a href="{% url issues.views.edit issue.pk %}">Edit</a></p>
+
+<p>
+    {% if issue.image %}
+        <img src="{{issue.image.url}}">
+    {% endif %}
+    {{ issue.profile|linebreaks }}
+</p>
+
+{% endblock %}

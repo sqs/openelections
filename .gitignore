@@ -1,0 +1,9 @@
+*.sqlite
+*.pyc
+data/
+.hg/
+*.pdf
+*.jpg
+*.gif
+*.png
+
