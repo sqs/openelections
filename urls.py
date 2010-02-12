@@ -10,6 +10,6 @@ urlpatterns = patterns('',
     (r'^issues/', include('openelections.issues.urls')),
     (r'^admin/', include(admin.site.urls)),
     
-    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
-            {'document_root': 'site_media/'}),
+#    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve',
+#            {'document_root': 'site_media/'}),
 )
