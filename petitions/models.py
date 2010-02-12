@@ -1,18 +1,16 @@
 from django.db import models
-from openelections.constants import ENROLLMENT_STATUSES
-from openelections.issues.models import Issue
+from openelections.issues.models import Electorate, Issue, SenateCandidate
 
 class Signature(models.Model):
     name = models.CharField(max_length=100)
     sunetid = models.CharField(max_length=8)
-    studentid = models.CharField(max_length=8)
-    enrollment_status = models.CharField(max_length=1, choices=ENROLLMENT_STATUSES)    
+    electorate = models.ForeignKey(Electorate)    
     issue = models.ForeignKey(Issue, related_name='signatures')
     signed_at = models.DateTimeField()
     ip_address = models.CharField(max_length=15)
     
     def __unicode__(self):
-        return u'%s for %s' % (self.sunetid, self.issue.display_title())
+        return u'%s for %s' % (self.sunetid, self.issue.title)
 
 # TODOsqs: test signed_by_sunetid
 def signed_by_sunetid(issue, sunetid):

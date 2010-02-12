@@ -1,0 +1,27 @@
+{% extends "issues/manage/base.html" %}
+
+{% block content %}
+
+<h1>Starting petition for {{ new_issue.kind_name }}</h1>
+
+<p>You aren't obligated to run (or do anything) just by starting a petition; you can withdraw at any time. See the <a href="http://elections.stanford.edu/petitions/guide">full petitions guide</a> for more info, and <a href="http://elections.stanford.edu/contact">contact the Elections Commission</a> if you have any questions.</p>
+
+<hr/>
+
+<form action="{% url issues.views.create %}" method="post">
+    <dl>
+    {% for field in form %}
+        {% if field.is_hidden %}
+            {{ field }}
+        {% else %}
+            <dt>{{ field.label_tag }}</dt>
+            <dd {% if field.errors %}class="error_field" {% endif %}>{{ field }}</dd>
+            {% if field.help_text %}<dd class="help_text">{{ field.help_text }}</dd>{% endif %}
+            {% if field.errors %}<dd class="errors">{{ field.errors }}</dd>{% endif %}
+        {% endif %}
+    {% endfor %}
+    </dl>
+    <div><input type="submit" value="Start petition for {{ new_issue.kind_name }}"></div>
+</form>
+
+{% endblock %}

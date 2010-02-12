@@ -1,0 +1,26 @@
+{% extends "issues/manage/base.html" %}
+
+{% block content %}
+
+<h1>Your petitions ({{ sunetid }})</h1>
+<dl>
+{% for issue in issues %}
+        <dt>{{ issue.name_and_office }}</dt>
+        <dd><a href="http://elections.stanford.edu/petitions/{{ issue.slug }}">http://elections.stanford.edu/petitions/{{ issue.slug }}</a></dd>
+{% empty %}
+    <p>You aren't listed as a member or sponsor of anything yet. Start a petition below.</p>
+{% endfor %}
+</dl>
+
+
+<br/>
+<h3>Start a new petition for...</h3>
+<ul>
+    <li><a href="{% url issues.views.manage_new "US" %}">Undergraduate Senate candidacy</a></li>
+    <li><a href="{% url issues.views.manage_new "ClassPres" %}">Class President slate</a></li>
+    <li><a href="{% url issues.views.manage_new "Exec" %}">Executive slate</a></li>
+    <li>Special Fee request: <a href="http://elections.stanford.edu/contact">contact us</a></li>
+</ul>
+
+
+{% endblock %}

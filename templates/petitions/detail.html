@@ -5,51 +5,65 @@ dd li { list-style-type: none; }
 {% endblock %}
 
 {% block content %}
-<h1>{{ issue.display_title }}</h1>
+<h1>{{ issue.title }} ({{ issue.kind_name }})</h1>
 
-{% if issue.is_special_fee %}
-    <h2>Budget</h2>
-    <p>
-        {{ issue.budget_summary|safe|default:"" }}
-        <a href="{{ issue.budget }}">View the full budget.</a>
-    </p>
-{% endif %}
+{% ifequal issue.kind "US" %}
+    <p><a href="mailto:{{ issue.sunetid1 }}@stanford.edu">{{ issue.sunetid1 }}@stanford.edu</a></p>
+{% endifequal %}
 
-{% if not issue.is_special_fee %}
-    <h3>{{ issue.office_name }}</h3>
-    {% if issue.image %}
-        <img src="{{issue.image.url}}">
-    {% endif %}
-    {{ issue.profile|linebreaks }}
-{% endif %}
+{% ifequal issue.kind "ClassPres" %}
+    <table>
+        <tr><th>{{ issue.name1 }}</th><td><a href="mailto:{{ issue.sunetid1 }}@stanford.edu">{{ issue.sunetid1 }}@stanford.edu</a></td></tr>
+        <tr><th>{{ issue.name2 }}</th><td><a href="mailto:{{ issue.sunetid2 }}@stanford.edu">{{ issue.sunetid2 }}@stanford.edu</a></td></tr>
+        <tr><th>{{ issue.name3 }}</th><td><a href="mailto:{{ issue.sunetid3 }}@stanford.edu">{{ issue.sunetid3 }}@stanford.edu</a></td></tr>
+        <tr><th>{{ issue.name4 }}</th><td><a href="mailto:{{ issue.sunetid4 }}@stanford.edu">{{ issue.sunetid4 }}@stanford.edu</a></td></tr>
+        {% if issue.sunetid5 %}
+            <tr><th>{{ issue.name5 }}</th><td><a href="mailto:{{ issue.sunetid5 }}@stanford.edu">{{ issue.sunetid5 }}@stanford.edu</a></td></tr>
+        {% endif %}
+    </table>
+{% endifequal %}
+
+{% ifequal issue.kind "Exec" %}
+    <table>
+        <tr><th>{{ issue.name1 }} (President)</th><td><a href="mailto:{{ issue.sunetid1 }}@stanford.edu">{{ issue.sunetid1 }}@stanford.edu</a></td></tr>
+        <tr><th>{{ issue.name2 }} (Vice President)</th><td><a href="mailto:{{ issue.sunetid2 }}@stanford.edu">{{ issue.sunetid2 }}@stanford.edu</a></td></tr>
+    </table>
+{% endifequal %}
 
 <hr/>
 
 {% if form %}
 <h2>Sign petition</h2>
-<form action="{% url petitions.views.sign issue.id %}" method="post">
-    <p>By signing this petition, TODO...</p>
+<form action="{% url petitions.views.sign issue.slug %}" method="post">
+    <p>You're signing a petition for <strong>{{ issue.name_and_office }}</strong>. Your signature indicates your support for this {{ issue.kind_name }} and helps them qualify for ballot placement in the ASSU Election on April 8&ndash;9. <a href="http://elections.stanford.edu/candidates/">Learn more about the {{ issue.elected_name }} role and how to get involved.</a></p>
     
+    <p>Your name, SUNet ID, and enrollment status will be publicly recorded on this petition, visible to anyone else who visits this page. If you aren't <strong>{{ sunetid }}</strong>, close your browser to log out. See the <a href="http://elections.stanford.edu/petitions/guide">full petitions guide</a> or <a href="http://elections.stanford.edu/contact">contact the Elections Commission</a> if you have any questions. </p>
+    
+    
+
     {{ form.non_field_errors }}
     <dl>
-        <dt>Name: {{ form.name.errors }}</dt>
-        <dd>{{ form.name }}</dd>
+        <dt>Your name</dt>
+        <dd {% if form.name.errors %}class="error_field" {% endif %}>{{ form.name }}</dd>
+        {% if form.name.help_text %}<dd class="help_text">{{ form.name.help_text }}</dd>{% endif %}
+        {% if form.name.errors %}<dd class="errors">{{ form.name.errors }}</dd>{% endif %}
         
-        <dt>SUNet ID: {{ form.sunetid.errors }}</dt>
-        <dd>{{ form.sunetid }}</dd>
+        <dt>SUNet ID</dt>
+        <dd>{{ sunetid }}</dd>
+        {% if form.sunetid.errors %}<dd class="errors">{{ form.sunetid.errors }}</dd>{% endif %}
         
-        <dt>Student ID: {{ form.studentid.errors }}</dt>
-        <dd>{{ form.studentid }}</dd>
-        
-        <dt>Enrollment status: {{ form.enrollment_status.errors }}</dt>
-        <dd>{{ form.enrollment_status }}</dd>
+        {% if form.electorate %}
+            <dt>Enrollment status</dt>
+            <dd {% if form.electorate.errors %}class="error_field" {% endif %}>{{ form.electorate }}</dd>
+            {% if form.electorate.errors %}<dd class="errors">{{ form.electorate.errors }}</dd>{% endif %}
+        {% endif %}
     </dl>
     <input type="submit" value="Sign petition">
 </form>
 {% endif %}
 
 {% if not form %}
-<p>You've already signed this petition, according to our records. Please <a href="http://elections.stanford.edu/contact">contact the Elections Commission</a> if this is incorrect.</p>
+<p>You've already signed the petition for {{ issue.name_and_office }}. Please <a href="http://elections.stanford.edu/contact">contact the Elections Commission</a> if this is incorrect or if you want to withdraw your support for this {{ issue.kind_name }}.</p>
 {% endif %}
 
 <h2>Signatures</h2>
@@ -69,7 +83,7 @@ dd li { list-style-type: none; }
             <td>{{ forloop.counter }}</td>
             <td>{{ sig.name }}</td>
             <td>{{ sig.sunetid }}</td>
-            <td>{{ sig.get_enrollment_status_display }}</td>
+            <td>{{ sig.electorate.name }}</td>
         </tr>
     {% empty %}
         <tr>

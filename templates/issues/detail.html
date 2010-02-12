@@ -2,14 +2,16 @@
 
 {% block content %}
 
-<h1>{{ issue.display_title }}</h1>
-<p><a href="{% url issues.views.edit issue.pk %}">Edit</a></p>
+<h1>{{ issue.title }}</h1>
+<p><a href="{% url issues.views.edit issue.pk %}">Edit bio</a> [only candidate will be able to see this link -- uses WebAuth]</p>
 
 <p>
     {% if issue.image %}
-        <img src="{{issue.image.url}}">
+        <img style="float:right;max-width:400px;max-height:600px;margin:30px" src="/{{issue.image.url}}">
     {% endif %}
-    {{ issue.profile|linebreaks }}
+    {{ issue.bio|safe|linebreaks }}
 </p>
+
+<br style="clear:both">
 
 {% endblock %}

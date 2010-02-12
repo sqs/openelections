@@ -4,6 +4,12 @@
     <title>ASSU Elections</title>
     <link rel="stylesheet" href="http://elections.stanford.edu/res/screen.css">
     <style>
+        th { min-width: 110px; }
+        form ul, form li { list-style-type: none; padding:0 !important; margin:0 !important; }
+
+        form .errors { color:red; }
+        form .help_text { color:#333; font-size:0.9em; }
+        form .error_field { background-color:red; padding:5px; color:white; }
         {% block style %}{% endblock %}
     </style>
 </head>
@@ -12,7 +18,7 @@
 
 <div id="header">
     {% block header %}
-        <h1 id="site_title"><a href="/"><img alt="ASSU Elections Commission" src="http://elections.stanford.edu/res/web-logo1.png"></a></h1>
+        <h1 id="site_title"><a href="http://elections.stanford.edu/"><img alt="ASSU Elections Commission" src="http://elections.stanford.edu/res/web-logo1.png"></a></h1>
     
         <!-- <div class="nav">
         <div class="navsection general">
@@ -33,7 +39,6 @@
     <ul>
         <li><a href="http://elections.stanford.edu">2010 Elections Commission Home</a></li>
         <li><a href="http://elections.stanford.edu/contact">Contact</a></li>
-        <li><a href="/admin">Admin</a></li>
         <li><a href="http://assu.stanford.edu/">ASSU</a></li>
     </ul>
 </div>

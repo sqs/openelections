@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block header %}
+    <h1 id="site_title"><a href="/"><img alt="ASSU Elections Commission" src="http://elections.stanford.edu/res/web-logo1.png"></a></h1>
+
+    <div class="nav">
+    <div class="navsection byaudience">
+        <h2>ASSU</h2>
+        <ul>
+            <li><a href="{% url issues.views.index %}?show=assu">All</a></li>
+            <li><a href="{% url issues.views.index %}?show=assu-exec">Executive</a></li>
+            <li><a href="{% url issues.views.index %}?show=assu-gsc">Grad Student Council</a></li>
+            <li><a href="{% url issues.views.index %}?show=assu-classpres">Class Presidents</a></li>
+            <li><a href="{% url issues.views.index %}?show=assu-us">Undergrad Senate</a></li>
+            
+        </ul>
+    </div>
+    <div class="navsection byaudience">
+        <h2>SMSA</h2>
+        <ul>
+            <li><a href="{% url issues.views.index %}?show=SMSA">All</a></li>
+            <li><a href="{% url issues.views.index %}?show=SMSA">Vice Pres</a></li>
+            <li><a href="{% url issues.views.index %}?show=SMSA">Secretary</a></li>
+            <li><a href="{% url issues.views.index %}?show=SMSA">Treasurer</a></li>
+            <li><a href="{% url issues.views.index %}?show=SMSA">Class Rep</a></li>
+            <li><a href="{% url issues.views.index %}?show=SMSA">Social Chair</a></li>
+            <li><a href="{% url issues.views.index %}?show=SMSA">CCAP</a></li>
+            <li><a href="{% url issues.views.index %}?show=SMSA">Chairs</a></li>
+            
+            
+        </ul>
+    </div>
+    </div>
+{% endblock %}

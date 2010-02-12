@@ -5,7 +5,7 @@
 
 <ul>
 {% for issue in issues %}
-    <li><a href="{% url petitions.views.detail issue.id %}">{{ issue }}</a></li>
+    <li><a href="{% url petitions.views.detail issue.slug %}">{{ issue }}</a></li>
 {% endfor %}
 </ul>
 {% endblock %}

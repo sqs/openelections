@@ -38,6 +38,7 @@ WEBAUTH_URL = "http://stanford.edu/~sqs/cgi-bin/authenticate_elections2.php?from
 def webauth_required(function):
     def _dec(view_func):
         def _view(request, *args, **kwargs):
+            #request.session['webauth_sunetid'] = 'sqs'
             if 'webauth_sunetid' in request.session:
                 return view_func(request, *args, **kwargs)
             elif 'webauth_sunetid' in request.GET:

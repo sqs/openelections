@@ -8,28 +8,33 @@ from openelections.issues.models import Issue
 from openelections.auth.stanford_webauth import webauth_required
 
 def index(request):
+    return
     issues = Issue.objects.all()
     return render_to_response('petitions/index.html', {'issues': issues})
 
 @webauth_required
-def detail(request, issue_id):
-    issue = get_object_or_404(Issue, pk=issue_id).get_typed()
+def detail(request, issue_slug):
+    issue = get_object_or_404(Issue, slug=issue_slug).get_typed()
+    sunetid = request.session['webauth_sunetid']
     newsig = Signature()
     newsig.issue = issue
+    newsig.sunetid = sunetid
     form = None
-    if not issue.signed_by_sunetid('sqs'):
-        form = SignatureForm(instance=newsig)
-    return render_to_response('petitions/detail.html', {'issue': issue, 'form': form})
+    if not issue.signed_by_sunetid(sunetid):
+        form = SignatureForm(issue, instance=newsig)
+    return render_to_response('petitions/detail.html', {'issue': issue, 'form': form, 'sunetid': sunetid})
     
-def sign(request, issue_id):
-    issue = get_object_or_404(Issue, pk=issue_id)
+def sign(request, issue_slug):
+    issue = get_object_or_404(Issue, slug=issue_slug).get_typed()
+    sunetid = request.session['webauth_sunetid']
     attrs = request.POST.copy()
+    attrs['sunetid'] = sunetid
     attrs['issue'] = issue.id
     attrs['ip_address'] = request.META['REMOTE_ADDR']
     attrs['signed_at'] = datetime.now()
-    form = SignatureForm(attrs)
+    form = SignatureForm(issue, attrs)
     if form.is_valid():
         form.save()
-        return HttpResponseRedirect(reverse('openelections.petitions.views.detail', None, [issue_id]))
+        return HttpResponseRedirect(reverse('openelections.petitions.views.detail', None, [issue_slug]))
     else:
-        return render_to_response('petitions/detail.html', {'issue': issue, 'form': form})
+        return render_to_response('petitions/detail.html', {'issue': issue, 'form': form, 'sunetid': sunetid})

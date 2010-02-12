@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
 from openelections import constants as oe_constants
-from openelections.issues.models import Issue, CandidateUS, CandidateGSC, SlateExec, SlateClassPresident
+from openelections.issues.models import Issue#, CandidateUS, CandidateGSC, SlateExec, SlateClassPresident
 from openelections.ballot.forms import ballot_form_factory
 
 def index(request):

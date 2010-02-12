@@ -1,72 +1,11 @@
-{% extends "issues/base-issues.html" %}
+{% extends "issues/base-public.html" %}
 
 {% block content %}
-{% if issues_by_kind.exec %}
-    <h2>Executive</h2>
-    <ul>
-        {% for issue in issues_by_kind.exec %}
-            <li><a href="{% url issues.views.detail issue.pk %}">{{ issue.display_title }}</a>
-        {% endfor %}
-    </ul>
-{% endif %}
 
-{% if issues_by_kind.classpres_sophomore or issues_by_kind.classpres_junior or issues_by_kind.classpres_senior %}
-    <h2>Undergraduate Class Presidents</h2>
-    
-    {% if issues_by_kind.classpres_sophomore %}
-        <h3>Sophomore Class Presidents (Class of 2013)</h3>
-        <ul>
-            {% for issue in issues_by_kind.classpres_sophomore %}
-                <li><a href="{% url issues.views.detail issue.pk %}">{{ issue.display_title }}</a>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    
-    {% if issues_by_kind.classpres_junior %}
-        <h3>Junior Class Presidents (Class of 2012)</h3>
-        <ul>
-            {% for issue in issues_by_kind.classpres_junior %}
-                <li><a href="{% url issues.views.detail issue.pk %}">{{ issue.display_title }}</a>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    
-    {% if issues_by_kind.classpres_senior %}
-        <h3>Senior Class Presidents (Class of 2011)</h3>
-        <ul>
-            {% for issue in issues_by_kind.classpres_senior %}
-                <li><a href="{% url issues.views.detail issue.pk %}">{{ issue.display_title }}</a>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-{% endif %}
-
-{% if issues_by_kind.us %}
-    <h2>Undergraduate Senate</h2>
-    <ul>
-        {% for issue in issues_by_kind.us %}
-            <li><a href="{% url issues.views.detail issue.pk %}">{{ issue.display_title }}</a>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% if issues_by_kind.gsc %}
-    <h2>Graduate Student Council</h2>
-    <ul>
-        {% for issue in issues_by_kind.gsc %}
-            <li><a href="{% url issues.views.detail issue.pk %}">{{ issue.display_title }}</a>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% if issues_by_kind.specfee %}
-    <h2>Special Fee Requests</h2>
-    <ul>
-        {% for issue in issues_by_kind.specfee %}
-            <li><a href="{% url issues.views.detail issue.pk %}">{{ issue.display_title }}</a>
-        {% endfor %}
-    </ul>
-{% endif }
+<ul>
+    {% for issue in issues %}
+        <li><a href="{% url issues.views.detail issue.slug %}">{{ issue }}</li>
+    {% endfor %}
+</ul>
 
 {% endblock %}
