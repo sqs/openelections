@@ -80,7 +80,7 @@ dd li { list-style-type: none; }
     <tbody>
     {% for sig in issue.signatures.all reversed %}
         <tr>
-            <td>{{ forloop.counter }}</td>
+            <td>{{ forloop.revcounter }}</td>
             <td>{{ sig.name }}</td>
             <td>{{ sig.sunetid }}</td>
             <td>{{ sig.electorate.name }}</td>
