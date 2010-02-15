@@ -37,7 +37,7 @@ dd li { list-style-type: none; }
 <form action="{% url petitions.views.sign issue.slug %}" method="post">
     <p>You're signing a petition for <strong>{{ issue.name_and_office }}</strong>. Your signature indicates your support for this {{ issue.kind_name }} and helps them qualify for ballot placement in the ASSU Election on April 8&ndash;9. <a href="http://elections.stanford.edu/candidates/">Learn more about the {{ issue.elected_name }} role and how to get involved.</a></p>
     
-    <p>Your name, SUNet ID, and enrollment status will be publicly recorded on this petition, visible to anyone else who visits this page. If you aren't <strong>{{ sunetid }}</strong>, close your browser to log out. See the <a href="http://elections.stanford.edu/petitions/guide">full petitions guide</a> or <a href="http://elections.stanford.edu/contact">contact the Elections Commission</a> if you have any questions. </p>
+    <p>Your name, SUNet ID, and enrollment status will be publicly recorded on this petition, visible to anyone else who visits this page. If you aren't <strong>{{ sunetid }}</strong>, close your browser to log out. See the <a href="http://elections.stanford.edu/petitions-guide">full petitions guide</a> or <a href="http://elections.stanford.edu/contact">contact the Elections Commission</a> if you have any questions. </p>
     
     
 
