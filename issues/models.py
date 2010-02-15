@@ -43,7 +43,7 @@ class Issue(models.Model):
     electorate = models.ManyToManyField(Electorate, related_name='issues') #MultipleChoiceField(max_length=250, choices=oe_constants.ELECTORATES)
 
     name1 = models.CharField(max_length=100)
-    sunetid1 = models.CharField(max_length=8)
+    sunetid1 = models.CharField(max_length=15)
     
     name2 = models.CharField(max_length=100, blank=True)
     sunetid2 = models.CharField(max_length=8, blank=True)
