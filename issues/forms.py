@@ -56,7 +56,7 @@ class NewClassPresidentSlateForm(NewSlateForm):
                                         queryset=Electorate.undergrad_class_years(),
                                         widget=forms.RadioSelect,
                                         empty_label=None,
-                                        help_text="This is what class you'll be next year, not what you are now.")
+                                        help_text="Select the class whose presidency you're seeking. For example, if you're running for Sophomore Class President, choose Sophomore.")
     
     name1 = forms.CharField(label='1st member\'s name (you)', widget=forms.TextInput(attrs={'size':'40'}),
                             help_text='The order of slate members (who\'s #1, #2, etc.) doesn\'t matter.')
