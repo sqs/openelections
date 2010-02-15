@@ -78,7 +78,10 @@ class Issue(models.Model):
     
     def petition_electorate_names(self):
         raise NotImplementedError
-        
+    
+    def kind_name(self):
+        return "Generic issue"
+    
     def name_and_office(self):
         return "Generic issue"
         
