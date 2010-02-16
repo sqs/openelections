@@ -86,6 +86,13 @@ class Issue(models.Model):
         return "Generic issue"
         
     def sunetids(self):
+        """Returns the SUNet IDs associated with this issue, such as 
+        the candidate's, the slate members', the sponsor's, etc.
+        >>> issue = Issue(sunetid1='jsmith', sunetid2='aliceb')
+        >>> issue.sunetids()
+        ['jsmith', 'aliceb']
+        """
+        
         ids = (self.sunetid1, self.sunetid2, self.sunetid3,
                self.sunetid4, self.sunetid5)
         return [s for s in ids if s]
