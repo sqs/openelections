@@ -1,6 +1,6 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django.core.urlresolvers import reverse
 from openelections import constants as oe_constants
 from openelections.auth.stanford_webauth import webauth_required
@@ -8,7 +8,7 @@ from openelections.issues.models import Issue
 from openelections.issues.forms import IssueForm, form_class_for_issue
 
 def index(request):
-    return
+    return HttpResponseNotFound()
     constraints = request.GET.get('show', None)
     issues = Issue.objects.all()
     return render_to_response('issues/index.html', {'issues': issues})

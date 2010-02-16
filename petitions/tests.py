@@ -85,6 +85,13 @@ class AuthenticatedVisitorTest(OETestCase):
         self.assertTrue(lelandsen.signed_by_sunetid('xyzhang'))
         self.assertFalse(lelandsen.signed_by_sunetid('attacker'))
 
+class SpecialFeePetitionTest(OETestCase):
+    def test_description(self):
+        self.webauthLogin('xyzhang')
+        res = self.client.get('/petitions/sts')
+        self.assertContains(res, 'Special Fee request')
+        self.assertContains(res, 'BUDGET SUMMARY')
+
 class PetitionOwnerVisitorTest(OETestCase):
     def test_can_view_signatures(self):
         self.webauthLogin('lsenator')

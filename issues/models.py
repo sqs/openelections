@@ -122,6 +122,19 @@ class FeeRequest(Issue):
 class SpecialFeeRequest(FeeRequest):
     class Meta:
         proxy = True
+    
+    def petition_electorate_names(self):
+        # TODO: only undergrad/coterm for now b/c SPOON is undergrad
+        return ('undergrad', 'coterm')
+    
+    def kind_name(self):
+        return "Special Fee group"
+        
+    def elected_name(self):
+        return "Special Fees"
+    
+    def name_and_office(self):
+        return "a Special Fee request from %s" % self.title
 
 class Slate(Issue):
     class Meta:

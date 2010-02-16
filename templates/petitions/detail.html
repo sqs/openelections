@@ -30,6 +30,10 @@ dd li { list-style-type: none; }
     </table>
 {% endifequal %}
 
+{% ifequal issue.kind "SF" %}
+    {{ issue.budget_summary|safe }}
+{% endifequal %}
+
 <hr/>
 
 {% if form %}
