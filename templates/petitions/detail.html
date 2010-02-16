@@ -37,7 +37,7 @@ dd li { list-style-type: none; }
 <form action="{% url petitions.views.sign issue.slug %}" method="post">
     <p>You're signing a petition for <strong>{{ issue.name_and_office }}</strong>. Your signature indicates your support for this {{ issue.kind_name }} and helps them qualify for ballot placement in the ASSU Election on April 8&ndash;9. <a href="http://elections.stanford.edu/candidates/">Learn more about the {{ issue.elected_name }} role and how to get involved.</a></p>
     
-    <p>Your name, SUNet ID, and enrollment status will be publicly recorded on this petition, visible to anyone else who visits this page. If you aren't <strong>{{ sunetid }}</strong>, close your browser to log out. See the <a href="http://elections.stanford.edu/petitions-guide">full petitions guide</a> or <a href="http://elections.stanford.edu/contact">contact the Elections Commission</a> if you have any questions. </p>
+    <p>Your name, SUNet ID, and enrollment status will be visible to this {{ issue.kind_name }} if you sign this petition. If you aren't <strong>{{ sunetid }}</strong>, close your browser to log out. See the <a href="http://elections.stanford.edu/petitions-guide">full petitions guide</a> or <a href="http://elections.stanford.edu/contact">contact the Elections Commission</a> if you have any questions. </p>
     
     
 
@@ -63,33 +63,41 @@ dd li { list-style-type: none; }
 {% endif %}
 
 {% if not form %}
-<p>You've already signed the petition for {{ issue.name_and_office }}. Please <a href="http://elections.stanford.edu/contact">contact the Elections Commission</a> if this is incorrect or if you want to withdraw your support for this {{ issue.kind_name }}.</p>
+    <p>
+       You've already signed the petition for {{ issue.name_and_office }}.
+       Please <a href="http://elections.stanford.edu/contact">contact the
+       Elections Commission</a> if this is incorrect or if you want to
+       withdraw your support for this {{ issue.kind_name }}.
+    </p>
 {% endif %}
 
-<h2>Signatures</h2>
+{% if viewing_own_petition %}
+    <h2>Signatures</h2>
 
-<table>
-    <thead>
-        <tr>
-            <th>#</th>
-            <th>Signer's name</th>
-            <th>SUNet ID</th>
-            <th>Enrollment Status</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for sig in issue.signatures.all reversed %}
-        <tr>
-            <td>{{ forloop.revcounter }}</td>
-            <td>{{ sig.name }}</td>
-            <td>{{ sig.sunetid }}</td>
-            <td>{{ sig.electorate.name }}</td>
-        </tr>
-    {% empty %}
-        <tr>
-            <td colspan="4">Nobody has signed this petition yet.</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Signer's name</th>
+                <th>SUNet ID</th>
+                <th>Enrollment Status</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for sig in issue.signatures.all reversed %}
+            <tr>
+                <td>{{ forloop.revcounter }}</td>
+                <td>{{ sig.name }}</td>
+                <td>{{ sig.sunetid }}</td>
+                <td>{{ sig.electorate.name }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="4">Nobody has signed this petition yet.</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+
 {% endblock %}

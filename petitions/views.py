@@ -8,8 +8,7 @@ from openelections.issues.models import Issue
 from openelections.auth.stanford_webauth import webauth_required
 
 def index(request):
-    return
-    issues = Issue.objects.all()
+    issues = Issue.objects.order_by('-kind').all()
     return render_to_response('petitions/index.html', {'issues': issues})
 
 @webauth_required
@@ -22,7 +21,12 @@ def detail(request, issue_slug):
     form = None
     if not issue.signed_by_sunetid(sunetid):
         form = SignatureForm(issue, instance=newsig)
-    return render_to_response('petitions/detail.html', {'issue': issue, 'form': form, 'sunetid': sunetid})
+    return render_to_response('petitions/detail.html', {
+        'issue': issue,
+        'form': form,
+        'sunetid': sunetid,
+        'viewing_own_petition': sunetid in issue.sunetids(),
+    })
     
 def sign(request, issue_slug):
     issue = get_object_or_404(Issue, slug=issue_slug).get_typed()
