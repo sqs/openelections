@@ -58,6 +58,18 @@ class AuthenticatedVisitorTest(TestCase):
         self.assertTemplateUsed(res, 'petitions/detail.html')
         self.assertContains(res, 'Leland Senator')
         self.assertContains(res, 'already signed')
+        self.assertNotContains(res, "You're signing a petition for")
+        # does not contain signatures
+        self.assertNotContains(res, 'Signatures')
+        self.assertNotContains(res, 'jsmith')
+        
+    def test_detail_for_user_who_has_not_already_signed(self):
+        self.webauthLogin('xyzhang')
+        res = self.client.get('/petitions/leland-senator')
+        self.assertTemplateUsed(res, 'petitions/detail.html')
+        self.assertContains(res, 'Leland Senator')
+        self.assertNotContains(res, 'already signed')
+        self.assertContains(res, "You're signing a petition for")
         # does not contain signatures
         self.assertNotContains(res, 'Signatures')
         self.assertNotContains(res, 'jsmith')
