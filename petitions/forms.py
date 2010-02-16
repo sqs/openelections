@@ -32,7 +32,6 @@ class SignatureForm(forms.ModelForm):
         else:
             raise forms.ValidationError("The SUNet ID '%s' is invalid." % sunetid)
             
-    
     def clean(self):
         '''Ensures that this SUNet ID has not already signed this petition'''
         

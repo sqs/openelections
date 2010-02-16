@@ -26,6 +26,10 @@ def detail(request, issue_slug):
     
 def sign(request, issue_slug):
     issue = get_object_or_404(Issue, slug=issue_slug).get_typed()
+    
+    if request.method != 'POST':
+        return HttpResponseRedirect(reverse('openelections.petitions.views.detail', None, [issue_slug]))
+    
     sunetid = request.session['webauth_sunetid']
     attrs = request.POST.copy()
     attrs['sunetid'] = sunetid
