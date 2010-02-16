@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.contrib.sessions.models import Session
-from openelections.issues.models import Issue
+from openelections.issues.models import Electorate, Issue
 from openelections.petitions.models import Signature
 
 class IssueAdditionsTest(TestCase):
@@ -78,3 +78,15 @@ class AuthenticatedVisitorTest(TestCase):
         self.webauthLogin('xyzhang')
         res = self.client.get('/petitions/leland-senator/sign')
         self.assertRedirects(res, '/petitions/leland-senator')
+        
+    def test_sign(self):
+        lelandsen = Issue.objects.get(slug='leland-senator')
+        self.assertFalse(lelandsen.signed_by_sunetid('xyzhang'))
+        self.webauthLogin('xyzhang')
+        postdata = {
+            'name': 'Xiao Zhang',
+            'electorate': Electorate.objects.get(name='Undergrad').pk,
+        }
+        res = self.client.post('/petitions/leland-senator/sign', postdata)
+        self.assertTrue(lelandsen.signed_by_sunetid('xyzhang'))
+        
