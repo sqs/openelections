@@ -1,5 +1,4 @@
 from openelections.tests import OETestCase
-from django.contrib.sessions.models import Session
 from openelections.issues.models import Electorate, Issue
 from openelections.petitions.models import Signature
 

@@ -1,5 +1,5 @@
-from django.test import TestCase
-from openelections.issues.models import Issue
+from openelections.tests import OETestCase
+from openelections.issues.models import Electorate, Issue
 from openelections.petitions.models import Signature
 
 
