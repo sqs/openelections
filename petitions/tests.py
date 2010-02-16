@@ -73,3 +73,8 @@ class AuthenticatedVisitorTest(TestCase):
         # does not contain signatures
         self.assertNotContains(res, 'Signatures')
         self.assertNotContains(res, 'jsmith')
+    
+    def test_sign_with_method_get_redirects_to_detail(self):
+        self.webauthLogin('xyzhang')
+        res = self.client.get('/petitions/leland-senator/sign')
+        self.assertRedirects(res, '/petitions/leland-senator')
