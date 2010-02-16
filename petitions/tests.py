@@ -14,6 +14,23 @@ class IssueAdditionsTest(TestCase):
 class UnauthenticatedVisitorTest(TestCase):
     fixtures = ['fixture1.json']
     
-    def test_index_requires_webauth(self):
-        res = self.client.get('/petitions/')
+    def assertResponseRequiresWebAuth(self, res):
         self.assertTrue(res['Location'].startswith('http://stanford.edu/'))
+    
+    def assertPathRequiresWebAuth(self, path):
+        res = self.client.get(path)
+        self.assertResponseRequiresWebAuth(res)
+    
+    def test_index_requires_webauth(self):
+        self.assertPathRequiresWebAuth('/petitions/')
+        
+    def test_detail_requires_webauth(self):
+        self.assertPathRequiresWebAuth('/petitions/leland-senator')
+
+    def test_get_sign_requires_webauth(self):
+        self.assertPathRequiresWebAuth('/petitions/leland-senator/sign')
+
+    def test_post_sign_requires_webauth(self):
+        res = self.client.post('/petitions/leland-senator/sign')
+        self.assertResponseRequiresWebAuth(res)
+

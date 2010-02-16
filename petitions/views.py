@@ -28,7 +28,8 @@ def detail(request, issue_slug):
         'sunetid': sunetid,
         'viewing_own_petition': sunetid in issue.sunetids(),
     })
-    
+
+@webauth_required
 def sign(request, issue_slug):
     issue = get_object_or_404(Issue, slug=issue_slug).get_typed()
     
