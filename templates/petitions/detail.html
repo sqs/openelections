@@ -36,8 +36,14 @@ dd li { list-style-type: none; }
 
 <hr/>
 
+{% if jumptosign %}
+<script language="javascript">
+window.location+='#sign';
+</script>
+{% endif %}
+
 {% if form %}
-<h2>Sign petition</h2>
+<h2>Sign petition<a id="sign"></a></h2>
 <form action="{% url petitions.views.sign issue.slug %}" method="post">
     <p>You're signing a petition for <strong>{{ issue.name_and_office }}</strong>. Your signature indicates your support for this {{ issue.kind_name }} and helps them qualify for ballot placement in the ASSU Election on April 8&ndash;9. <a href="http://elections.stanford.edu/candidates/">Learn more about the {{ issue.elected_name }} role and how to get involved.</a></p>
     
