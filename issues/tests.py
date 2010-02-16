@@ -2,7 +2,6 @@ from openelections.tests import OETestCase
 from openelections.issues.models import Electorate, Issue
 from openelections.petitions.models import Signature
 
-
 class UnauthenticatedVisitorTest(OETestCase):    
     def test_manage_index_requires_webauth(self):
         self.assertPathRequiresWebAuth('/issues/manage/')
