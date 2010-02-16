@@ -40,7 +40,7 @@ class AuthenticatedVisitorTest(OETestCase):
         res = self.client.get('/petitions/leland-senator')
         self.assertTemplateUsed(res, 'petitions/detail.html')
         self.assertContains(res, 'Leland Senator')
-        self.assertContains(res, 'already signed')
+        self.assertContains(res, 'signed')
         self.assertNotContains(res, "You're signing a petition for")
         # does not contain signatures
         self.assertNotContains(res, 'Signatures')
@@ -51,7 +51,7 @@ class AuthenticatedVisitorTest(OETestCase):
         res = self.client.get('/petitions/leland-senator')
         self.assertTemplateUsed(res, 'petitions/detail.html')
         self.assertContains(res, 'Leland Senator')
-        self.assertNotContains(res, 'already signed')
+        self.assertNotContains(res, 'signed')
         self.assertContains(res, "You're signing a petition for")
         # does not contain signatures
         self.assertNotContains(res, 'Signatures')
