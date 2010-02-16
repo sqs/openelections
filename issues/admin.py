@@ -16,7 +16,7 @@ issue_members.short_description = 'Candidate/members/sponsors'
 class IssueAdmin(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields': ('title', 'kind')}),
-        ('Profile', {'fields': ('bio', 'bio_petition', 'image', 'slug')}),
+        ('Profile', {'fields': ('bio', 'bio_petition', 'image', 'slug', 'public_petition')}),
         ('Electorate', {'fields': ('electorate',)}),
         ('Person 1', {'fields': ('name1', 'sunetid1',)}),
         ('People 2-5', {'classes': ('collapse',),
