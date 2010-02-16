@@ -96,7 +96,7 @@ class Issue(models.Model):
         ids = (self.sunetid1, self.sunetid2, self.sunetid3,
                self.sunetid4, self.sunetid5)
         return [s for s in ids if s]
-        
+    
     @classmethod
     def filter_by_sponsor(klass, sunetid):
         '''Returns all issues sponsored by sunetid or of which sunetid

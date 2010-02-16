@@ -1,4 +1,7 @@
 from django.test import TestCase
+from openelections.issues.models import Issue
+from openelections.petitions.models import Signature
+
 
 class VisitorTest(TestCase):
     fixtures = ['2009ballot.json']

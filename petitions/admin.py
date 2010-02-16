@@ -3,7 +3,7 @@ from django.contrib import admin
 
 class SignatureAdmin(admin.ModelAdmin):
     fieldsets = [
-        ('Signer', {'fields': ('name', 'sunetid')}),
+        ('Signer', {'fields': ('name', 'sunetid', 'electorate')}),
         ('Issue', {'fields': ('issue',)}),
     ]
     list_display = ('sunetid', 'name', 'electorate', 'issue', 'ip_address', 'signed_at')
