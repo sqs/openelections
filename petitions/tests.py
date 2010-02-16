@@ -50,3 +50,4 @@ class AuthenticatedVisitorTest(TestCase):
         self.webauthLogin('jsmith')
         res = self.client.get('/petitions/')
         self.assertTemplateUsed(res, 'petitions/index.html')
+        self.assertContains(res, 'Leland Senator')
