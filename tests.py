@@ -10,3 +10,10 @@ class OETestCase(TestCase):
         s = self.client.session
         s['webauth_sunetid'] = sunetid
         s.save()
+        
+    def assertResponseRequiresWebAuth(self, res):
+        self.assertTrue(res['Location'].startswith('http://stanford.edu/'))
+    
+    def assertPathRequiresWebAuth(self, path):
+        res = self.client.get(path)
+        self.assertResponseRequiresWebAuth(res)

@@ -10,13 +10,6 @@ class IssueAdditionsTest(OETestCase):
         self.assertTrue(Issue.objects.get(slug='leland-senator').signed_by_sunetid('jsmith'))
 
 class UnauthenticatedVisitorTest(OETestCase):    
-    def assertResponseRequiresWebAuth(self, res):
-        self.assertTrue(res['Location'].startswith('http://stanford.edu/'))
-    
-    def assertPathRequiresWebAuth(self, path):
-        res = self.client.get(path)
-        self.assertResponseRequiresWebAuth(res)
-    
     def test_index_requires_webauth(self):
         self.assertPathRequiresWebAuth('/petitions/')
         
