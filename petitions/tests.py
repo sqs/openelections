@@ -88,5 +88,12 @@ class AuthenticatedVisitorTest(OETestCase):
         self.assertTrue(lelandsen.signed_by_sunetid('xyzhang'))
         self.assertFalse(lelandsen.signed_by_sunetid('attacker'))
     
-
+def PetitionOwnerVisitorTest(OETestCase):
+    def test_can_view_signatures(self):
+        self.webauthLogin('lsenator')
+        res = self.client.get('/petitions/leland-senator')
+        self.assertTemplateUsed(res, 'petitions/detail.html')
+        # contains signatures
+        self.assertContains(res, 'Signatures')
+        self.assertContains(res, 'jsmith')
         
