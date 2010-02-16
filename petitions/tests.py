@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.contrib.sessions.models import Session
 from openelections.issues.models import Issue
 from openelections.petitions.models import Signature
 
@@ -34,3 +35,18 @@ class UnauthenticatedVisitorTest(TestCase):
         res = self.client.post('/petitions/leland-senator/sign')
         self.assertResponseRequiresWebAuth(res)
 
+class AuthenticatedVisitorTest(TestCase):
+    fixtures = ['fixture1.json']
+    
+    def webauthLogin(self, sunetid):
+        # must log in for session to be instantiated as real session
+        self.client.login(username='sqs', password='q')
+        self.client.get('/petitions/')
+        s = self.client.session
+        s['webauth_sunetid'] = sunetid
+        s.save()
+    
+    def test_index(self):
+        self.webauthLogin('jsmith')
+        res = self.client.get('/petitions/')
+        self.assertTemplateUsed(res, 'petitions/index.html')
