@@ -89,4 +89,17 @@ class AuthenticatedVisitorTest(TestCase):
         }
         res = self.client.post('/petitions/leland-senator/sign', postdata)
         self.assertTrue(lelandsen.signed_by_sunetid('xyzhang'))
+    
+    def test_sign_with_different_sunetid_than_authenticated_with(self):
+        lelandsen = Issue.objects.get(slug='leland-senator')
+        self.webauthLogin('xyzhang')
+        postdata = {
+            'name': 'Xiao Zhang',
+            'electorate': Electorate.objects.get(name='Undergrad').pk,
+            'sunetid': 'attacker',
+        }
+        res = self.client.post('/petitions/leland-senator/sign', postdata)
+        self.assertTrue(lelandsen.signed_by_sunetid('xyzhang'))
+        self.assertFalse(lelandsen.signed_by_sunetid('attacker'))
+
         
