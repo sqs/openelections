@@ -7,6 +7,7 @@ from openelections.petitions.forms import SignatureForm
 from openelections.issues.models import Issue
 from openelections.auth.stanford_webauth import webauth_required
 
+@webauth_required
 def index(request):
     issues = Issue.objects.order_by('-kind').all()
     return render_to_response('petitions/index.html', {'issues': issues})

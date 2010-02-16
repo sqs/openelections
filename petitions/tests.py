@@ -10,3 +10,10 @@ class IssueAdditionsTest(TestCase):
         
     def test_signed_by_sunetid_true(self):
         self.assertTrue(Issue.objects.get(slug='leland-senator').signed_by_sunetid('jsmith'))
+
+class UnauthenticatedVisitorTest(TestCase):
+    fixtures = ['fixture1.json']
+    
+    def test_index_requires_webauth(self):
+        res = self.client.get('/petitions/')
+        self.assertTrue(res['Location'].startswith('http://stanford.edu/'))
