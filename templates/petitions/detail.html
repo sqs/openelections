@@ -74,7 +74,7 @@ window.location.hash+='#sign';
 
 {% if not form %}
     <p>
-       You've signed the petition for {{ issue.name_and_office }}.
+       <a id="sign"></a>You've signed the petition for {{ issue.name_and_office }}.
        Please <a href="http://elections.stanford.edu/contact">contact the
        Elections Commission</a> if you want to
        withdraw your support for this {{ issue.kind_name }}.
