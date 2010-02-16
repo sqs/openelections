@@ -1,20 +1,16 @@
-from django.test import TestCase
+from openelections.tests import OETestCase
 from django.contrib.sessions.models import Session
 from openelections.issues.models import Electorate, Issue
 from openelections.petitions.models import Signature
 
-class IssueAdditionsTest(TestCase):
-    fixtures = ['fixture1.json']
-    
+class IssueAdditionsTest(OETestCase):
     def test_signed_by_sunetid_false(self):
         self.assertFalse(Issue.objects.get(slug='leland-senator').signed_by_sunetid('xyzhang'))
         
     def test_signed_by_sunetid_true(self):
         self.assertTrue(Issue.objects.get(slug='leland-senator').signed_by_sunetid('jsmith'))
 
-class UnauthenticatedVisitorTest(TestCase):
-    fixtures = ['fixture1.json']
-    
+class UnauthenticatedVisitorTest(OETestCase):    
     def assertResponseRequiresWebAuth(self, res):
         self.assertTrue(res['Location'].startswith('http://stanford.edu/'))
     
@@ -35,17 +31,7 @@ class UnauthenticatedVisitorTest(TestCase):
         res = self.client.post('/petitions/leland-senator/sign')
         self.assertResponseRequiresWebAuth(res)
 
-class AuthenticatedVisitorTest(TestCase):
-    fixtures = ['fixture1.json']
-    
-    def webauthLogin(self, sunetid):
-        # must log in for session to be instantiated as real session
-        self.client.login(username='sqs', password='q')
-        self.client.get('/petitions/')
-        s = self.client.session
-        s['webauth_sunetid'] = sunetid
-        s.save()
-    
+class AuthenticatedVisitorTest(OETestCase):
     def test_index(self):
         self.webauthLogin('jsmith')
         res = self.client.get('/petitions/')
@@ -101,5 +87,6 @@ class AuthenticatedVisitorTest(TestCase):
         res = self.client.post('/petitions/leland-senator/sign', postdata)
         self.assertTrue(lelandsen.signed_by_sunetid('xyzhang'))
         self.assertFalse(lelandsen.signed_by_sunetid('attacker'))
+    
 
         
