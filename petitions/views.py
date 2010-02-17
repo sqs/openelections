@@ -1,3 +1,4 @@
+import random
 from datetime import datetime
 from django.http import HttpResponseRedirect, QueryDict
 from django.shortcuts import render_to_response, get_object_or_404
@@ -9,7 +10,8 @@ from openelections.auth.stanford_webauth import webauth_required
 
 @webauth_required
 def index(request):
-    issues = Issue.objects.filter(public_petition=True).order_by('-kind').all()
+    issues = list(Issue.objects.filter(public_petition=True).order_by('-kind').all())
+    random.shuffle(issues)
     return render_to_response('petitions/index.html', {'issues': issues})
 
 @webauth_required
