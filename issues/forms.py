@@ -9,7 +9,7 @@ class IssueForm(forms.ModelForm):
 
 class NewIssueForm(IssueForm):
     kind = forms.ChoiceField(choices=ISSUE_TYPES, widget=forms.HiddenInput)
-    slug = forms.RegexField(label='URL name', help_text='Your petition will be at elections.stanford.edu/petitions/your-url-name. Use only lowercase letters, numbers, and hyphens.',
+    slug = forms.RegexField(label='URL name', help_text='Your petition will be at petitions.stanford.edu/petitions/your-url-name. Use only lowercase letters, numbers, and hyphens.',
                             regex=r'^[a-z\d-]+$', widget=forms.TextInput(attrs={'size':'25'}))
     
     def __init__(self, *args, **kwargs):
