@@ -1,6 +1,6 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.http import HttpResponseRedirect, HttpResponseNotFound
+from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponseForbidden
 from django.core.urlresolvers import reverse
 from openelections import constants as oe_constants
 from openelections.auth.stanford_webauth import webauth_required
@@ -65,8 +65,13 @@ def create(request):
 @webauth_required
 def manage_edit(request, issue_slug):
     issue = get_object_or_404(Issue, slug=issue_slug).get_typed()
-    form = None
     
+    # only sponsors of an issue may edit it
+    sunetid = request.session['webauth_sunetid']
+    if sunetid not in issue.sunetids():
+        return HttpResponseForbidden()
+    
+    form = None
     if request.method == 'POST':
         form = form_class_for_issue(issue)(request.POST, request.FILES, instance=issue)
         if form.is_valid():

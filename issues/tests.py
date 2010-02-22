@@ -68,10 +68,25 @@ class AuthenticatedIssuesManageTest(OETestCase):
         self.assertContains(res, 'Larry David')
         self.assertContains(res, 'SMSA Treasurer')
         
-    def test_update_redirects_to_edit(self):
+    def test_update(self):
         self.webauthLogin('ldavid')
         res = self.client.post('/issues/issue/larry-david/edit', {'bio': 'Hello! New bio.'})
-        self.assertRedirects(res, '/issues/issue/larry-david/edit')        
+        self.assertRedirects(res, '/issues/issue/larry-david/edit')      
+        res = self.client.get('/issues/issue/larry-david')
+        self.assertContains(res, 'Hello! New bio.')
+        
+    def test_only_sponsor_can_edit(self):
+        self.webauthLogin('jsmith')
+        res = self.client.get('/issues/issue/larry-david/edit')
+        self.assertEquals(res.status_code, 403)
+        
+    def test_only_sponsor_can_update(self):
+        self.webauthLogin('jsmith')
+        res = self.client.post('/issues/issue/larry-david/edit', {'bio': 'Hello! New bio.'})
+        self.assertEquals(res.status_code, 403)
+        res = self.client.get('/issues/issue/larry-david')
+        self.assertNotContains(res, 'Hello! New bio.')
+        
 
 class UnauthenticatedVisitorIssuesTest(OETestCase):    
     def test_index(self):
