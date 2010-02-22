@@ -39,8 +39,8 @@ class Issue(models.Model):
     image = models.ImageField(upload_to='site_media/issue_images', blank=True)
     slug = models.SlugField()
     
-    # whether the petition should be shown in the public list
-    public_petition = models.BooleanField(default=True)
+    # whether the issue should be shown in the public list of petitions, issues, etc.
+    public = models.BooleanField(default=True)
     
     # restriction to certain populations
     electorate = models.ManyToManyField(Electorate, related_name='issues') #MultipleChoiceField(max_length=250, choices=oe_constants.ELECTORATES)

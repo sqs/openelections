@@ -10,7 +10,7 @@ from openelections.auth.stanford_webauth import webauth_required
 
 @webauth_required
 def index(request):
-    issues = list(Issue.objects.filter(public_petition=True).order_by('-kind').all())
+    issues = list(Issue.objects.filter(public=True).order_by('-kind').all())
     random.shuffle(issues)
     return render_to_response('petitions/index.html', {'issues': issues})
 
