@@ -2,6 +2,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseServerEr
 from lxml import etree
 import urllib2
 import hashlib
+from django.conf import settings
 
 AUTH_URL = "https://weblogin.stanford.edu" 
 CAS_NS = {'cas': 'http://www.yale.edu/tp/cas'}
@@ -20,6 +21,11 @@ def webauth_required(function):
             # if 'webauth_sunetid' in request.session:
             #    del request.session['webauth_sunetid']
             #    del request.session['webauth_name']
+            
+            # debug sunetid login
+            if settings.DEBUG and 'webauth_sunetid' in request.GET:
+                request.session['webauth_sunetid'] = request.GET['webauth_sunetid']
+                
             if 'webauth_sunetid' in request.session:
                 return view_func(request, *args, **kwargs)
             elif 'webauth_sunetid' in request.GET:
