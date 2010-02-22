@@ -3,7 +3,6 @@
 {% block content %}
 
 <h1>{{ issue.title }}</h1>
-<p><a href="{% url issues.views.edit issue.pk %}">Edit bio</a> [only candidate will be able to see this link -- uses WebAuth]</p>
 
 <p>
     {% if issue.image %}

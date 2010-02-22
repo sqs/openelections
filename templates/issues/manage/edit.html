@@ -11,14 +11,24 @@
     </div>
 {% endif %}
 
-<p><a href="{% url issues.views.detail issue.slug %}">View profile</a></p>
 
 <form action="{% url issues.views.manage_edit issue.slug %}" method="post" enctype="multipart/form-data">
-    <table>
-        {{ form.as_table }}        
-    </table>
-    <input type="submit" value="Save profile">
+    <dl>
+    {% for field in form %}
+        {% if field.is_hidden %}
+            {{ field }}
+        {% else %}
+            <dt>{{ field.label_tag }}</dt>
+            <dd {% if field.errors %}class="error_field" {% endif %}>{{ field }}</dd>
+            {% if field.help_text %}<dd class="help_text">{{ field.help_text }}</dd>{% endif %}
+            {% if field.errors %}<dd class="errors">{{ field.errors }}</dd>{% endif %}
+        {% endif %}
+    {% endfor %}
+    </dl>
+    <div><br><input type="submit" value="Save profile"></div>
 </form>
+
+<p><br><a href="{% url issues.views.detail issue.slug %}">&laquo; View public profile (what everyone else sees)</a></p>
 
 <br style="clear:both">
 
