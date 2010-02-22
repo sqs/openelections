@@ -11,9 +11,19 @@ ELECTORATES = {
     'undergrad-sophomore': 'Sophomore',
     'undergrad-junior': 'Junior',
     'undergrad-senior': 'Senior',
+    'smsa-1': 'SMSA 1st Year', 
+    'smsa-2': 'SMSA 2nd Year', 
+    'smsa-3': 'SMSA 3rd Year', 
+    'smsa-4': 'SMSA 4th Year', 
+    'smsa-5plus': 'SMSA 5th-Plus Year',
+    'smsa-preclinical': 'SMSA Pre-clinical',
+    'smsa-clinical': 'SMSA Clinical', 
+    'smsa-mdphd': 'SMSA MD-PhD',
 }
 
 UNDERGRAD_CLASS_YEARS = ('undergrad-sophomore', 'undergrad-junior', 'undergrad-senior')
+SMSA_CLASS_YEARS = ('smsa-1', 'smsa-2', 'smsa-3', 'smsa-4', 'smsa-5plus')
+SMSA_POPULATIONS = ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')
 
 class Electorate(models.Model):
     name = models.CharField(max_length=50)
@@ -26,6 +36,14 @@ class Electorate(models.Model):
     @classmethod
     def undergrad_class_years(klass):
         return klass.queryset_with_names(UNDERGRAD_CLASS_YEARS)
+        
+    @classmethod
+    def smsa_class_years(klass):
+        return klass.queryset_with_names(SMSA_CLASS_YEARS)
+        
+    @classmethod
+    def smsa_populations(klass):
+        return klass.queryset_with_names(SMSA_POPULATIONS)
     
     def __unicode__(self):
         return self.name
@@ -214,6 +232,70 @@ class SenateCandidate(Candidate):
     def name_and_office(self):
         return "%s, a candidate for ASSU Undergraduate Senate" % self.name1
 
+class SMSACandidate(Candidate):
+    class Meta:
+        proxy = True
+    
+    def kind_name(self):
+        return "%s candidate" % self.elected_name()
+    
+    def elected_name(self):
+        name_map = {
+            'SMSA-P': 'President',
+            'SMSA-VP': 'Vice President',
+            'SMSA-S': 'Secretary',
+            'SMSA-T': 'Treasurer',
+            'SMSA-PC': 'Policy Chair',
+            'SMSA-AC': 'Advocacy Chair',
+            'SMSA-MC': 'Mentorship Chair',
+        }
+        return 'SMSA ' + name_map.get(self.kind, 'Unknown')
+
+class SMSAClassRepCandidate(SMSACandidate):
+    class Meta:
+        proxy = True
+    
+    def class_year(self):
+        class_years = Electorate.smsa_class_years()
+        class_years = [cy.name for cy in class_years]
+        year = self.electorate.filter(name__in=class_years)
+        if not year:
+            raise Exception('no year found for smsa class rep %d' % self.pk)
+        return year[0]
+        
+    def elected_name(self):
+        return "%s Class Rep" % self.class_year()
+        
+class SMSASocialChairCandidate(SMSACandidate):
+    class Meta:
+        proxy = True
+    
+    def population(self):
+        pops = Electorate.smsa_populations()
+        pops = [p.name for p in pops]
+        pop = self.electorate.filter(name__in=pops)
+        if not pop:
+            raise Exception('no pop found for smsa social chair %d' % self.pk)
+        return pop[0]
+    
+    def elected_name(self):
+        return "%s Social Chair" % self.population()
+        
+class SMSACCAPRepCandidate(SMSACandidate):
+    class Meta:
+        proxy = True
+    
+    def population(self):
+        pops = Electorate.smsa_populations()
+        pops = [p.name for p in pops]
+        pop = self.electorate.filter(name__in=pops)
+        if not pop:
+            raise Exception('no pop found for smsa ccap rep %d' % self.pk)
+        return pop[0]
+    
+    def elected_name(self):
+        return "%s CCAP Rep" % self.population()
+
 ###############
 # Class map
 ###############
@@ -225,8 +307,14 @@ kinds_classes = {
     oe_constants.ISSUE_SPECFEE: SpecialFeeRequest,
     
     # SMSA
-    #oe_constants.ISSUE_SMSA_SCHOOLWIDE_OFFICE: Candidate,
-    #oe_constants.ISSUE_SMSA_CLASS_REP: Candidate,
-    #oe_constants.ISSUE_SMSA_CLASS_SOCIAL_CHAIR: Candidate,
-    #oe_constants.ISSUE_SMSA_CCAP_REP: Candidate,
+    'SMSA-P': SMSACandidate,
+    'SMSA-VP': SMSACandidate,
+    'SMSA-S': SMSACandidate,
+    'SMSA-T': SMSACandidate,
+    'SMSA-ClassRep': SMSAClassRepCandidate,
+    'SMSA-SocChair': SMSASocialChairCandidate,
+    'SMSA-CCAP': SMSACCAPRepCandidate,
+    'SMSA-PC': SMSACandidate,
+    'SMSA-AC': SMSACandidate,
+    'SMSA-MC': SMSACandidate,
 }

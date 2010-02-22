@@ -2,6 +2,42 @@ from openelections.tests import OETestCase
 from openelections.issues.models import Electorate, Issue
 from openelections.petitions.models import Signature
 
+def issue(slug):
+    return Issue.objects.get(slug=slug).get_typed()
+
+class SMSACandidateTest(OETestCase):
+    def test_class_rep_elected_name(self):
+        self.assertEquals(issue('cheryl-david').kind_name(), 'SMSA 1st Year Class Rep candidate')
+        self.assertEquals(issue('bart-simpson').kind_name(), 'SMSA 2nd Year Class Rep candidate')
+        self.assertEquals(issue('monty-burns').kind_name(), 'SMSA 3rd Year Class Rep candidate')
+        self.assertEquals(issue('ned-flanders').kind_name(), 'SMSA 4th Year Class Rep candidate')
+        self.assertEquals(issue('michael-bluth').kind_name(), 'SMSA 5th-Plus Year Class Rep candidate')
+    
+    def test_social_chair_elected_name(self):
+        self.assertEquals(issue('george-costanza').kind_name(), 'SMSA Pre-clinical Social Chair candidate')
+        self.assertEquals(issue('jerry-lewis').kind_name(), 'SMSA Clinical Social Chair candidate')
+    
+    def test_ccap_elected_name(self):
+        self.assertEquals(issue('joe-biden').kind_name(), 'SMSA Clinical CCAP Rep candidate')
+        self.assertEquals(issue('timothy-geithner').kind_name(), 'SMSA Pre-clinical CCAP Rep candidate')
+        self.assertEquals(issue('kevin-spacey').kind_name(), 'SMSA MD-PhD CCAP Rep candidate')
+
+    def test_ccap_elected_name(self):
+        self.assertEquals(issue('joe-biden').kind_name(), 'SMSA Clinical CCAP Rep candidate')
+        self.assertEquals(issue('timothy-geithner').kind_name(), 'SMSA Pre-clinical CCAP Rep candidate')
+        self.assertEquals(issue('kevin-spacey').kind_name(), 'SMSA MD-PhD CCAP Rep candidate')
+        
+    def test_chair_elected_name(self):
+        self.assertEquals(issue('howard-dean').kind_name(), 'SMSA Mentorship Chair candidate')
+        self.assertEquals(issue('john-kerry').kind_name(), 'SMSA Advocacy Chair candidate')
+        self.assertEquals(issue('rahm-emanuel').kind_name(), 'SMSA Policy Chair candidate')
+        
+    def test_presvpsectreas(self):
+        self.assertEquals(issue('jane-stanford').kind_name(), 'SMSA President candidate')
+        self.assertEquals(issue('mary-smith').kind_name(), 'SMSA Vice President candidate')
+        self.assertEquals(issue('jerry-seinfeld').kind_name(), 'SMSA Secretary candidate')
+        self.assertEquals(issue('larry-david').kind_name(), 'SMSA Treasurer candidate')    
+
 class UnauthenticatedVisitorManageTest(OETestCase):    
     def test_manage_index_requires_webauth(self):
         self.assertPathRequiresWebAuth('/issues/manage/')
@@ -12,7 +48,20 @@ class UnauthenticatedVisitorManageTest(OETestCase):
     def test_manage_create_requires_webauth(self):
         res = self.client.post('/issues/manage/create')
         self.assertResponseRequiresWebAuth(res)
-    
+
+class AuthenticatedIssuesManageTest(OETestCase):
+    def test_index_jsmith(self):
+        self.webauthLogin('jsmith')
+        res = self.client.get('/issues/manage')
+        self.assertContains(res, 'Super Sophomores')
+        
+    def test_index_ldavid(self):
+        self.webauthLogin('ldavid')
+        res = self.client.get('/issues/manage')
+        self.assertContains(res, 'Larry David')
+        self.assertContains(res, 'Treasurer')
+        self.assertNotContains(res, 'Generic issue')
+
 class UnauthenticatedVisitorIssuesTest(OETestCase):    
     def test_index(self):
         res = self.client.get('/issues/')

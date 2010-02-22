@@ -2,24 +2,28 @@
 
 {% block content %}
 
-<h1>Your petitions ({{ sunetid }})</h1>
+<h1>Your petitions &amp; candidacy ({{ sunetid }})</h1>
 <dl>
 {% for issue in issues %}
         <dt>{{ issue.name_and_office }}</dt>
-        <dd><a href="http://elections.stanford.edu/petitions/{{ issue.slug }}">http://elections.stanford.edu/petitions/{{ issue.slug }}</a></dd>
+        <dd><label>Petition:</label> <a href="http://elections.stanford.edu/petitions/{{ issue.slug }}">http://elections.stanford.edu/petitions/{{ issue.slug }}</a></dd>
 {% empty %}
-    <p>You aren't listed as a member or sponsor of anything yet. Start a petition below.</p>
+    <p>You aren't listed as a member or sponsor of anything. Start a petition or declare candidacy below.</p>
 {% endfor %}
 </dl>
-
 
 <br/>
 <h3>Start a new petition for...</h3>
 <ul>
-    <li><a href="{% url issues.views.manage_new "US" %}">Undergraduate Senate candidacy</a></li>
-    <li><a href="{% url issues.views.manage_new "ClassPres" %}">Class President slate</a></li>
-    <li><a href="{% url issues.views.manage_new "Exec" %}">Executive slate</a></li>
-    <li>Special Fee request: <a href="http://elections.stanford.edu/contact">contact us</a></li>
+    <li><a href="{% url issues.views.manage_new "US" %}">ASSU Undergraduate Senate candidacy</a></li>
+    <li><a href="{% url issues.views.manage_new "ClassPres" %}">ASSU Class President slate</a></li>
+    <li><a href="{% url issues.views.manage_new "Exec" %}">ASSU Executive slate</a></li>
+    <li>Special Fee request: read the <a href="http://elections.stanford.edu/petition-guide">petition guide</a> and then <a href="http://elections.stanford.edu/contact">contact us</a></li>
+</ul>
+
+<h3>Declare your candidacy for...</h3>
+<ul>
+    <li><a href="http://smsa.stanford.edu/about/">SMSA</a> positions: contact <a href="mailto:aneeshka@stanford.edu">Agnieszka Czechowicz</a>, SMSA President</li>
 </ul>
 
 
