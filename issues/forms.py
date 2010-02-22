@@ -105,6 +105,13 @@ class EditIssueForm(EditIssueForm):
         model = Issue
         fields = ('bio', 'image',)
         
+    def __init__(self, *args, **kwargs):
+        super(EditIssueForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance:
+            if instance.image:
+                self.fields['image'].label = 'Replace existing image with new image'
+        
 
 issue_edit_forms = {
     #'CandidateUS': EditCandidateUSForm,

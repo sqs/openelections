@@ -4,20 +4,18 @@
 
 <h1>Editing profile for {{ issue.name_and_office }}</h1>
 
-{% if issue.image %}
-    <div style="float:right">
-        <h3>Existing image:</h3>
-        <td><img style="max-width:150px;max-height:250px" src="/{{issue.image.url}}"></td>
-    </div>
-{% endif %}
-
-
 <form action="{% url issues.views.manage_edit issue.slug %}" method="post" enctype="multipart/form-data">
     <dl>
     {% for field in form %}
         {% if field.is_hidden %}
             {{ field }}
         {% else %}
+            {% ifequal field.name "image" %}
+                {% if issue.image %}
+                    <dt>Existing image</dt>
+                    <dd><img style="max-width:300px;max-height:300px" src="/{{issue.image.url}}"></dd>
+                {% endif %}
+            {% endifequal %}
             <dt>{{ field.label_tag }}</dt>
             <dd {% if field.errors %}class="error_field" {% endif %}>{{ field }}</dd>
             {% if field.help_text %}<dd class="help_text">{{ field.help_text }}</dd>{% endif %}
