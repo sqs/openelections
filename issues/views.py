@@ -7,16 +7,13 @@ from openelections.auth.stanford_webauth import webauth_required
 from openelections.issues.models import Issue
 from openelections.issues.forms import IssueForm, form_class_for_issue
 
-def index(request):
-    return HttpResponseRedirect('/petitions/')
-    constraints = request.GET.get('show', None)
+def index(request, show=None):
     issues = Issue.objects.all()
     return render_to_response('issues/index.html', {'issues': issues})
 
 def detail(request, issue_slug):
     issue = get_object_or_404(Issue, slug=issue_slug)
     return render_to_response('issues/detail.html', {'issue': issue})
-
 
 @webauth_required
 def manage_index(request):
