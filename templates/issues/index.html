@@ -2,10 +2,8 @@
 
 {% block content %}
 
-<ul>
-    {% for issue in issues %}
-        <li><a href="{% url issues.views.detail issue.slug %}">{{ issue }}</li>
-    {% endfor %}
-</ul>
+{% for issue in issues %}
+    {% include issue.partial_template %}
+{% endfor %}
 
 {% endblock %}

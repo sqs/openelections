@@ -100,6 +100,11 @@ class Issue(models.Model):
                self.sunetid4, self.sunetid5)
         return [s for s in ids if s]
     
+    def partial_template(self):
+        '''Returns the name of the partial template that should be used
+        to render this issue in views, relative to the templates/ dir.'''
+        return "issues/partials/issue.html"
+    
     @classmethod
     def filter_by_sponsor(klass, sunetid):
         '''Returns all issues sponsored by sunetid or of which sunetid

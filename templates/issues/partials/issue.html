@@ -1,0 +1,7 @@
+<h2>{{ issue.title }}</h2>
+
+{% if issue.bio %}
+    <p>{{ issue.bio|linebreaks }}</p>
+{% endif %}
+
+<p><strong>Email:</strong> <a href="mailto:{{ issue.sunetid1 }}@stanford.edu">{{ issue.sunetid1 }}@stanford.edu</a></p>
