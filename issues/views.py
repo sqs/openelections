@@ -7,8 +7,21 @@ from openelections.auth.stanford_webauth import webauth_required
 from openelections.issues.models import Issue
 from openelections.issues.forms import IssueForm, form_class_for_issue
 
+index_filters = {
+    'special-fee-requests': oe_constants.ISSUE_SPECFEE,
+    'senate': oe_constants.ISSUE_US,
+    'class-presidents': oe_constants.ISSUE_CLASSPRES,
+}
+
 def index(request, show=None):
-    issues = Issue.objects.all()
+    issues = None
+    if show:
+        kind_filter = index_filters.get(show, None)
+        if kind_filter is None:
+            return HttpResponseNotFound()
+        issues = Issue.objects.filter(kind=kind_filter).all()
+    else:
+        issues = Issue.objects.all()
     return render_to_response('issues/index.html', {'issues': issues})
 
 def detail(request, issue_slug):

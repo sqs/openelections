@@ -7,10 +7,10 @@
     <div class="navsection byaudience">
         <h2>ASSU</h2>
         <ul>
-            <li><a href="{% url issues.views.index %}?show=assu-exec">Executive</a></li>
-            <li><a href="{% url issues.views.index %}?show=assu-gsc">Grad Student Council</a></li>
-            <li><a href="{% url issues.views.index %}?show=assu-us">Undergrad Senate</a></li>
-            <li><a href="{% url issues.views.index %}?show=assu-classpres">Class Presidents</a></li>
+            <li><a href="{% url issues.views.index show="exec" %}?show=assu-exec">Executive</a></li>
+            <li><a href="{% url issues.views.index show="gsc" %}">Grad Student Council</a></li>
+            <li><a href="{% url issues.views.index show="senate" %}?show=assu-us">Undergrad Senate</a></li>
+            <li><a href="{% url issues.views.index show="class-presidents" %}?show=assu-classpres">Class Presidents</a></li>
             
         </ul>
     </div>
@@ -25,14 +25,13 @@
     <div class="navsection byaudience">
         <h2>SMSA</h2>
         <ul>
-            <li><a href="{% url issues.views.index %}?show=SMSA">All</a></li>
-            <li><a href="{% url issues.views.index %}?show=SMSA">Vice Pres</a></li>
-            <li><a href="{% url issues.views.index %}?show=SMSA">Secretary</a></li>
-            <li><a href="{% url issues.views.index %}?show=SMSA">Treasurer</a></li>
-            <li><a href="{% url issues.views.index %}?show=SMSA">Class Rep</a></li>
-            <li><a href="{% url issues.views.index %}?show=SMSA">Social Chair</a></li>
-            <li><a href="{% url issues.views.index %}?show=SMSA">CCAP</a></li>
-            <li><a href="{% url issues.views.index %}?show=SMSA">Chairs</a></li>
+            <li><a href="{% url issues.views.index show="smsa-vp" %}">Vice Pres</a></li>
+            <li><a href="{% url issues.views.index show="smsa-secretary" %}">Secretary</a></li>
+            <li><a href="{% url issues.views.index show="smsa-treasurer" %}">Treasurer</a></li>
+            <li><a href="{% url issues.views.index show="smsa-class-rep" %}">Class Rep</a></li>
+            <li><a href="{% url issues.views.index show="smsa-social-chair" %}">Social Chair</a></li>
+            <li><a href="{% url issues.views.index show="smsa-ccap" %}">CCAP</a></li>
+            <li><a href="{% url issues.views.index show="smsa-chairs" %}">Chairs</a></li>
         </ul>
     </div>
     </div>
