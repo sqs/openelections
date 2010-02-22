@@ -8,9 +8,18 @@ from openelections.issues.models import Issue
 from openelections.issues.forms import IssueForm, form_class_for_issue
 
 index_filters = {
-    'special-fee-requests': oe_constants.ISSUE_SPECFEE,
-    'senate': oe_constants.ISSUE_US,
-    'class-presidents': oe_constants.ISSUE_CLASSPRES,
+    'special-fee-requests': (oe_constants.ISSUE_SPECFEE,),
+    'senate': (oe_constants.ISSUE_US,),
+    'class-presidents': (oe_constants.ISSUE_CLASSPRES,),
+    
+    'smsa-president': ('SMSA-P',),
+    'smsa-vice-president': ('SMSA-VP',),
+    'smsa-secretary': ('SMSA-S',),
+    'smsa-treasurer': ('SMSA-T',),
+    'smsa-class-reps': ('SMSA-ClassRep',),
+    'smsa-social-chair': ('SMSA-SocChair',),
+    'smsa-ccap': ('SMSA-CCAP',),
+    'smsa-chairs': ('SMSA-PC', 'SMSA-AC', 'SMSA-MC'),
 }
 
 def index(request, show=None):
@@ -19,7 +28,7 @@ def index(request, show=None):
         kind_filter = index_filters.get(show, None)
         if kind_filter is None:
             return HttpResponseNotFound()
-        issues = Issue.objects.filter(kind=kind_filter).all()
+        issues = Issue.objects.filter(kind__in=kind_filter).all()
     else:
         issues = Issue.objects.all()
     return render_to_response('issues/index.html', {'issues': issues})
