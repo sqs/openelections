@@ -102,6 +102,9 @@ class Issue(models.Model):
     
     def needs_petition(self):
         return True
+        
+    def public_profile(self):
+        return False
     
     def kind_name(self):
         return "Generic issue"
@@ -120,6 +123,10 @@ class Issue(models.Model):
         ids = (self.sunetid1, self.sunetid2, self.sunetid3,
                self.sunetid4, self.sunetid5)
         return [s for s in ids if s]
+        
+    def sunetid_can_manage(self, sunetid):
+        admins = ('sqs', 'cotism2')
+        return sunetid in self.sunetids() or sunetid in admins
     
     def partial_template(self):
         '''Returns the name of the partial template that should be used
@@ -241,6 +248,9 @@ class SMSACandidate(Candidate):
     
     def needs_petition(self):
         return False
+        
+    def public_profile(self):
+        return True
     
     def kind_name(self):
         return "%s candidate" % self.elected_name()

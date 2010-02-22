@@ -28,7 +28,7 @@ def detail(request, issue_slug):
         'issue': issue,
         'form': form,
         'sunetid': sunetid,
-        'viewing_own_petition': sunetid in issue.sunetids(),
+        'can_manage': issue.sunetid_can_manage(sunetid),
     })
 
 @webauth_required

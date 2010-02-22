@@ -35,7 +35,9 @@ def index(request, show=None):
 
 def detail(request, issue_slug):
     issue = get_object_or_404(Issue, slug=issue_slug)
-    return render_to_response('issues/detail.html', {'issue': issue})
+    sunetid = request.session.get('webauth_sunetid', None)
+    can_manage = issue.sunetid_can_manage(sunetid)
+    return render_to_response('issues/detail.html', {'issue': issue, 'can_manage': can_manage})
 
 @webauth_required
 def manage_index(request):
@@ -68,7 +70,7 @@ def manage_edit(request, issue_slug):
     
     # only sponsors of an issue may edit it
     sunetid = request.session['webauth_sunetid']
-    if sunetid not in issue.sunetids():
+    if not issue.sunetid_can_manage(sunetid):
         return HttpResponseForbidden()
     
     form = None

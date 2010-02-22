@@ -61,7 +61,19 @@ class AuthenticatedIssuesManageTest(OETestCase):
         self.assertContains(res, 'Larry David')
         self.assertContains(res, 'Treasurer')
         self.assertNotContains(res, 'Generic issue')
-        
+    
+    def test_index_smsa_has_public_profile_no_petition(self):
+        self.webauthLogin('ldavid')
+        res = self.client.get('/issues/manage')
+        self.assertContains(res, 'public profile')
+        self.assertNotContains(res, '/petitions/larry-david')
+    
+    def test_index_assu_has_no_public_profile_but_has_petition(self):
+        self.webauthLogin('jsmith')
+        res = self.client.get('/issues/manage')
+        self.assertNotContains(res, 'public profile')
+        self.assertContains(res, '/petitions/super-sophomores')
+       
     def test_edit_ldavid(self):
         self.webauthLogin('ldavid')
         res = self.client.get('/issues/issue/larry-david/edit')

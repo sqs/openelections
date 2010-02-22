@@ -3,31 +3,30 @@
 {% block content %}
 
 {% for issue in issues %}
-    <h1>
-        {{ issue.name_and_office }}
-    </h1>
-    
+    <h1>{{ issue.name_and_office }}</h1>
     <dl>
-        <dt>Public profile:</dt>
-        <dd>
-            View:
-            <a href="{% url issues.views.detail issue.slug %}">
-                http://petitions.stanford.edu{% url issues.views.detail issue.slug %}
-            </a>
-        </dd>
-        <dd>
-            <a href="{% url issues.views.manage_edit issue.slug %}">Edit public profile</a>
-        </dd>
+        {% if issue.public_profile %}
+            <dt>Public profile:</dt>
+            <dd>
+                View:
+                <a href="{% url issues.views.detail issue.slug %}">
+                    http://petitions.stanford.edu{% url issues.views.detail issue.slug %}
+                </a>
+            </dd>
+            <dd>
+                <a href="{% url issues.views.manage_edit issue.slug %}">Edit public profile</a>
+            </dd>
+        {% endif %}
+        
+        {% if issue.needs_petition %}
+            <dt>Petition:</dt> 
+            <dd>
+                <a href="http://elections.stanford.edu/petitions/{{ issue.slug }}">
+                    http://elections.stanford.edu/petitions/{{ issue.slug }}
+                </a>
+            </dd>
+        {% endif %}
     </dl>
-    
-    {% if issue.needs_petition %}
-        <dt>Petition:</dt> 
-        <dd>
-            <a href="http://elections.stanford.edu/petitions/{{ issue.slug }}">
-                http://elections.stanford.edu/petitions/{{ issue.slug }}
-            </a>
-        </dd>
-    {% endif %}
 {% empty %}
     <p>You aren't listed as a member or sponsor of anything. Start a petition or declare candidacy below.</p>
 {% endfor %}

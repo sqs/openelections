@@ -11,6 +11,10 @@
     {{ issue.bio|safe|linebreaks }}
 </p>
 
+{% if can_manage %}
+    <p><a href="{% url issues.views.manage_edit issue.slug %}">Edit public profile</a></p>
+{% endif %}
+
 <br style="clear:both">
 
 {% endblock %}
