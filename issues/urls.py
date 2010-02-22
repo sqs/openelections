@@ -10,5 +10,5 @@ urlpatterns = patterns('openelections.issues.views',
     (r'^issue/(?P<issue_slug>[\w\d-]+)/?$', 'detail'),
     
 
-    (r'^issue/(?P<issue_slug>[\w\d-]+)/edit$', 'edit'),
+    (r'^issue/(?P<issue_slug>[\w\d-]+)/edit$', 'manage_edit'),
 )

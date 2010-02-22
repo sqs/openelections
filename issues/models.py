@@ -100,6 +100,9 @@ class Issue(models.Model):
     def petition_electorate_names(self):
         raise NotImplementedError
     
+    def needs_petition(self):
+        return True
+    
     def kind_name(self):
         return "Generic issue"
     
@@ -236,8 +239,14 @@ class SMSACandidate(Candidate):
     class Meta:
         proxy = True
     
+    def needs_petition(self):
+        return False
+    
     def kind_name(self):
         return "%s candidate" % self.elected_name()
+    
+    def name_and_office(self):
+        return "%s, a candidate for %s" % (self.name1, self.elected_name())
     
     def elected_name(self):
         name_map = {
