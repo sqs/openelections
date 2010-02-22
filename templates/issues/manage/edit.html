@@ -1,8 +1,8 @@
-{% extends "issues/base-issues.html" %}
+{% extends "issues/base-public.html" %}
 
 {% block content %}
 
-<h1>Editing profile for {{ issue.title }}</h1>
+<h1>Editing profile for {{ issue.name_and_office }}</h1>
 
 {% if issue.image %}
     <div style="float:right">
@@ -13,7 +13,7 @@
 
 <p><a href="{% url issues.views.detail issue.slug %}">View profile</a></p>
 
-<form action="{% url issues.views.edit issue.pk %}" method="post" enctype="multipart/form-data">
+<form action="{% url issues.views.manage_edit issue.slug %}" method="post" enctype="multipart/form-data">
     <table>
         {{ form.as_table }}        
     </table>

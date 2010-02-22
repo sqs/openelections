@@ -61,6 +61,12 @@ class AuthenticatedIssuesManageTest(OETestCase):
         self.assertContains(res, 'Larry David')
         self.assertContains(res, 'Treasurer')
         self.assertNotContains(res, 'Generic issue')
+        
+    def test_edit_ldavid(self):
+        self.webauthLogin('ldavid')
+        res = self.client.get('/issues/issue/larry-david/edit')
+        self.assertContains(res, 'Larry David')
+        self.assertContains(res, 'SMSA Treasurer')
 
 class UnauthenticatedVisitorIssuesTest(OETestCase):    
     def test_index(self):

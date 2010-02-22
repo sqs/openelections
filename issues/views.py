@@ -63,8 +63,8 @@ def create(request):
         return render_to_response('issues/manage/new.html', {'new_issue': new_issue, 'form': form})
 
 @webauth_required
-def edit(request, issue_id):
-    issue = get_object_or_404(Issue, pk=issue_id)
+def manage_edit(request, issue_slug):
+    issue = get_object_or_404(Issue, slug=issue_slug).get_typed()
     form = None
     
     if request.method == 'POST':
@@ -75,4 +75,4 @@ def edit(request, issue_id):
     else:
         form = form_class_for_issue(issue)(instance=issue)
     
-    return render_to_response('issues/edit.html', {'issue': issue, 'form': form})
+    return render_to_response('issues/manage/edit.html', {'issue': issue, 'form': form})
