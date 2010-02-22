@@ -71,7 +71,7 @@ def manage_edit(request, issue_slug):
         form = form_class_for_issue(issue)(request.POST, request.FILES, instance=issue)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect(reverse('openelections.issues.views.detail', None, [issue.slug]))
+            return HttpResponseRedirect(reverse('openelections.issues.views.manage_edit', None, [issue.slug]))
     else:
         form = form_class_for_issue(issue)(instance=issue)
     

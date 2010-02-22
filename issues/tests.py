@@ -67,6 +67,11 @@ class AuthenticatedIssuesManageTest(OETestCase):
         res = self.client.get('/issues/issue/larry-david/edit')
         self.assertContains(res, 'Larry David')
         self.assertContains(res, 'SMSA Treasurer')
+        
+    def test_update_redirects_to_edit(self):
+        self.webauthLogin('ldavid')
+        res = self.client.post('/issues/issue/larry-david/edit', {'bio': 'Hello! New bio.'})
+        self.assertRedirects(res, '/issues/issue/larry-david/edit')        
 
 class UnauthenticatedVisitorIssuesTest(OETestCase):    
     def test_index(self):
