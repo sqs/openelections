@@ -125,7 +125,7 @@ class Issue(models.Model):
         return [s for s in ids if s]
         
     def sunetid_can_manage(self, sunetid):
-        admins = ('sqs', 'cotism2')
+        admins = ('sqs', 'cotism2', 'aneeshka')
         return sunetid in self.sunetids() or sunetid in admins
     
     def partial_template(self):
