@@ -143,6 +143,8 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
     def test_index_filtered_smsa_treasurer(self):
         res = self.client.get('/issues/smsa-treasurer')
         self.assertContains(res, 'Larry David')
+        self.assertContains(res, 'SMSA Treasurer')
+        self.assertNotContains(res, 'Generic issue')
         self.assertNotContains(res, 'Jane Stanford')
         
     def test_index_filtered_smsa_class_reps(self):

@@ -1,7 +1,23 @@
-<h2>{{ issue.title }}</h2>
-
-{% if issue.bio %}
-    <p>{{ issue.bio|linebreaks }}</p>
+{% if issue.image %}
+    <div style="float:right"><img style="max-width:300px;max-height:400px;margin:0 15px 15px 0" src="/{{ issue.image.url }}"></div>
 {% endif %}
+<dl>
+    <dt>Email</dt>
+    <dd><a href="mailto:{{ issue.sunetid1 }}@stanford.edu">{{ issue.sunetid1 }}@stanford.edu</a></dd>
+    {% if issue.bio %}
+        <dt>Profile</dt>
+        {% if detail %}
+            <dd>{{ issue.bio|linebreaks }}</dd>
+        {% else %}
+            <dd>{{ issue.bio|linebreaks|truncatewords:200 }}</dd>
+        {% endif %}
+    {% endif %}
+    {% if not detail %}
+        <dd>
+            <a href="{% url issues.views.detail issue.slug %}">See full profile</a>
+        </dd>
+    {% endif %}
+</dl>
 
-<p><strong>Email:</strong> <a href="mailto:{{ issue.sunetid1 }}@stanford.edu">{{ issue.sunetid1 }}@stanford.edu</a></p>
+<hr style="clear:both">
+

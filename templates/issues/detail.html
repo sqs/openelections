@@ -2,17 +2,12 @@
 
 {% block content %}
 
-<h1>{{ issue.title }}</h1>
+<h1>{{ issue.title }} ({{ issue.kind_name }})</h1>
 
-<p>
-    {% if issue.image %}
-        <img style="float:right;max-width:400px;max-height:600px;margin:30px" src="/{{issue.image.url}}">
-    {% endif %}
-    {{ issue.bio|safe|linebreaks }}
-</p>
+{% include issue.partial_template %}
 
 {% if can_manage %}
-    <p><a href="{% url issues.views.manage_edit issue.slug %}">Edit public profile</a></p>
+    <p><a href="{% url issues.views.manage_edit issue.slug %}">Edit your public profile &raquo;</a></p>
 {% endif %}
 
 <br style="clear:both">

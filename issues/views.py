@@ -31,13 +31,14 @@ def index(request, show=None):
         issues = Issue.objects.filter(kind__in=kind_filter).all()
     else:
         issues = Issue.objects.all()
-    return render_to_response('issues/index.html', {'issues': issues})
+    issues = map(Issue.get_typed, issues)
+    return render_to_response('issues/index.html', {'issues': issues, 'detail': False})
 
 def detail(request, issue_slug):
-    issue = get_object_or_404(Issue, slug=issue_slug)
+    issue = get_object_or_404(Issue, slug=issue_slug).get_typed()
     sunetid = request.session.get('webauth_sunetid', None)
     can_manage = issue.sunetid_can_manage(sunetid)
-    return render_to_response('issues/detail.html', {'issue': issue, 'can_manage': can_manage})
+    return render_to_response('issues/detail.html', {'issue': issue, 'can_manage': can_manage, 'detail': True})
 
 @webauth_required
 def manage_index(request):
