@@ -7,9 +7,9 @@
     {% if issue.bio %}
         <dt>Profile</dt>
         {% if detail %}
-            <dd>{{ issue.bio|linebreaks }}</dd>
+            <dd>{{ issue.bio|safe|linebreaks }}</dd>
         {% else %}
-            <dd>{{ issue.bio|linebreaks|truncatewords:200 }}</dd>
+            <dd>{{ issue.bio|safe|linebreaks|truncatewords_html:200 }}</dd>
         {% endif %}
     {% endif %}
     {% if not detail %}
