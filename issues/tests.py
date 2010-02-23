@@ -107,6 +107,18 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         self.assertContains(res, 'Super Sophomores')
         self.assertContains(res, 'Leland Q. Senator')
     
+    def test_index_filtered_senators(self):
+        res = self.client.get('/issues/exec')
+        self.assertNotContains(res, 'Stanford Test Society')
+        self.assertNotContains(res, 'Super Sophomores')
+        # TODO: contains for exec
+        
+    def test_index_filtered_gsc(self):
+        res = self.client.get('/issues/gsc')
+        self.assertNotContains(res, 'Stanford Test Society')
+        self.assertNotContains(res, 'Super Sophomores')
+        # TODO: contains for GSC
+    
     def test_index_filtered_special_fees(self):
         res = self.client.get('/issues/special-fee-requests')
         self.assertContains(res, 'Stanford Test Society')

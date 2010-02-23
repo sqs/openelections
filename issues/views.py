@@ -9,9 +9,12 @@ from openelections.issues.models import Issue
 from openelections.issues.forms import IssueForm, form_class_for_issue
 
 index_filters = {
-    'special-fee-requests': (oe_constants.ISSUE_SPECFEE,),
+    'exec': (oe_constants.ISSUE_EXEC),
+    'gsc': (oe_constants.ISSUE_GSC),
     'senate': (oe_constants.ISSUE_US,),
     'class-presidents': (oe_constants.ISSUE_CLASSPRES,),
+    
+    'special-fee-requests': (oe_constants.ISSUE_SPECFEE,),
     
     'smsa-president': ('SMSA-P',),
     'smsa-vice-president': ('SMSA-VP',),
