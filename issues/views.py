@@ -1,3 +1,4 @@
+import random
 from django.shortcuts import render_to_response, get_object_or_404
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponseForbidden
@@ -32,6 +33,7 @@ def index(request, show=None):
     else:
         issues = Issue.objects.all()
     issues = map(Issue.get_typed, issues)
+    random.shuffle(issues)
     return render_to_response('issues/index.html', {'issues': issues, 'detail': False})
 
 def detail(request, issue_slug):
