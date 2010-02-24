@@ -2,12 +2,16 @@
 
 {% block content %}
 
-<h1>Starting petition for {{ new_issue.kind_name }}</h1>
+{% if new_issue.needs_petition %}
+    <h1>Starting petition for {{ new_issue.kind_name }}</h1>
 
-<p>
-    You aren't obligated to run (or do anything) just by starting a petition; you can withdraw at any time.
-    See the <a href="http://elections.stanford.edu/petitions-guide">full petitions guide</a> for more info,
-    and <a href="http://elections.stanford.edu/contact">contact the Elections Commission</a> if you have any questions.</p>
+    <p>
+        You aren't obligated to run (or do anything) just by starting a petition; you can withdraw at any time.
+        See the <a href="http://elections.stanford.edu/petitions-guide">full petitions guide</a> for more info,
+        and <a href="http://elections.stanford.edu/contact">contact the Elections Commission</a> if you have any questions.</p>
+{% else %}
+    <h1>Declare as {{ new_issue.kind_name }}</h1>
+{% endif %}
 <hr/>
 
 <form action="{% url issues.views.create %}" method="post">
@@ -23,7 +27,13 @@
         {% endif %}
     {% endfor %}
     </dl>
-    <div><input type="submit" value="Start petition for {{ new_issue.kind_name }}"></div>
+    <div>
+        {% if new_issue.needs_petition %}
+            <input type="submit" value="Start petition for {{ new_issue.kind_name }}">
+        {% else %}
+            <input type="submit" value="Declare candidacy">
+        {% endif %}
+    </div>
 </form>
 
 {% endblock %}

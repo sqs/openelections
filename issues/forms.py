@@ -99,7 +99,7 @@ class NewSenateCandidateForm(NewCandidateForm):
 class NewGSCCandidateForm(NewCandidateForm):
     class Meta:
         model = GSCCandidate
-        fields = ('title', 'kind', 'electorate', 'name1', 'sunetid1', 'slug')
+        fields = ('title', 'kind', 'name1', 'sunetid1', 'electorate')
     
     electorate = forms.ModelChoiceField(label='GSC district',
                                         queryset=Electorate.gsc_districts(),
@@ -110,6 +110,10 @@ class NewGSCCandidateForm(NewCandidateForm):
         electorate = self.cleaned_data.get('electorate')
         if electorate:
             return [electorate]
+            
+    def __init__(self, *args, **kwargs):
+        super(NewGSCCandidateForm, self).__init__(*args, **kwargs)
+        self.fields['slug'].help_text = 'When candidate profiles open, your profile will be at http://elections.stanford.edu/candidate/your-url-name or similar. Use only lowercase letters, numbers, and hyphens.'
 
 class EditIssueForm(IssueForm):
     class Meta:
@@ -138,6 +142,7 @@ issue_new_forms = {
     'SenateCandidate': NewSenateCandidateForm,
     'ClassPresidentSlate': NewClassPresidentSlateForm,
     'ExecutiveSlate': NewExecutiveSlateForm,
+    'GSCCandidate': NewGSCCandidateForm,
 }
 
 def form_class_for_issue(issue):

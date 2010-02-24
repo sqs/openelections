@@ -26,7 +26,12 @@
                 </a>
             </dd>
         {% endif %}
+        
+        {% if not issue.public_profile and not issue.needs_petition %}
+            <dd>You've declared. You'll be notified when you can post a candidate profile.</p>
+        {% endif %}
     </dl>
+    <br>
 {% empty %}
     <p>You aren't listed as a member or sponsor of anything. Start a petition or declare candidacy below.</p>
 {% endfor %}
@@ -38,13 +43,13 @@
 <ul>
     <li><a href="{% url issues.views.manage_new "US" %}">ASSU Undergraduate Senate candidacy</a></li>
     <li><a href="{% url issues.views.manage_new "ClassPres" %}">ASSU Class President slate</a></li>
-    <li><a href="{% url issues.views.manage_new "GSC" %}">ASSU Graduate Student Council representative</a></li>
     <li><a href="{% url issues.views.manage_new "Exec" %}">ASSU Executive slate</a></li>
     <li>Special Fee request: read the <a href="http://elections.stanford.edu/petition-guide">petition guide</a> and then <a href="http://elections.stanford.edu/contact">contact us</a></li>
 </ul>
 
 <h3>Declare your candidacy for...</h3>
 <ul>
+    <li><a href="{% url issues.views.manage_new "GSC" %}">ASSU Graduate Student Council representative</a></li>
     <li><a href="http://smsa.stanford.edu/about/">SMSA</a> positions: contact <a href="mailto:aneeshka@stanford.edu">Agnieszka Czechowicz</a>, SMSA President</li>
 </ul>
 
