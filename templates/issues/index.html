@@ -3,7 +3,7 @@
 {% block content %}
 
 {% for issue in issues %}
-    <h2>{{ issue.title }} ({{ issue.elected_name }})</h2>
+    <h2>{{ issue.name_and_office|capfirst }}</h2>
     {% include issue.partial_template %}
 {% empty %}
     <!-- empty list -->

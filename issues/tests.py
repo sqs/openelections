@@ -104,7 +104,7 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         res = self.client.get('/issues/')
         self.assertContains(res, 'Stanford Test Society')
         self.assertContains(res, 'Super Sophomores')
-        self.assertContains(res, 'Leland Q. Senator')
+        self.assertContains(res, 'Leland Senator, a candidate')
     
     def test_index_filtered_senators(self):
         res = self.client.get('/issues/exec')
@@ -124,7 +124,7 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         self.webauthLogin('jsmith')
         res = self.client.get('/issues/petitioning')
         self.assertTemplateUsed(res, 'issues/index.html')
-        self.assertContains(res, 'Leland Q. Senator')
+        self.assertContains(res, 'Leland Senator, a candidate')
         self.assertContains(res, 'Stanford Test Society')
         self.assertNotContains(res, 'Larry David') # no SMSA
         self.assertContains(res, 'View/sign petition')
@@ -150,7 +150,7 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         res = self.client.get('/issues/senate')
         self.assertNotContains(res, 'Stanford Test Society')
         self.assertNotContains(res, 'Super Sophomores')
-        self.assertContains(res, 'Leland Q. Senator')
+        self.assertContains(res, 'Leland Senator, a candidate')
         
     def test_index_filtered_class_pres(self):
         res = self.client.get('/issues/class-presidents')
