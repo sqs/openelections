@@ -119,7 +119,20 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
     def test_index_senators_hides_non_public(self):
         res = self.client.get('/issues/senate')
         self.assertNotContains(res, 'John Q. Private')
-        
+    
+    def test_index_petitioning(self):
+        self.webauthLogin('jsmith')
+        res = self.client.get('/issues/petitioning')
+        self.assertTemplateUsed(res, 'issues/index.html')
+        self.assertContains(res, 'Leland Q. Senator')
+        self.assertContains(res, 'Stanford Test Society')
+        self.assertNotContains(res, 'Larry David') # no SMSA
+    
+    def test_index_omits_non_public_petitions(self):
+        self.webauthLogin('jsmith')
+        res = self.client.get('/issues/petitioning')
+        self.assertNotContains(res, 'John Q. Private')
+    
     def test_index_filtered_gsc(self):
         res = self.client.get('/issues/gsc')
         self.assertNotContains(res, 'Stanford Test Society')

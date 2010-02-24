@@ -9,9 +9,11 @@ class IssueAdditionsTest(OETestCase):
     def test_signed_by_sunetid_true(self):
         self.assertTrue(Issue.objects.get(slug='leland-senator').signed_by_sunetid('jsmith'))
 
-class UnauthenticatedVisitorTest(OETestCase):    
-    def test_index_requires_webauth(self):
-        self.assertPathRequiresWebAuth('/petitions/')
+class UnauthenticatedVisitorTest(OETestCase):
+    def test_index(self):
+        self.webauthLogin('jsmith')
+        res = self.client.get('/petitions/')
+        self.assertRedirects(res, '/issues/petitioning')
         
     def test_detail_requires_webauth(self):
         self.assertPathRequiresWebAuth('/petitions/leland-senator')
@@ -24,17 +26,6 @@ class UnauthenticatedVisitorTest(OETestCase):
         self.assertResponseRequiresWebAuth(res)
 
 class AuthenticatedVisitorTest(OETestCase):
-    def test_index(self):
-        self.webauthLogin('jsmith')
-        res = self.client.get('/petitions/')
-        self.assertTemplateUsed(res, 'petitions/index.html')
-        self.assertContains(res, 'Leland Senator')
-    
-    def test_index_omits_non_public_petitions(self):
-        self.webauthLogin('jsmith')
-        res = self.client.get('/petitions/')
-        self.assertNotContains(res, 'John Q. Private')
-    
     def test_detail_for_user_who_already_signed(self):
         self.webauthLogin('jsmith')
         res = self.client.get('/petitions/leland-senator')

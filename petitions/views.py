@@ -9,11 +9,8 @@ from openelections.petitions.forms import SignatureForm
 from openelections.issues.models import Issue
 from openelections.webauth.stanford_webauth import webauth_required
 
-@webauth_required
 def index(request):
-    issues = list(Issue.objects.filter(public=True).order_by('-kind').all())
-    random.shuffle(issues)
-    return render_to_response('petitions/index.html', {'issues': issues}, context_instance=RequestContext(request))
+    return HttpResponseRedirect('/issues/petitioning')
 
 @webauth_required
 def detail(request, issue_slug):

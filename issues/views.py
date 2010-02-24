@@ -25,6 +25,8 @@ index_filters = {
     'smsa-social-chair': ('SMSA-SocChair',),
     'smsa-ccap': ('SMSA-CCAP',),
     'smsa-chairs': ('SMSA-PC', 'SMSA-AC', 'SMSA-MC'),
+    
+    'petitioning': (oe_constants.ISSUE_SPECFEE, oe_constants.ISSUE_CLASSPRES, oe_constants.ISSUE_US, oe_constants.ISSUE_GSC, oe_constants.ISSUE_EXEC),
 }
 
 def index(request, show=None):
