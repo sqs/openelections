@@ -39,7 +39,11 @@
 <div class="nav" id="footer">
     <ul>
         <li><a href="http://elections.stanford.edu">2010 Elections Commission Home</a></li>
-        <li><a href="/issues/manage">Candidate/sponsor login</a></li>
+        {% if not sunetid %}
+            <li><a href="/issues/manage">Candidate/sponsor login</a></li>
+        {% else %}
+            <li><a href="/auth/logout">Log out ({{ sunetid }})</a></li>
+        {% endif %}
         <li><a href="http://elections.stanford.edu/contact">Contact</a></li>
         <li><a href="http://assu.stanford.edu/">ASSU</a></li>
     </ul>

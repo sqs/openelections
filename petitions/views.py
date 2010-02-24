@@ -2,17 +2,18 @@ import random
 from datetime import datetime
 from django.http import HttpResponseRedirect, QueryDict
 from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from openelections.petitions.models import Signature
 from openelections.petitions.forms import SignatureForm
 from openelections.issues.models import Issue
-from openelections.auth.stanford_webauth import webauth_required
+from openelections.webauth.stanford_webauth import webauth_required
 
 @webauth_required
 def index(request):
     issues = list(Issue.objects.filter(public=True).order_by('-kind').all())
     random.shuffle(issues)
-    return render_to_response('petitions/index.html', {'issues': issues})
+    return render_to_response('petitions/index.html', {'issues': issues}, context_instance=RequestContext(request))
 
 @webauth_required
 def detail(request, issue_slug):
@@ -27,9 +28,8 @@ def detail(request, issue_slug):
     return render_to_response('petitions/detail.html', {
         'issue': issue,
         'form': form,
-        'sunetid': sunetid,
         'can_manage': issue.sunetid_can_manage(sunetid),
-    })
+    }, context_instance=RequestContext(request))
 
 @webauth_required
 def sign(request, issue_slug):
@@ -49,4 +49,9 @@ def sign(request, issue_slug):
         form.save()
         return HttpResponseRedirect(reverse('openelections.petitions.views.detail', None, [issue_slug])+'#sign')
     else:
-        return render_to_response('petitions/detail.html', {'issue': issue, 'form': form, 'sunetid': sunetid, 'jumptosign':True})
+        return render_to_response('petitions/detail.html',
+                                  {
+                                    'issue': issue, 
+                                    'form': form, 
+                                    'jumptosign':True
+                                  }, context_instance=RequestContext(request))

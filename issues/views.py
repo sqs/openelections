@@ -1,10 +1,11 @@
 import random
 from django.shortcuts import render_to_response, get_object_or_404
+from django.template import RequestContext
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponseRedirect, HttpResponseNotFound, HttpResponseForbidden
 from django.core.urlresolvers import reverse
 from openelections import constants as oe_constants
-from openelections.auth.stanford_webauth import webauth_required
+from openelections.webauth.stanford_webauth import webauth_required
 from openelections.issues.models import Issue
 from openelections.issues.forms import IssueForm, form_class_for_issue
 
@@ -37,26 +38,26 @@ def index(request, show=None):
         issues = Issue.objects.all()
     issues = map(Issue.get_typed, issues)
     random.shuffle(issues)
-    return render_to_response('issues/index.html', {'issues': issues, 'detail': False})
+    return render_to_response('issues/index.html', {'issues': issues, 'detail': False}, context_instance=RequestContext(request))
 
 def detail(request, issue_slug):
     issue = get_object_or_404(Issue, slug=issue_slug).get_typed()
     sunetid = request.session.get('webauth_sunetid', None)
     can_manage = issue.sunetid_can_manage(sunetid)
-    return render_to_response('issues/detail.html', {'issue': issue, 'can_manage': can_manage, 'detail': True})
+    return render_to_response('issues/detail.html', {'issue': issue, 'can_manage': can_manage, 'detail': True}, context_instance=RequestContext(request))
 
 @webauth_required
 def manage_index(request):
     sunetid = request.session['webauth_sunetid']
     issues = map(Issue.get_typed, Issue.filter_by_sponsor(sunetid))
-    return render_to_response('issues/manage/index.html', {'issues': issues, 'sunetid': sunetid})
+    return render_to_response('issues/manage/index.html', {'issues': issues}, context_instance=RequestContext(request))
 
 @webauth_required
 def manage_new(request, issue_kind):
     sunetid = request.session['webauth_sunetid']
     new_issue = Issue(kind=issue_kind, sunetid1=sunetid).get_typed()
     form = form_class_for_issue(new_issue)(instance=new_issue)
-    return render_to_response('issues/manage/new.html', {'new_issue': new_issue, 'form': form})
+    return render_to_response('issues/manage/new.html', {'new_issue': new_issue, 'form': form}, context_instance=RequestContext(request))
 
 @webauth_required
 def create(request):
@@ -68,7 +69,7 @@ def create(request):
         form.save()
         return HttpResponseRedirect(reverse('openelections.issues.views.manage_index'))
     else:
-        return render_to_response('issues/manage/new.html', {'new_issue': new_issue, 'form': form})
+        return render_to_response('issues/manage/new.html', {'new_issue': new_issue, 'form': form}, context_instance=RequestContext(request))
 
 @webauth_required
 def manage_edit(request, issue_slug):
@@ -88,4 +89,4 @@ def manage_edit(request, issue_slug):
     else:
         form = form_class_for_issue(issue)(instance=issue)
     
-    return render_to_response('issues/manage/edit.html', {'issue': issue, 'form': form})
+    return render_to_response('issues/manage/edit.html', {'issue': issue, 'form': form}, context_instance=RequestContext(request))

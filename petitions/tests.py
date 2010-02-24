@@ -44,7 +44,7 @@ class AuthenticatedVisitorTest(OETestCase):
         self.assertNotContains(res, "You're signing a petition for")
         # does not contain signatures
         self.assertNotContains(res, 'Signatures')
-        self.assertNotContains(res, 'jsmith')
+        self.assertNotContains(res, 'John Smith')
         
     def test_detail_for_user_who_has_not_already_signed(self):
         self.webauthLogin('xyzhang')
@@ -55,7 +55,7 @@ class AuthenticatedVisitorTest(OETestCase):
         self.assertContains(res, "You're signing a petition for")
         # does not contain signatures
         self.assertNotContains(res, 'Signatures')
-        self.assertNotContains(res, 'jsmith')
+        self.assertNotContains(res, 'John Smith')
     
     def test_sign_with_method_get_redirects_to_detail(self):
         self.webauthLogin('xyzhang')
