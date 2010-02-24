@@ -33,9 +33,9 @@ def index(request, show=None):
         kind_filter = index_filters.get(show, None)
         if kind_filter is None:
             return HttpResponseNotFound()
-        issues = Issue.objects.filter(kind__in=kind_filter).all()
+        issues = Issue.objects.filter(public=True, kind__in=kind_filter).all()
     else:
-        issues = Issue.objects.all()
+        issues = Issue.objects.filter(public=True).all()
     issues = map(Issue.get_typed, issues)
     random.shuffle(issues)
     return render_to_response('issues/index.html', {'issues': issues, 'detail': False}, context_instance=RequestContext(request))

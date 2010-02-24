@@ -115,6 +115,10 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
     def test_index_senators_no_public_profile(self):
         res = self.client.get('/issues/senate')
         self.assertNotContains(res, 'profile')
+    
+    def test_index_senators_hides_non_public(self):
+        res = self.client.get('/issues/senate')
+        self.assertNotContains(res, 'John Q. Private')
         
     def test_index_filtered_gsc(self):
         res = self.client.get('/issues/gsc')

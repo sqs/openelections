@@ -33,7 +33,7 @@ class AuthenticatedVisitorTest(OETestCase):
     def test_index_omits_non_public_petitions(self):
         self.webauthLogin('jsmith')
         res = self.client.get('/petitions/')
-        self.assertNotContains(res, 'Super Sophomores')
+        self.assertNotContains(res, 'John Q. Private')
     
     def test_detail_for_user_who_already_signed(self):
         self.webauthLogin('jsmith')
