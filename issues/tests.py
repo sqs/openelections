@@ -5,6 +5,14 @@ from openelections.petitions.models import Signature
 def issue(slug):
     return Issue.objects.get(slug=slug).get_typed()
 
+class GSCCandidateTest(OETestCase):
+    def test_district(self):
+        self.assertEquals(issue('bill-clinton').district().name, 'School of Law')
+        
+    def test_name_and_office(self):
+        self.assertEquals(issue('bill-clinton').name_and_office(), 'Bill Clinton, a candidate for ASSU Grad Student Council, School of Law District')
+        
+
 class SMSACandidateTest(OETestCase):
     def test_class_rep_elected_name(self):
         self.assertEquals(issue('cheryl-david').kind_name(), 'SMSA 1st Year Class Rep candidate')

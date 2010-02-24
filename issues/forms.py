@@ -1,7 +1,7 @@
 from django import forms
 from openelections.constants import ISSUE_TYPES
 from openelections.ballot.models import Vote
-from openelections.issues.models import Electorate, Issue, Slate, ExecutiveSlate, ClassPresidentSlate, Candidate, SenateCandidate
+from openelections.issues.models import Electorate, Issue, Slate, ExecutiveSlate, ClassPresidentSlate, Candidate, SenateCandidate, GSCCandidate
 
 class IssueForm(forms.ModelForm):
     class Meta:
@@ -95,6 +95,21 @@ class NewCandidateForm(NewIssueForm):
 
 class NewSenateCandidateForm(NewCandidateForm):
     pass
+    
+class NewGSCCandidateForm(NewCandidateForm):
+    class Meta:
+        model = GSCCandidate
+        fields = ('title', 'kind', 'electorate', 'name1', 'sunetid1', 'slug')
+    
+    electorate = forms.ModelChoiceField(label='GSC district',
+                                        queryset=Electorate.gsc_districts(),
+                                        widget=forms.RadioSelect,
+                                        empty_label=None,)
+    
+    def clean_electorate(self):
+        electorate = self.cleaned_data.get('electorate')
+        if electorate:
+            return [electorate]
 
 class EditIssueForm(IssueForm):
     class Meta:

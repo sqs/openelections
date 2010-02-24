@@ -11,6 +11,18 @@ ELECTORATES = {
     'undergrad-sophomore': 'Sophomore',
     'undergrad-junior': 'Junior',
     'undergrad-senior': 'Senior',
+    
+    # GSC
+    'gsb': 'School of Business',
+    'earthsci': 'School of Earth Sciences',
+    'edu': 'School of Education',
+    'eng': 'School of Engineering',
+    'humsci-hum': 'School of Humanities and Sciences, Humanities',
+    'humsci-natsci': 'School of Humanities and Sciences, Natural Sciences',
+    'humsci-socsci': 'School of Humanities and Sciences, Social Sciences',
+    'law': 'School of Law',
+    
+    # SMSA
     'smsa-1': 'SMSA 1st Year', 
     'smsa-2': 'SMSA 2nd Year', 
     'smsa-3': 'SMSA 3rd Year', 
@@ -24,6 +36,7 @@ ELECTORATES = {
 UNDERGRAD_CLASS_YEARS = ('undergrad-sophomore', 'undergrad-junior', 'undergrad-senior')
 SMSA_CLASS_YEARS = ('smsa-1', 'smsa-2', 'smsa-3', 'smsa-4', 'smsa-5plus')
 SMSA_POPULATIONS = ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')
+GSC_DISTRICTS = ('gsb', 'earthsci', 'edu', 'eng', 'humsci-hum', 'humsci-natsci', 'humsci-socsci', 'law')
 
 class Electorate(models.Model):
     name = models.CharField(max_length=50)
@@ -44,6 +57,10 @@ class Electorate(models.Model):
     @classmethod
     def smsa_populations(klass):
         return klass.queryset_with_names(SMSA_POPULATIONS)
+        
+    @classmethod
+    def gsc_districts(klass):
+        return klass.queryset_with_names(GSC_DISTRICTS)
     
     def __unicode__(self):
         return self.name
@@ -242,6 +259,30 @@ class SenateCandidate(Candidate):
     def name_and_office(self):
         return "%s, a candidate for ASSU Undergraduate Senate" % self.name1
 
+class GSCCandidate(Candidate):
+    class Meta:
+        proxy = True
+    
+    def district(self):
+        district_names = Electorate.gsc_districts()
+        district_names = [d.name for d in district_names]
+        districts = self.electorate.filter(name__in=district_names)
+        if not districts:
+            raise Exception('no district found for GSC candidate %d' % self.pk)
+        return districts[0]
+    
+    def needs_petition(self):
+        return False
+    
+    def kind_name(self):
+        return "Grad Student Council candidate"
+        
+    def elected_name(self):
+        return "Grad Student Council rep"
+    
+    def name_and_office(self):
+        return "%s, a candidate for ASSU Grad Student Council, %s District" % (self.name1, self.district().name)
+
 class SMSACandidate(Candidate):
     class Meta:
         proxy = True
@@ -320,7 +361,7 @@ class SMSACCAPRepCandidate(SMSACandidate):
 ###############
 kinds_classes = {
     oe_constants.ISSUE_US: SenateCandidate,
-    oe_constants.ISSUE_GSC: Candidate,
+    oe_constants.ISSUE_GSC: GSCCandidate,
     oe_constants.ISSUE_EXEC: ExecutiveSlate,
     oe_constants.ISSUE_CLASSPRES: ClassPresidentSlate,
     oe_constants.ISSUE_SPECFEE: SpecialFeeRequest,
