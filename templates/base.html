@@ -19,12 +19,46 @@
 <div id="header">
     {% block header %}
         <h1 id="site_title"><a href="http://elections.stanford.edu/"><img alt="ASSU Elections Commission" src="http://elections.stanford.edu/res/web-logo1.png"></a></h1>
-    
+
         <div class="nav">
-        <div class="navsection general">
+        <div class="navsection byaudience">
             <ul>
-                <li><a href="http://elections.stanford.edu/">&laquo; 2010 Elections Commission Home</a></li>
-                <li><a href="/petitions/">View all candidate/slate petitions</a></li>
+                <li><a href="/issues/petitioning"><strong>View all petitions</strong></a></li>
+                <li><a href="/issues/manage">Start a petition</a></li>
+                <li><a target="_blank" href="http://elections.stanford.edu/candidates">How to run for ASSU office</a></li>
+                <li><a target="_blank" href="http://elections.stanford.edu/special-fees">Special Fees info</a></li>
+            </ul>
+        </div>
+
+        <div class="navsection byaudience">
+            <h2>ASSU</h2>
+            <ul>
+                <li><a href="{% url issues.views.index show="exec" %}">Executive</a></li>
+                <li><a href="{% url issues.views.index show="gsc" %}">Grad Student Council</a></li>
+                <li><a href="{% url issues.views.index show="senate" %}">Undergrad Senate</a></li>
+                <li><a href="{% url issues.views.index show="class-presidents" %}">Class Presidents</a></li>
+
+            </ul>
+        </div>
+
+        <div class="navsection byaudience">
+            <h2>Funding</h2>
+            <ul>
+                <li><a href="{% url issues.views.index show="special-fee-requests" %}">Special Fee requests</a></li>
+            </ul>
+        </div>
+
+        <div class="navsection byaudience">
+            <h2>SMSA</h2>
+            <ul>
+                <li><a href="{% url issues.views.index show="smsa-president" %}">President</a></li>
+                <li><a href="{% url issues.views.index show="smsa-vice-president" %}">Vice President</a></li>
+                <li><a href="{% url issues.views.index show="smsa-secretary" %}">Secretary</a></li>
+                <li><a href="{% url issues.views.index show="smsa-treasurer" %}">Treasurer</a></li>
+                <li><a href="{% url issues.views.index show="smsa-class-reps" %}">Class Reps</a></li>
+                <li><a href="{% url issues.views.index show="smsa-social-chair" %}">Social Chair</a></li>
+                <li><a href="{% url issues.views.index show="smsa-ccap" %}">CCAP</a></li>
+                <li><a href="{% url issues.views.index show="smsa-chairs" %}">Chairs</a></li>
             </ul>
         </div>
         </div>
