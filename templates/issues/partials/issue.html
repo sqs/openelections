@@ -12,7 +12,7 @@
             <dd>{{ issue.bio|safe|linebreaks|truncatewords_html:200 }}</dd>
         {% endif %}
     {% endif %}
-    {% if not detail %}
+    {% if issue.public_profile and not detail %}
         <dd>
             <a href="{% url issues.views.detail issue.slug %}">See full profile</a>
         </dd>

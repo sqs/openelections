@@ -112,6 +112,10 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         self.assertNotContains(res, 'Super Sophomores')
         # TODO: contains for exec
         
+    def test_index_senators_no_public_profile(self):
+        res = self.client.get('/issues/senate')
+        self.assertNotContains(res, 'profile')
+        
     def test_index_filtered_gsc(self):
         res = self.client.get('/issues/gsc')
         self.assertNotContains(res, 'Stanford Test Society')
