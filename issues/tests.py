@@ -127,6 +127,7 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         self.assertContains(res, 'Leland Q. Senator')
         self.assertContains(res, 'Stanford Test Society')
         self.assertNotContains(res, 'Larry David') # no SMSA
+        self.assertContains(res, 'View/sign petition')
     
     def test_index_omits_non_public_petitions(self):
         self.webauthLogin('jsmith')

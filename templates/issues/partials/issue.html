@@ -17,6 +17,11 @@
             <a href="{% url issues.views.detail issue.slug %}">See full profile</a>
         </dd>
     {% endif %}
+    {% if issue.needs_petition and issue.public %}
+        <dd>
+            <a href="{% url petitions.views.detail issue.slug %}">View/sign petition</a>
+        </dd>
+    {% endif %}
 </dl>
 
 <hr style="clear:both">
