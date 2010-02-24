@@ -7,3 +7,6 @@ DATABASE_HOST = ''
 DATABASE_PORT = ''
 
 TEMPLATE_DIRS = ('/var/www/openelections/templates/',)
+
+MEDIA_ROOT = '/var/www/openelections/media/'
+
