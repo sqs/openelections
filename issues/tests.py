@@ -35,7 +35,6 @@ class SMSACandidateTest(OETestCase):
     def test_presvpsectreas(self):
         self.assertEquals(issue('jane-stanford').kind_name(), 'SMSA President candidate')
         self.assertEquals(issue('mary-smith').kind_name(), 'SMSA Vice President candidate')
-        self.assertEquals(issue('jerry-seinfeld').kind_name(), 'SMSA Secretary candidate')
         self.assertEquals(issue('larry-david').kind_name(), 'SMSA Treasurer candidate')    
 
 class UnauthenticatedVisitorManageTest(OETestCase):    
@@ -147,10 +146,9 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         self.assertContains(res, 'Mary Smith')
         self.assertNotContains(res, 'Jane Stanford')
         
-    def test_index_filtered_smsa_secretary(self):
+    def test_index_filtered_smsa_secretary_none(self):
         res = self.client.get('/issues/smsa-secretary')
-        self.assertContains(res, 'Jerry Seinfeld')
-        self.assertNotContains(res, 'Jane Stanford')
+        self.assertContains(res, '<!-- empty list -->')
         
     def test_index_filtered_smsa_treasurer(self):
         res = self.client.get('/issues/smsa-treasurer')

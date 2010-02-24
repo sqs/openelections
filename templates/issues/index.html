@@ -5,6 +5,9 @@
 {% for issue in issues %}
     <h2>{{ issue.title }} ({{ issue.elected_name }})</h2>
     {% include issue.partial_template %}
+{% empty %}
+    <!-- empty list -->
+    <p>No items to show.</p>
 {% endfor %}
 
 <br style="clear:both">
