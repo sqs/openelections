@@ -10,8 +10,8 @@ from openelections.issues.models import Issue
 from openelections.issues.forms import IssueForm, form_class_for_issue
 
 index_filters = {
-    'exec': (oe_constants.ISSUE_EXEC),
-    'gsc': (oe_constants.ISSUE_GSC),
+    'exec': (oe_constants.ISSUE_EXEC,),
+    'gsc': (oe_constants.ISSUE_GSC,),
     'senate': (oe_constants.ISSUE_US,),
     'class-presidents': (oe_constants.ISSUE_CLASSPRES,),
     
