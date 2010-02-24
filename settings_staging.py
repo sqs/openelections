@@ -1,5 +1,5 @@
 from openelections.settings import *
-DEBUG = TEMPLATE_DEBUG = True
+DEBUG = TEMPLATE_DEBUG = False
 DATABASE_ENGINE = 'mysql'
 DATABASE_NAME = 'oe_staging'
 DATABASE_USER = 'oe_staging'
