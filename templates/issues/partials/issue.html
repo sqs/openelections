@@ -2,8 +2,10 @@
     <div style="float:right"><img style="max-width:300px;max-height:400px;margin:0 15px 15px 0" src="/{{ issue.image.url }}"></div>
 {% endif %}
 <dl>
-    <dt>Email</dt>
-    <dd><a href="mailto:{{ issue.sunetid1 }}@stanford.edu">{{ issue.sunetid1 }}@stanford.edu</a></dd>
+    {% if issue.public_profile %}
+        <dt>Email</dt>
+        <dd><a href="mailto:{{ issue.sunetid1 }}@stanford.edu">{{ issue.sunetid1 }}@stanford.edu</a></dd>
+    {% endif %}
     {% if issue.bio %}
         <dt>Profile</dt>
         {% if detail %}
