@@ -21,6 +21,7 @@ ELECTORATES = {
     'humsci-natsci': 'School of Humanities and Sciences, Natural Sciences',
     'humsci-socsci': 'School of Humanities and Sciences, Social Sciences',
     'law': 'School of Law',
+    'med': 'School of Medicine',
     
     # SMSA
     'smsa-1': 'SMSA 1st Year', 
@@ -36,7 +37,7 @@ ELECTORATES = {
 UNDERGRAD_CLASS_YEARS = ('undergrad-sophomore', 'undergrad-junior', 'undergrad-senior')
 SMSA_CLASS_YEARS = ('smsa-1', 'smsa-2', 'smsa-3', 'smsa-4', 'smsa-5plus')
 SMSA_POPULATIONS = ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')
-GSC_DISTRICTS = ('gsb', 'earthsci', 'edu', 'eng', 'humsci-hum', 'humsci-natsci', 'humsci-socsci', 'law')
+GSC_DISTRICTS = ('gsb', 'earthsci', 'edu', 'eng', 'humsci-hum', 'humsci-natsci', 'humsci-socsci', 'law', 'med')
 
 class Electorate(models.Model):
     name = models.CharField(max_length=50)
