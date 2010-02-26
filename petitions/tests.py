@@ -48,6 +48,22 @@ class AuthenticatedVisitorTest(OETestCase):
         self.assertNotContains(res, 'Signatures')
         self.assertNotContains(res, 'John Smith')
     
+    def test_detail_undergrad_fee_has_ug_and_coterm_enrollment_status_options(self):
+        self.webauthLogin('xyzhang')
+        res = self.client.get('/petitions/sts')
+        self.assertTemplateUsed(res, 'petitions/detail.html')
+        self.assertContains(res, 'Undergrad</label')
+        self.assertContains(res, 'Coterm</label')
+        self.assertNotContains(res, 'Grad</label>')
+    
+    def test_detail_joint_fee_has_grad_enrollment_status_option(self):
+        self.webauthLogin('xyzhang')
+        res = self.client.get('/petitions/stanford-joint-society')
+        self.assertTemplateUsed(res, 'petitions/detail.html')
+        self.assertContains(res, 'Undergrad</label')
+        self.assertContains(res, 'Coterm</label')
+        self.assertContains(res, 'Grad</label>')
+    
     def test_sign_with_method_get_redirects_to_detail(self):
         self.webauthLogin('xyzhang')
         res = self.client.get('/petitions/leland-senator/sign')

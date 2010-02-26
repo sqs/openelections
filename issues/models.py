@@ -35,6 +35,7 @@ ELECTORATES = {
 }
 
 UNDERGRAD_CLASS_YEARS = ('undergrad-sophomore', 'undergrad-junior', 'undergrad-senior')
+ASSU_POPULATIONS_ALL = ('undergrad', 'coterm', 'grad')
 SMSA_CLASS_YEARS = ('smsa-1', 'smsa-2', 'smsa-3', 'smsa-4', 'smsa-5plus')
 SMSA_POPULATIONS = ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')
 GSC_DISTRICTS = ('gsb', 'earthsci', 'edu', 'eng', 'humsci-hum', 'humsci-natsci', 'humsci-socsci', 'law', 'med')
@@ -50,7 +51,11 @@ class Electorate(models.Model):
     @classmethod
     def undergrad_class_years(klass):
         return klass.queryset_with_names(UNDERGRAD_CLASS_YEARS)
-        
+    
+    @classmethod
+    def assu_populations_all(klass):
+        return klass.queryset_with_names(ASSU_POPULATIONS_ALL)
+    
     @classmethod
     def smsa_class_years(klass):
         return klass.queryset_with_names(SMSA_CLASS_YEARS)
@@ -174,9 +179,8 @@ class SpecialFeeRequest(FeeRequest):
     class Meta:
         proxy = True
     
-    def petition_electorate_names(self):
-        # TODO: only undergrad/coterm for now b/c SPOON is undergrad
-        return ('undergrad', 'coterm')
+    def petition_electorates(self):
+        return self.electorate
     
     def kind_name(self):
         return "Special Fee group"
