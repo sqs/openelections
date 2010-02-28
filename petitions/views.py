@@ -44,7 +44,7 @@ def sign(request, issue_slug):
     form = SignatureForm(issue, attrs)
     if form.is_valid():
         form.save()
-        return HttpResponseRedirect(reverse('openelections.petitions.views.detail', None, [issue_slug])+'#sign')
+        return HttpResponseRedirect(reverse('openelections.petitions.views.detail', None, [issue_slug])+'#sign-form')
     else:
         return render_to_response('petitions/detail.html',
                                   {
