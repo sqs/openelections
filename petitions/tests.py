@@ -42,10 +42,20 @@ class AuthenticatedVisitorTest(OETestCase):
         res = self.client.get('/petitions/leland-senator')
         self.assertNotContains(res, "along with those of the other")
         
-    def test_detail_shows_signature_count_for_candidates(self):
+    def test_detail_shows_signature_count_for_sf_requests(self):
         self.webauthLogin('xyzhang')
         res = self.client.get('/petitions/sts')
         self.assertContains(res, "along with those of the other 0")
+    
+    def test_detail_after_signing_hides_signature_count_for_candidates(self):
+        self.webauthLogin('jsmith')
+        res = self.client.get('/petitions/leland-senator')
+        self.assertNotContains(res, "along with")
+    
+    def test_detail_after_signing_shows_signature_count_for_sf_requests(self):
+        self.webauthLogin('xyzhang')
+        res = self.client.get('/petitions/stanford-joint-society')
+        self.assertContains(res, "along with 1 other signer")
         
     def test_detail_for_user_who_has_not_already_signed(self):
         self.webauthLogin('xyzhang')
@@ -67,7 +77,7 @@ class AuthenticatedVisitorTest(OETestCase):
         self.assertNotContains(res, 'Grad</label>')
     
     def test_detail_joint_fee_has_grad_enrollment_status_option(self):
-        self.webauthLogin('xyzhang')
+        self.webauthLogin('jsmith')
         res = self.client.get('/petitions/stanford-joint-society')
         self.assertTemplateUsed(res, 'petitions/detail.html')
         self.assertContains(res, 'Undergrad</label')
