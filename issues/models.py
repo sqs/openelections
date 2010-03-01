@@ -42,7 +42,7 @@ SMSA_POPULATIONS = ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')
 GSC_DISTRICTS = ('gsb', 'earthsci', 'edu', 'eng', 'humsci-hum', 'humsci-natsci', 'humsci-socsci', 'law', 'med', 'gsc-atlarge')
 
 class Electorate(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=64)
     
     @classmethod
     def queryset_with_names(klass, names):
@@ -74,7 +74,7 @@ class Electorate(models.Model):
 
 class Issue(models.Model):        
     title = models.CharField(max_length=200)
-    kind = models.CharField(max_length=50, choices=oe_constants.ISSUE_TYPES)
+    kind = models.CharField(max_length=64, choices=oe_constants.ISSUE_TYPES)
     bio = models.TextField(default='', blank=True)
     bio_short = models.TextField(default='', blank=True)
     bio_petition = models.TextField(default='', blank=True)

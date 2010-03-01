@@ -37,7 +37,7 @@ GSC_DISTRICTS = (
     ('H&S-SocSci', 'School of Humanities and Sciences, Social Sciences'),
     ('Law', 'School of Law'),
     ('Med', 'School of Medicine'),
-    ('AtLarge', 'At-Large'),
+    ('AtLarge', 'At-Large')
 )
 
 # ELECTORATES = [
