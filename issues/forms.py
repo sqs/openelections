@@ -102,6 +102,7 @@ class NewGSCCandidateForm(NewCandidateForm):
         fields = ('title', 'kind', 'name1', 'sunetid1', 'electorate')
     
     electorate = forms.ModelChoiceField(label='GSC district',
+                                        help_text='Choose At-Large if you want to run ONLY as an At-Large candidate. All school-specific candidates are also considered as At-Large candidates, unless they choose otherwise.',
                                         queryset=Electorate.gsc_districts(),
                                         widget=forms.RadioSelect,
                                         empty_label=None,)
