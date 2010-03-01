@@ -77,7 +77,7 @@ class AuthenticatedVisitorTest(OETestCase):
             'name': 'Xiao Zhang',
             'electorate': Electorate.objects.get(name='Undergrad').pk,
         }
-        res = self.client.post('/petitions/leland-senator/sign', postdata)
+        res = self.client.post('/petitions/leland-senator/sign', postdata, HTTP_REFERER='http://petitions.stanford.edu/')
         self.assertTrue(lelandsen.signed_by_sunetid('xyzhang'))
     
     def test_sign_with_different_sunetid_than_authenticated_with(self):
@@ -88,9 +88,21 @@ class AuthenticatedVisitorTest(OETestCase):
             'electorate': Electorate.objects.get(name='Undergrad').pk,
             'sunetid': 'attacker',
         }
-        res = self.client.post('/petitions/leland-senator/sign', postdata)
+        res = self.client.post('/petitions/leland-senator/sign', postdata, HTTP_REFERER='http://petitions.stanford.edu/')
         self.assertTrue(lelandsen.signed_by_sunetid('xyzhang'))
         self.assertFalse(lelandsen.signed_by_sunetid('attacker'))
+        
+    def test_sign_from_bad_referer(self):
+        lelandsen = Issue.objects.get(slug='leland-senator')
+        self.webauthLogin('xyzhang')
+        postdata = {
+            'name': 'Xiao Zhang',
+            'electorate': Electorate.objects.get(name='Undergrad').pk,
+        }
+        res = self.client.post('/petitions/leland-senator/sign', postdata, HTTP_REFERER='http://attacker.com/abc')
+        self.assertRedirects(res, '/petitions/leland-senator')
+        self.assertFalse(lelandsen.signed_by_sunetid('xyzhang'))
+        
 
 class SpecialFeePetitionTest(OETestCase):
     def test_description(self):

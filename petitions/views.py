@@ -35,6 +35,13 @@ def sign(request, issue_slug):
     if request.method != 'POST':
         return HttpResponseRedirect(reverse('openelections.petitions.views.detail', None, [issue_slug]))
     
+    referrer = request.META.get('HTTP_REFERER', '')
+    if not referrer.startswith('http://petitions.stanford.edu') and \
+       not referrer.startswith('http://localhost') and \
+       not referrer.startswith('http://electcom'):
+       return HttpResponseRedirect(reverse('openelections.petitions.views.detail', None, [issue_slug]))
+       
+    
     sunetid = request.session['webauth_sunetid']
     attrs = request.POST.copy()
     attrs['sunetid'] = sunetid
