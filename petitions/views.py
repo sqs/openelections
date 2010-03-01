@@ -37,6 +37,8 @@ def sign(request, issue_slug):
     
     referrer = request.META.get('HTTP_REFERER', '')
     if not referrer.startswith('http://petitions.stanford.edu') and \
+       not referrer.startswith('http://elections.stanford.edu') and \
+       not referrer.startswith('http://petitions2.stanford.edu') and \
        not referrer.startswith('http://localhost') and \
        not referrer.startswith('http://electcom'):
        return HttpResponseRedirect(reverse('openelections.petitions.views.detail', None, [issue_slug]))
