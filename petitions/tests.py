@@ -36,6 +36,16 @@ class AuthenticatedVisitorTest(OETestCase):
         # does not contain signatures
         self.assertNotContains(res, 'Signatures')
         self.assertNotContains(res, 'John Smith')
+    
+    def test_detail_hides_signature_count_for_candidates(self):
+        self.webauthLogin('xyzhang')
+        res = self.client.get('/petitions/leland-senator')
+        self.assertNotContains(res, "along with those of the other")
+        
+    def test_detail_shows_signature_count_for_candidates(self):
+        self.webauthLogin('xyzhang')
+        res = self.client.get('/petitions/sts')
+        self.assertContains(res, "along with those of the other 0")
         
     def test_detail_for_user_who_has_not_already_signed(self):
         self.webauthLogin('xyzhang')
