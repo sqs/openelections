@@ -21,7 +21,7 @@ def detail(request, issue_slug):
     
     signatures = None
     if can_manage:
-        signatures = Signature.objects.filter(issue=issue).order_by('-signed_at')
+        signatures = Signature.objects.filter(issue=issue).order_by('-id')
     newsig = Signature()
     newsig.issue = issue
     newsig.sunetid = sunetid
