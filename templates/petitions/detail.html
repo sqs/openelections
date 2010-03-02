@@ -94,7 +94,7 @@ window.location.hash+='#sign-form';
             </tr>
         </thead>
         <tbody>
-        {% for sig in issue.signatures.all reversed %}
+        {% for sig in signatures %}
             <tr>
                 <td>{{ forloop.revcounter }}</td>
                 <td>{{ sig.name }}</td>

@@ -15,7 +15,13 @@ def index(request):
 @webauth_required
 def detail(request, issue_slug):
     issue = get_object_or_404(Issue, slug=issue_slug).get_typed()
+    
     sunetid = request.session['webauth_sunetid']
+    can_manage = issue.sunetid_can_manage(sunetid)
+    
+    signatures = None
+    if can_manage:
+        signatures = Signature.objects.filter(issue=issue).order_by('-signed_at')
     newsig = Signature()
     newsig.issue = issue
     newsig.sunetid = sunetid
@@ -25,7 +31,8 @@ def detail(request, issue_slug):
     return render_to_response('petitions/detail.html', {
         'issue': issue,
         'form': form,
-        'can_manage': issue.sunetid_can_manage(sunetid),
+        'can_manage': can_manage,
+        'signatures': signatures,
     }, context_instance=RequestContext(request))
 
 @webauth_required
