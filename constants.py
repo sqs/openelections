@@ -20,8 +20,7 @@ SMSA_OFFICES = (
     ('SMSA-ClassRep', 'SMSA Class Rep'),
     ('SMSA-SocChair', 'SMSA Class Social Chair'),
     ('SMSA-CCAP', 'SMSA CCAP Rep'),
-    ('SMSA-PC', 'SMSA Policy Chair'),
-    ('SMSA-AC', 'SMSA Advocacy Chair'),
+    ('SMSA-PAC', 'SMSA Policy & Advocacy Chair'),
     ('SMSA-MC', 'SMSA Mentorship Chair'),
 )
 
