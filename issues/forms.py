@@ -128,7 +128,7 @@ class NewSMSACandidateForm(NewCandidateForm):
     
     def __init__(self, *args, **kwargs):
         super(NewSMSACandidateForm, self).__init__(*args, **kwargs)
-        self.fields['slug'].help_text = 'When candidate statements open, your profile will be at http://elections.stanford.edu/candidate/your-url-name or similar. Use only lowercase letters, numbers, and hyphens.'
+        self.fields['slug'].help_text = 'When candidate statements open, yours will be at http://elections.stanford.edu/candidate/your-url-name or similar. Use only lowercase letters, numbers, and hyphens.'
         instance = getattr(self, 'instance', None)
         if instance:
             if hasattr(instance, 'class_year'):
