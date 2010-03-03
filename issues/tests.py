@@ -15,7 +15,6 @@ class GSCCandidateTest(OETestCase):
 
 class SMSACandidateTest(OETestCase):
     def test_class_rep_elected_name(self):
-        self.assertEquals(issue('cheryl-david').kind_name(), 'SMSA 1st Year Class Rep candidate')
         self.assertEquals(issue('bart-simpson').kind_name(), 'SMSA 2nd Year Class Rep candidate')
         self.assertEquals(issue('monty-burns').kind_name(), 'SMSA 3rd Year Class Rep candidate')
         self.assertEquals(issue('ned-flanders').kind_name(), 'SMSA 4th Year Class Rep candidate')

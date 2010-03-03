@@ -25,7 +25,6 @@ ELECTORATES = {
     'gsc-atlarge': 'At-Large',
     
     # SMSA
-    'smsa-1': 'SMSA 1st Year', 
     'smsa-2': 'SMSA 2nd Year', 
     'smsa-3': 'SMSA 3rd Year', 
     'smsa-4': 'SMSA 4th Year', 
@@ -37,7 +36,7 @@ ELECTORATES = {
 
 UNDERGRAD_CLASS_YEARS = ('undergrad-sophomore', 'undergrad-junior', 'undergrad-senior')
 ASSU_POPULATIONS_ALL = ('undergrad', 'coterm', 'grad')
-SMSA_CLASS_YEARS = ('smsa-1', 'smsa-2', 'smsa-3', 'smsa-4', 'smsa-5plus')
+SMSA_CLASS_YEARS = ('smsa-2', 'smsa-3', 'smsa-4', 'smsa-5plus')
 SMSA_POPULATIONS = ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')
 GSC_DISTRICTS = ('gsb', 'earthsci', 'edu', 'eng', 'humsci-hum', 'humsci-natsci', 'humsci-socsci', 'law', 'med', 'gsc-atlarge')
 
