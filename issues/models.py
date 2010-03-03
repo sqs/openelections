@@ -311,7 +311,6 @@ class SMSACandidate(Candidate):
             'SMSA-VP': 'Vice President',
             'SMSA-S': 'Secretary',
             'SMSA-T': 'Treasurer',
-            'SMSA-PAC': 'Policy & Advocacy Chair',
             'SMSA-MC': 'Mentorship Chair',
             'SMSA-PSRC': 'Prospective Student Recruitment Chair',
         }
