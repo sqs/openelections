@@ -38,6 +38,7 @@ class SMSACandidateTest(OETestCase):
     def test_chair_elected_name(self):
         self.assertEquals(issue('howard-dean').kind_name(), 'SMSA Mentorship Chair candidate')
         self.assertEquals(issue('john-kerry').kind_name(), 'SMSA Policy & Advocacy Chair candidate')
+        self.assertEquals(issue('hillary-clinton').kind_name(), 'SMSA Prospective Student Recruitment Chair candidate')
         
     def test_presvpsectreas(self):
         self.assertEquals(issue('jane-stanford').kind_name(), 'SMSA President candidate')
@@ -213,6 +214,7 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         self.assertContains(res, 'Rahm Emanuel')
         self.assertContains(res, 'John Kerry')
         self.assertContains(res, 'Howard Dean')
+        self.assertContains(res, 'Hillary Clinton')
         self.assertNotContains(res, 'Jane Stanford')
         
     def test_index_filtered_404(self):
