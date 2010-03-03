@@ -37,7 +37,7 @@ class SMSACandidateTest(OETestCase):
         
     def test_chair_elected_name(self):
         self.assertEquals(issue('howard-dean').kind_name(), 'SMSA Mentorship Chair candidate')
-        self.assertEquals(issue('john-kerry').kind_name(), 'SMSA Policy & Advocacy Chair candidate')
+        self.assertEquals(issue('john-kerry').kind_name(), 'SMSA Pre-clinical Policy and Advocacy Chair candidate')
         self.assertEquals(issue('hillary-clinton').kind_name(), 'SMSA Prospective Student Recruitment Chair candidate')
         
     def test_presvpsectreas(self):

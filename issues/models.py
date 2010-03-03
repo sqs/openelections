@@ -120,6 +120,15 @@ class Issue(models.Model):
             return Electorate.queryset_with_names(names)
         else:
             return None
+            
+    def candidate_electorates(self):
+        if not hasattr(self, 'candidate_electorate_names'):
+            return None
+        names = self.candidate_electorate_names()
+        if names:
+            return Electorate.queryset_with_names(names)
+        else:
+            return None
     
     def petition_electorate_names(self):
         raise NotImplementedError
@@ -292,6 +301,12 @@ class GSCCandidate(Candidate):
 class SMSACandidate(Candidate):
     class Meta:
         proxy = True
+     
+    def candidate_electorate_label(self):
+        return None
+    
+    def candidate_electorate_names(self):
+        return None
     
     def needs_petition(self):
         return False
@@ -320,6 +335,12 @@ class SMSAClassRepCandidate(SMSACandidate):
     class Meta:
         proxy = True
     
+    def candidate_electorate_label(self):
+        return 'SMSA class year'
+    
+    def candidate_electorate_names(self):
+        return SMSA_CLASS_YEARS
+    
     def class_year(self):
         class_years = Electorate.smsa_class_years()
         class_years = [cy.name for cy in class_years]
@@ -338,6 +359,12 @@ class SMSASocialChairCandidate(SMSACandidate):
     class Meta:
         proxy = True
     
+    def candidate_electorate_label(self):
+        return 'SMSA population'
+    
+    def candidate_electorate_names(self):
+        return ('smsa-preclinical', 'smsa-clinical')
+    
     def population(self):
         pops = Electorate.smsa_populations()
         pops = [p.name for p in pops]
@@ -355,6 +382,12 @@ class SMSASocialChairCandidate(SMSACandidate):
 class SMSACCAPRepCandidate(SMSACandidate):
     class Meta:
         proxy = True
+
+    def candidate_electorate_label(self):
+        return 'SMSA population'
+    
+    def candidate_electorate_names(self):
+        return ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')
     
     def population(self):
         pops = Electorate.smsa_populations()
@@ -373,6 +406,12 @@ class SMSACCAPRepCandidate(SMSACandidate):
 class SMSAPolicyAndAdvocacyChairCandidate(SMSACandidate):
     class Meta:
         proxy = True
+    
+    def candidate_electorate_label(self):
+        return 'SMSA population'
+    
+    def candidate_electorate_names(self):
+        return ('smsa-preclinical', 'smsa-clinical')
         
     def population(self):
         pops = Electorate.smsa_populations()

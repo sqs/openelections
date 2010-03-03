@@ -131,12 +131,13 @@ class NewSMSACandidateForm(NewCandidateForm):
         self.fields['slug'].help_text = 'When candidate statements open, yours will be at http://elections.stanford.edu/candidate/your-url-name or similar. Use only lowercase letters, numbers, and hyphens.'
         instance = getattr(self, 'instance', None)
         if instance:
-            if hasattr(instance, 'class_year'):
+            electorate_label = instance.candidate_electorate_label()
+            if electorate_label == 'SMSA class year':
                 self.fields['electorate'].label = 'SMSA class year'
-                self.fields['electorate'].queryset = Electorate.smsa_class_years()
-            elif hasattr(instance, 'population'):
+                self.fields['electorate'].queryset = instance.candidate_electorates()
+            elif electorate_label == 'SMSA population':
                 self.fields['electorate'].label = 'SMSA population'
-                self.fields['electorate'].queryset = Electorate.smsa_populations()
+                self.fields['electorate'].queryset = instance.candidate_electorates()
             else:
                 del self.fields['electorate']
     
