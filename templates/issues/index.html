@@ -2,9 +2,15 @@
 
 {% block content %}
 
-{% for issue in issues %}
-    <h3>{{ issue.name_and_office|capfirst }}</h3>
-    {% include issue.partial_template %}
+{% regroup issues|dictsort:"kind_name" by kind_name as issues_list %}
+
+{% for issue_kind in issues_list %}
+    <h1>{{ issue_kind.grouper }}s</h1>
+    {% for issue in issue_kind.list %}
+        <h3>{{ issue.title|capfirst }}</h3>
+        {% include issue.partial_template %}
+    {% endfor %}
+    
 {% empty %}
     <!-- empty list -->
     <p>No items to show.</p>
