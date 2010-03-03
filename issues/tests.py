@@ -21,22 +21,22 @@ class SMSACandidateTest(OETestCase):
         self.assertEquals(issue('michael-bluth').kind_name(), 'SMSA 5th-Plus Year Class Rep candidate')
     
     def test_social_chair_elected_name(self):
-        self.assertEquals(issue('george-costanza').kind_name(), 'SMSA Pre-clinical Social Chair candidate')
-        self.assertEquals(issue('jerry-lewis').kind_name(), 'SMSA Clinical Social Chair candidate')
+        self.assertEquals(issue('george-costanza').kind_name(), 'SMSA Social Chair (Pre-clinical) candidate')
+        self.assertEquals(issue('jerry-lewis').kind_name(), 'SMSA Social Chair (Clinical) candidate')
     
     def test_ccap_elected_name(self):
-        self.assertEquals(issue('joe-biden').kind_name(), 'SMSA Clinical CCAP Rep candidate')
-        self.assertEquals(issue('timothy-geithner').kind_name(), 'SMSA Pre-clinical CCAP Rep candidate')
-        self.assertEquals(issue('kevin-spacey').kind_name(), 'SMSA MD-PhD CCAP Rep candidate')
+        self.assertEquals(issue('joe-biden').kind_name(), 'SMSA CCAP Rep (Clinical) candidate')
+        self.assertEquals(issue('timothy-geithner').kind_name(), 'SMSA CCAP Rep (Pre-clinical) candidate')
+        self.assertEquals(issue('kevin-spacey').kind_name(), 'SMSA CCAP Rep (MD-PhD) candidate')
 
     def test_ccap_elected_name(self):
-        self.assertEquals(issue('joe-biden').kind_name(), 'SMSA Clinical CCAP Rep candidate')
-        self.assertEquals(issue('timothy-geithner').kind_name(), 'SMSA Pre-clinical CCAP Rep candidate')
-        self.assertEquals(issue('kevin-spacey').kind_name(), 'SMSA MD-PhD CCAP Rep candidate')
+        self.assertEquals(issue('joe-biden').kind_name(), 'SMSA CCAP Rep (Clinical) candidate')
+        self.assertEquals(issue('timothy-geithner').kind_name(), 'SMSA CCAP Rep (Pre-clinical) candidate')
+        self.assertEquals(issue('kevin-spacey').kind_name(), 'SMSA CCAP Rep (MD-PhD) candidate')
         
     def test_chair_elected_name(self):
         self.assertEquals(issue('howard-dean').kind_name(), 'SMSA Mentorship Chair candidate')
-        self.assertEquals(issue('john-kerry').kind_name(), 'SMSA Pre-clinical Policy and Advocacy Chair candidate')
+        self.assertEquals(issue('john-kerry').kind_name(), 'SMSA Policy and Advocacy Chair (Pre-clinical) candidate')
         self.assertEquals(issue('hillary-clinton').kind_name(), 'SMSA Prospective Student Recruitment Chair candidate')
         
     def test_presvpsectreas(self):
@@ -188,6 +188,10 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         
     def test_index_filtered_smsa_class_reps(self):
         res = self.client.get('/issues/smsa-class-reps')
+        self.assertContains(res, 'SMSA 2nd Year Class Rep candidates')
+        self.assertContains(res, 'SMSA 3rd Year Class Rep candidates')
+        self.assertContains(res, 'SMSA 4th Year Class Rep candidates')
+        self.assertContains(res, 'SMSA 5th-Plus Year Class Rep candidates')
         self.assertContains(res, 'Bart Simpson')
         self.assertContains(res, 'Monty Burns')
         self.assertContains(res, 'Ned Flanders')
@@ -196,12 +200,17 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
     
     def test_index_filtered_smsa_social_chairs(self):
         res = self.client.get('/issues/smsa-social-chair')
+        self.assertContains(res, 'SMSA Social Chair (Clinical) candidates')
+        self.assertContains(res, 'SMSA Social Chair (Pre-clinical) candidates')
         self.assertContains(res, 'George Costanza')
         self.assertContains(res, 'Jerry Lewis')
         self.assertNotContains(res, 'Jane Stanford')
 
     def test_index_filtered_smsa_ccap(self):
         res = self.client.get('/issues/smsa-ccap')
+        self.assertContains(res, 'SMSA CCAP Rep (MD-PhD) candidates')
+        self.assertContains(res, 'SMSA CCAP Rep (Clinical) candidates')
+        self.assertContains(res, 'SMSA CCAP Rep (Pre-clinical) candidates')
         self.assertContains(res, 'Kevin Spacey')
         self.assertContains(res, 'Timothy Geithner')
         self.assertContains(res, 'Joe Biden')
@@ -209,6 +218,10 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         
     def test_index_filtered_smsa_chairs(self):
         res = self.client.get('/issues/smsa-chairs')
+        self.assertContains(res, 'SMSA Mentorship Chair candidates')
+        self.assertContains(res, 'SMSA Policy and Advocacy Chair (Clinical) candidates')
+        self.assertContains(res, 'SMSA Policy and Advocacy Chair (Pre-clinical) candidates')
+        self.assertContains(res, 'SMSA Prospective Student Recruitment Chair candidates')
         self.assertContains(res, 'Rahm Emanuel')
         self.assertContains(res, 'John Kerry')
         self.assertContains(res, 'Howard Dean')

@@ -40,6 +40,9 @@ SMSA_CLASS_YEARS = ('smsa-2', 'smsa-3', 'smsa-4', 'smsa-5plus')
 SMSA_POPULATIONS = ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')
 GSC_DISTRICTS = ('gsb', 'earthsci', 'edu', 'eng', 'humsci-hum', 'humsci-natsci', 'humsci-socsci', 'law', 'med', 'gsc-atlarge')
 
+def no_smsa(s):
+    return str(s).replace('SMSA ', '')
+
 class Electorate(models.Model):
     name = models.CharField(max_length=64)
     
@@ -374,9 +377,9 @@ class SMSASocialChairCandidate(SMSACandidate):
     
     def elected_name(self):
         if self.pk:
-            return "%s Social Chair" % self.population()
+            return "SMSA Social Chair (%s)" % no_smsa(self.population())
         else:
-            return "Social Chair"
+            return "SMSA Social Chair"
         
 class SMSACCAPRepCandidate(SMSACandidate):
     class Meta:
@@ -398,9 +401,9 @@ class SMSACCAPRepCandidate(SMSACandidate):
     
     def elected_name(self):
         if self.pk:
-            return "%s CCAP Rep" % self.population()
+            return "SMSA CCAP Rep (%s)" % no_smsa(self.population())
         else:
-            return "CCAP Rep"
+            return "SMSA CCAP Rep"
 
 class SMSAPolicyAndAdvocacyChairCandidate(SMSACandidate):
     class Meta:
@@ -422,9 +425,9 @@ class SMSAPolicyAndAdvocacyChairCandidate(SMSACandidate):
     
     def elected_name(self):
         if self.pk:
-            return "%s Policy and Advocacy Chair" % self.population()
+            return "SMSA Policy and Advocacy Chair (%s)" % no_smsa(self.population())
         else:
-            return "Policy and Advocacy Chair"
+            return "SMSA Policy and Advocacy Chair"
         
 
 ###############
