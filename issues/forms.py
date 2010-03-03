@@ -178,6 +178,7 @@ issue_new_forms = {
     'SMSAClassRepCandidate': NewSMSACandidateForm,
     'SMSACCAPRepCandidate': NewSMSACandidateForm,
     'SMSASocialChairCandidate': NewSMSACandidateForm,
+    'SMSAPolicyAndAdvocacyChairCandidate': NewSMSACandidateForm,
 }
 
 def form_class_for_issue(issue):

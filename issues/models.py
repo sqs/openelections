@@ -371,6 +371,25 @@ class SMSACCAPRepCandidate(SMSACandidate):
         else:
             return "CCAP Rep"
 
+class SMSAPolicyAndAdvocacyChairCandidate(SMSACandidate):
+    class Meta:
+        proxy = True
+        
+    def population(self):
+        pops = Electorate.smsa_populations()
+        pops = [p.name for p in pops]
+        pop = self.electorate.filter(name__in=pops)
+        if not pop:
+            raise Exception('no pop found for smsa p and a rep %d' % self.pk)
+        return pop[0]
+    
+    def elected_name(self):
+        if self.pk:
+            return "%s Policy and Advocacy Chair" % self.population()
+        else:
+            return "Policy and Advocacy Chair"
+        
+
 ###############
 # Class map
 ###############
@@ -389,7 +408,7 @@ kinds_classes = {
     'SMSA-ClassRep': SMSAClassRepCandidate,
     'SMSA-SocChair': SMSASocialChairCandidate,
     'SMSA-CCAP': SMSACCAPRepCandidate,
-    'SMSA-PAC': SMSACandidate,
+    'SMSA-PAC': SMSAPolicyAndAdvocacyChairCandidate,
     'SMSA-MC': SMSACandidate,
     'SMSA-PSRC': SMSACandidate,
 }
