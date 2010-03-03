@@ -330,7 +330,10 @@ class SMSAClassRepCandidate(SMSACandidate):
         return year[0]
         
     def elected_name(self):
-        return "%s Class Rep" % self.class_year()
+        if self.pk:
+            return "%s Class Rep" % self.class_year()
+        else:
+            return "Class Rep"
         
 class SMSASocialChairCandidate(SMSACandidate):
     class Meta:
@@ -345,7 +348,10 @@ class SMSASocialChairCandidate(SMSACandidate):
         return pop[0]
     
     def elected_name(self):
-        return "%s Social Chair" % self.population()
+        if self.pk:
+            return "%s Social Chair" % self.population()
+        else:
+            return "Social Chair"
         
 class SMSACCAPRepCandidate(SMSACandidate):
     class Meta:
@@ -360,7 +366,10 @@ class SMSACCAPRepCandidate(SMSACandidate):
         return pop[0]
     
     def elected_name(self):
-        return "%s CCAP Rep" % self.population()
+        if self.pk:
+            return "%s CCAP Rep" % self.population()
+        else:
+            return "CCAP Rep"
 
 ###############
 # Class map

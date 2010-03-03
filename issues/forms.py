@@ -1,7 +1,7 @@
 from django import forms
 from openelections.constants import ISSUE_TYPES
 from openelections.ballot.models import Vote
-from openelections.issues.models import Electorate, Issue, Slate, ExecutiveSlate, ClassPresidentSlate, Candidate, SenateCandidate, GSCCandidate
+from openelections.issues.models import Electorate, Issue, Slate, ExecutiveSlate, ClassPresidentSlate, Candidate, SenateCandidate, GSCCandidate, SMSACandidate
 
 class IssueForm(forms.ModelForm):
     class Meta:
@@ -116,6 +116,36 @@ class NewGSCCandidateForm(NewCandidateForm):
         super(NewGSCCandidateForm, self).__init__(*args, **kwargs)
         self.fields['slug'].help_text = 'When candidate profiles open, your profile will be at http://elections.stanford.edu/candidate/your-url-name or similar. Use only lowercase letters, numbers, and hyphens.'
 
+class NewSMSACandidateForm(NewCandidateForm):
+    class Meta:
+        model = SMSACandidate
+        fields = ('title', 'kind', 'name1', 'electorate', 'sunetid1', 'slug')
+                                        
+    electorate = forms.ModelChoiceField(label='SMSA',
+                                        queryset=None,
+                                        widget=forms.RadioSelect,
+                                        empty_label=None,)
+    
+    def __init__(self, *args, **kwargs):
+        super(NewSMSACandidateForm, self).__init__(*args, **kwargs)
+        self.fields['slug'].help_text = 'When candidate statements open, your profile will be at http://elections.stanford.edu/candidate/your-url-name or similar. Use only lowercase letters, numbers, and hyphens.'
+        instance = getattr(self, 'instance', None)
+        if instance:
+            if hasattr(instance, 'class_year'):
+                self.fields['electorate'].label = 'SMSA class year'
+                self.fields['electorate'].queryset = Electorate.smsa_class_years()
+            elif hasattr(instance, 'population'):
+                self.fields['electorate'].label = 'SMSA population'
+                self.fields['electorate'].queryset = Electorate.smsa_populations()
+            else:
+                del self.fields['electorate']
+    
+    
+    def clean_electorate(self):
+        electorate = self.cleaned_data.get('electorate')
+        if electorate:
+            return [electorate]                                
+
 class EditIssueForm(IssueForm):
     class Meta:
         pass
@@ -144,6 +174,10 @@ issue_new_forms = {
     'ClassPresidentSlate': NewClassPresidentSlateForm,
     'ExecutiveSlate': NewExecutiveSlateForm,
     'GSCCandidate': NewGSCCandidateForm,
+    'SMSACandidate': NewSMSACandidateForm,
+    'SMSAClassRepCandidate': NewSMSACandidateForm,
+    'SMSACCAPRepCandidate': NewSMSACandidateForm,
+    'SMSASocialChairCandidate': NewSMSACandidateForm,
 }
 
 def form_class_for_issue(issue):

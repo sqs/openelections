@@ -50,7 +50,16 @@
 <h3>Declare your candidacy for...</h3>
 <ul>
     <li><a href="{% url issues.views.manage_new "GSC" %}">ASSU Graduate Student Council representative</a></li>
-    <li><a href="http://smsa.stanford.edu/about/">SMSA</a> positions: contact <a href="mailto:aneeshka@stanford.edu">Agnieszka Czechowicz</a>, SMSA President</li>
+    <li><a href="{% url issues.views.manage_new "SMSA-P" %}">SMSA President</a></li>
+    <li><a href="{% url issues.views.manage_new "SMSA-VP" %}">SMSA Vice President</a></li>
+    <li><a href="{% url issues.views.manage_new "SMSA-S" %}">SMSA Secretary</a></li>
+    <li><a href="{% url issues.views.manage_new "SMSA-T" %}">SMSA Treasurer</a></li>
+    <li><a href="{% url issues.views.manage_new "SMSA-ClassRep" %}">SMSA Class Rep</a></li>
+    <li><a href="{% url issues.views.manage_new "SMSA-SocChair" %}">SMSA Class Social Chair</a></li>
+    <li><a href="{% url issues.views.manage_new "SMSA-CCAP" %}">SMSA CCAP Rep</a></li>
+    <li><a href="{% url issues.views.manage_new "SMSA-PAC" %}">SMSA Policy &amp; Advocacy Chair</a></li>
+    <li><a href="{% url issues.views.manage_new "SMSA-MC" %}">SMSA Mentorship Chair</a></li>
+    <li><a href="{% url issues.views.manage_new "SMSA-PSRC" %}">SMSA Prospective Student Recruitment Chair</a></li>
 </ul>
 
 
