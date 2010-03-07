@@ -145,19 +145,22 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         res = self.client.get('/issues/gsc')
         self.assertNotContains(res, 'Stanford Test Society')
         self.assertNotContains(res, 'Super Sophomores')
-        # TODO: contains for GSC
+        self.assertNotContains(res, '(validated)')
+        self.assertNotContains(res, '(pending validation')
     
     def test_index_filtered_special_fees(self):
         res = self.client.get('/issues/special-fee-requests')
         self.assertContains(res, 'Stanford Test Society')
         self.assertNotContains(res, 'Super Sophomores')
         self.assertNotContains(res, 'Leland Q. Senator')
+        self.assertContains(res, '(pending validation)')
         
     def test_index_filtered_senators(self):
         res = self.client.get('/issues/senate')
         self.assertNotContains(res, 'Stanford Test Society')
         self.assertNotContains(res, 'Super Sophomores')
         self.assertContains(res, 'Leland Q. Senator')
+        self.assertContains(res, '(validated with 125 signatures)')
         
     def test_index_filtered_class_pres(self):
         res = self.client.get('/issues/class-presidents')
@@ -169,6 +172,8 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         res = self.client.get('/issues/smsa-president')
         self.assertContains(res, 'Jane Stanford')
         self.assertNotContains(res, 'Mary Smith')
+        self.assertNotContains(res, '(validated)')
+        self.assertNotContains(res, '(pending validation')
         
     def test_index_filtered_smsa_vice_pres(self):
         res = self.client.get('/issues/smsa-vice-president')

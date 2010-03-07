@@ -24,6 +24,8 @@ class IssueAdmin(admin.ModelAdmin):
                                    'name3', 'sunetid3',
                                    'name4', 'sunetid4',
                                    'name5', 'sunetid5',)}),
+        ('Petition', {'classes': ('collapse',),
+                      'fields': ('petition_validated', 'petition_signatures_count')}),
         ('Special Fee group', {'classes': ('collapse',), 'fields': ('budget', 'budget_summary')}),
     ]
     prepopulated_fields = {'slug': ('title',)}

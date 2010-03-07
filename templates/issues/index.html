@@ -7,7 +7,16 @@
 {% for issue_kind in issues_list %}
     <h1>{{ issue_kind.grouper }}s</h1>
     {% for issue in issue_kind.list %}
-        <h3>{{ issue.title|capfirst }}</h3>
+        <h3>
+            {{ issue.title|capfirst }}
+            {% if issue.needs_petition and issue.show_petition_results %}
+                {% if issue.petition_validated %}
+                    (validated with {{ issue.petition_signatures_count }} signatures)
+                {% else %}
+                    (pending validation)
+                {% endif %}
+            {% endif %}
+        </h3>
         {% include issue.partial_template %}
     {% endfor %}
     

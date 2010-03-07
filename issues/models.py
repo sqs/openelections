@@ -86,6 +86,10 @@ class Issue(models.Model):
     # whether the issue should be shown in the public list of petitions, issues, etc.
     public = models.BooleanField(default=True)
     
+    # petition
+    petition_validated = models.BooleanField(default=False)
+    petition_signatures_count = models.IntegerField(default=0)
+    
     # restriction to certain populations
     electorate = models.ManyToManyField(Electorate, related_name='issues') #MultipleChoiceField(max_length=250, choices=oe_constants.ELECTORATES)
 
@@ -137,7 +141,13 @@ class Issue(models.Model):
     
     def needs_petition(self):
         return True
+    
+    def petition_open(self):
+        return False
         
+    def show_petition_results(self):
+        return True
+    
     def public_profile(self):
         return False
     
