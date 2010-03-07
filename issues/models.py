@@ -302,7 +302,11 @@ class GSCCandidate(Candidate):
         return False
     
     def kind_name(self):
-        return "Grad Student Council candidate"
+        if self.pk:
+            return "Grad Student Council (%s District) candidate" % self.district().name
+        else:
+            # if we haven't saved this, we don't know what district -- so be general
+            return "Grad Student Council candidate"
         
     def elected_name(self):
         return "Grad Student Council rep"

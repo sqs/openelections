@@ -134,7 +134,7 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         self.assertContains(res, 'Leland Q. Senator')
         self.assertContains(res, 'Stanford Test Society')
         self.assertNotContains(res, 'Larry David') # no SMSA
-        self.assertContains(res, 'View/sign petition')
+        self.assertContains(res, 'View petition')
     
     def test_index_omits_non_public_petitions(self):
         self.webauthLogin('jsmith')
@@ -147,6 +147,8 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         self.assertNotContains(res, 'Super Sophomores')
         self.assertNotContains(res, '(validated)')
         self.assertNotContains(res, '(pending validation')
+        self.assertContains(res, 'Bill Clinton')
+        self.assertContains(res, 'Grad Student Council (School of Law District) candidates')
     
     def test_index_filtered_special_fees(self):
         res = self.client.get('/issues/special-fee-requests')
