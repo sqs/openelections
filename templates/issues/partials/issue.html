@@ -21,7 +21,7 @@
     {% endif %}
     {% if issue.needs_petition and issue.public %}
         <dd>
-            <a href="{% url petitions.views.detail issue.slug %}">View/sign petition</a>
+            <a href="{% url petitions.views.detail issue.slug %}">View petition</a>
         </dd>
     {% endif %}
 </dl>
