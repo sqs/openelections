@@ -30,6 +30,6 @@ class IssueAdmin(admin.ModelAdmin):
     ]
     prepopulated_fields = {'slug': ('title',)}
     save_on_top = True
-    list_display = ('title', 'kind', issue_members, issue_num_signatures)
+    list_display = ('title', 'kind', issue_members, issue_num_signatures, 'petition_validated')
 
 admin.site.register(Issue, IssueAdmin)
