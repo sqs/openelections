@@ -7,6 +7,7 @@ class SignatureAdmin(admin.ModelAdmin):
         ('Issue', {'fields': ('issue',)}),
     ]
     list_display = ('sunetid', 'name', 'electorate', 'issue', 'ip_address', 'signed_at')
+    list_filter = ('issue', 'electorate')
     search_fields = ('sunetid', 'name')
 
 admin.site.register(Signature, SignatureAdmin)
