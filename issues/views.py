@@ -67,7 +67,7 @@ def create(request):
     attrs = request.POST.copy()
     new_issue = Issue(kind=attrs['kind'], sunetid1=sunetid).get_typed()
     form = form_class_for_issue(new_issue)(attrs, instance=new_issue)
-    if form.is_valid():
+    if form.is_valid() and new_issue.can_declare():
         form.save()
         return HttpResponseRedirect(reverse('openelections.issues.views.manage_index'))
     else:
