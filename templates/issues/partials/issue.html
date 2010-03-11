@@ -1,6 +1,3 @@
-{% if issue.image and detail %}
-    <div style="float:right"><img style="max-width:300px;max-height:400px;margin:0 15px 15px 0" src="/{{ issue.image.url }}"></div>
-{% endif %}
 <dl>
     {% if issue.public_profile %}
         {% if detail %}
@@ -10,6 +7,9 @@
         {% if issue.bio %}
             {% if detail %}
                 <dt>Profile</dt>
+                {% if issue.image and detail %}
+                    <div style="float:right"><img style="max-width:300px;max-height:400px;margin:0 15px 15px 0" src="/{{ issue.image.url }}"></div>
+                {% endif %}
                 <dd>{{ issue.bio|linebreaks }}</dd>
             {% else %}
                 <dd>{{ issue.bio|linebreaks|truncatewords:200 }}</dd>
