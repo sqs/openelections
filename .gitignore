@@ -6,4 +6,5 @@ data/
 *.jpg
 *.gif
 *.png
+.DS_Store
 
