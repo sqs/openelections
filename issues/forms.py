@@ -155,13 +155,15 @@ class EditIssueForm(EditIssueForm):
     class Meta:
         model = Issue
         fields = ('bio', 'image',)
+    
+    bio = forms.CharField(widget=forms.Textarea(attrs={'rows':25, 'cols':70, 'style':'width:98%'}))
         
     def __init__(self, *args, **kwargs):
         super(EditIssueForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
         if instance:
             if instance.image:
-                self.fields['image'].label = 'Replace existing image with new image'
+                self.fields['image'].label = 'Replace existing image with another image'
         
 
 issue_edit_forms = {
