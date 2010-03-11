@@ -244,3 +244,16 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         res = self.client.get('/issues/non-existent')
         self.assertEquals(res.status_code, 404)
         
+class CandidateStatementsTest(OETestCase):
+    def test_index_shows_profile(self):
+        res = self.client.get('/issues/senate')
+        self.assertContains(res, 'Leland Q. Senator')
+        self.assertContains(res, 'Hello! My name is Leland Q. Senator, and')
+        
+    def test_detail_shows_profile(self):
+        res = self.client.get('/issues/issue/leland-senator')
+        self.assertContains(res, 'Leland Q. Senator')
+        self.assertContains(res, 'Hello! My name is Leland Q. Senator, and')
+        
+        
+        
