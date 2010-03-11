@@ -99,7 +99,7 @@ class NewSenateCandidateForm(NewCandidateForm):
 class NewGSCCandidateForm(NewCandidateForm):
     class Meta:
         model = GSCCandidate
-        fields = ('title', 'kind', 'name1', 'sunetid1', 'electorate')
+        fields = ('title', 'kind', 'name1', 'sunetid1', 'electorate', 'slug')
     
     electorate = forms.ModelChoiceField(label='GSC district',
                                         help_text='Choose At-Large if you want to run ONLY as an At-Large candidate. All school-specific candidates are also considered as At-Large candidates, unless they choose otherwise.',
