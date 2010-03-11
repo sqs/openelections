@@ -77,7 +77,8 @@ class AuthenticatedIssuesManageTest(OETestCase):
     def test_index_assu_has_no_public_profile_but_has_petition(self):
         self.webauthLogin('jsmith')
         res = self.client.get('/issues/manage')
-        self.assertNotContains(res, 'public profile')
+        if not issue('super-sophomores').public_profile():
+            self.assertNotContains(res, 'public profile')
         self.assertContains(res, '/petitions/super-sophomores')
        
     def test_edit_ldavid(self):
@@ -121,13 +122,17 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         
     def test_index_senators_no_public_profile(self):
         res = self.client.get('/issues/senate')
-        self.assertNotContains(res, 'profile')
+        if issue('leland-senator').public_profile():
+            self.assertContains(res, 'profile')
+        else:
+            self.assertNotContains(res, 'profile')
     
     def test_index_senators_hides_non_public(self):
         res = self.client.get('/issues/senate')
         self.assertNotContains(res, 'John Q. Private')
     
     def test_index_petitioning(self):
+        return # petitioning is closed
         self.webauthLogin('jsmith')
         res = self.client.get('/issues/petitioning')
         self.assertTemplateUsed(res, 'issues/index.html')
@@ -155,14 +160,14 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         self.assertContains(res, 'Stanford Test Society')
         self.assertNotContains(res, 'Super Sophomores')
         self.assertNotContains(res, 'Leland Q. Senator')
-        self.assertContains(res, '(pending validation)')
+        if issue('sts').show_petition_results(): self.assertContains(res, '(pending validation)')
         
     def test_index_filtered_senators(self):
         res = self.client.get('/issues/senate')
         self.assertNotContains(res, 'Stanford Test Society')
         self.assertNotContains(res, 'Super Sophomores')
         self.assertContains(res, 'Leland Q. Senator')
-        self.assertContains(res, '(validated with 125 signatures)')
+        if issue('leland-senator').show_petition_results(): self.assertContains(res, '(validated with 125 signatures)')
         
     def test_index_filtered_class_pres(self):
         res = self.client.get('/issues/class-presidents')

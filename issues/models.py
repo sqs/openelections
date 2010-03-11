@@ -149,10 +149,10 @@ class Issue(models.Model):
         return False
         
     def show_petition_results(self):
-        return True
+        return False
     
     def public_profile(self):
-        return False
+        return True
     
     def kind_name(self):
         return "Generic issue"
@@ -209,6 +209,9 @@ class SpecialFeeRequest(FeeRequest):
     
     def kind_name(self):
         return "Special Fee group"
+        
+    def public_profile(self):
+        return False
         
     def elected_name(self):
         return "Special Fees"
