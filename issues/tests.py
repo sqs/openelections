@@ -132,22 +132,7 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
     def test_index_senators_hides_non_public(self):
         res = self.client.get('/issues/senate')
         self.assertNotContains(res, 'John Q. Private')
-    
-    def test_index_petitioning(self):
-        return # petitioning is closed
-        self.webauthLogin('jsmith')
-        res = self.client.get('/issues/petitioning')
-        self.assertTemplateUsed(res, 'issues/index.html')
-        self.assertContains(res, 'Leland Q. Senator')
-        self.assertContains(res, 'Stanford Test Society')
-        self.assertNotContains(res, 'Larry David') # no SMSA
-        self.assertContains(res, 'View petition')
-    
-    def test_index_omits_non_public_petitions(self):
-        self.webauthLogin('jsmith')
-        res = self.client.get('/issues/petitioning')
-        self.assertNotContains(res, 'John Q. Private')
-    
+
     def test_index_filtered_gsc(self):
         res = self.client.get('/issues/gsc')
         self.assertNotContains(res, 'Stanford Test Society')
@@ -179,15 +164,18 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         
     def test_index_filtered_smsa_pres(self):
         res = self.client.get('/issues/smsa-president')
-        self.assertContains(res, 'Jane Stanford')
+        self.assertContains(res, 'Jane Stanford') # SMSA President
         self.assertNotContains(res, 'Mary Smith')
         self.assertNotContains(res, '(validated)')
         self.assertNotContains(res, '(pending validation')
         
+         # SMSA Exec President
+        self.assertContains(res, 'Jimmy Carter')
+    
     def test_index_filtered_smsa_vice_pres(self):
         res = self.client.get('/issues/smsa-vice-president')
         self.assertContains(res, 'Mary Smith')
-        self.assertNotContains(res, 'Jane Stanford')
+        self.assertNotContains(res, 'Jane Stanford') # SMSA President
         
     def test_index_filtered_smsa_secretary_none(self):
         res = self.client.get('/issues/smsa-secretary')
@@ -198,7 +186,7 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         self.assertContains(res, 'Larry David')
         self.assertContains(res, 'SMSA Treasurer')
         self.assertNotContains(res, 'Generic issue')
-        self.assertNotContains(res, 'Jane Stanford')
+        self.assertNotContains(res, 'Jane Stanford') # SMSA President
         
     def test_index_filtered_smsa_class_reps(self):
         res = self.client.get('/issues/smsa-class-reps')
@@ -210,15 +198,7 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         self.assertContains(res, 'Monty Burns')
         self.assertContains(res, 'Ned Flanders')
         self.assertContains(res, 'Michael Bluth')
-        self.assertNotContains(res, 'Jane Stanford')
-    
-    def test_index_filtered_smsa_social_chairs(self):
-        res = self.client.get('/issues/smsa-social-chair')
-        self.assertContains(res, 'SMSA Social Chair (Clinical) candidates')
-        self.assertContains(res, 'SMSA Social Chair (Pre-clinical) candidates')
-        self.assertContains(res, 'George Costanza')
-        self.assertContains(res, 'Jerry Lewis')
-        self.assertNotContains(res, 'Jane Stanford')
+        self.assertNotContains(res, 'Jane Stanford') # SMSA President
 
     def test_index_filtered_smsa_ccap(self):
         res = self.client.get('/issues/smsa-ccap')
@@ -228,7 +208,7 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         self.assertContains(res, 'Kevin Spacey')
         self.assertContains(res, 'Timothy Geithner')
         self.assertContains(res, 'Joe Biden')
-        self.assertNotContains(res, 'Jane Stanford')
+        self.assertNotContains(res, 'Jane Stanford') # SMSA President
         
     def test_index_filtered_smsa_chairs(self):
         res = self.client.get('/issues/smsa-chairs')
@@ -236,11 +216,22 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         self.assertContains(res, 'SMSA Policy and Advocacy Chair (Clinical) candidates')
         self.assertContains(res, 'SMSA Policy and Advocacy Chair (Pre-clinical) candidates')
         self.assertContains(res, 'SMSA Prospective Student Recruitment Chair candidates')
+        self.assertContains(res, 'SMSA OSS/OSR Rep candidates')
+        self.assertContains(res, 'SMSA Clinical Student Advisory Council Member candidates')
         self.assertContains(res, 'Rahm Emanuel')
         self.assertContains(res, 'John Kerry')
         self.assertContains(res, 'Howard Dean')
         self.assertContains(res, 'Hillary Clinton')
-        self.assertNotContains(res, 'Jane Stanford')
+        self.assertContains(res, 'Michael Jordan')
+        self.assertContains(res, 'Kobe Bryant')
+        
+        # SMSA Social Chairs
+        self.assertContains(res, 'SMSA Social Chair (Clinical) candidates')
+        self.assertContains(res, 'SMSA Social Chair (Pre-clinical) candidates')
+        self.assertContains(res, 'George Costanza')
+        self.assertContains(res, 'Jerry Lewis')
+        
+        self.assertNotContains(res, 'Jane Stanford') # SMSA President
         
     def test_index_filtered_404(self):
         res = self.client.get('/issues/non-existent')

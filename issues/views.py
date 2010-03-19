@@ -17,16 +17,13 @@ index_filters = {
     
     'special-fee-requests': (oe_constants.ISSUE_SPECFEE,),
     
-    'smsa-president': ('SMSA-P',),
+    'smsa-president': ('SMSA-P', 'SMSA-ExecP'),
     'smsa-vice-president': ('SMSA-VP',),
     'smsa-secretary': ('SMSA-S',),
     'smsa-treasurer': ('SMSA-T',),
     'smsa-class-reps': ('SMSA-ClassRep',),
-    'smsa-social-chair': ('SMSA-SocChair',),
+    'smsa-chairs': ('SMSA-PAC', 'SMSA-MC', 'SMSA-PSRC', 'SMSA-SocChair', 'SMSA-CSAC', 'SMSA-OSS-OSR'),
     'smsa-ccap': ('SMSA-CCAP',),
-    'smsa-chairs': ('SMSA-PAC', 'SMSA-MC', 'SMSA-PSRC'),
-    
-    'petitioning': (oe_constants.ISSUE_SPECFEE, oe_constants.ISSUE_CLASSPRES, oe_constants.ISSUE_US, oe_constants.ISSUE_GSC, oe_constants.ISSUE_EXEC),
 }
 
 def index(request, show=None):
