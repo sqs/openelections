@@ -135,6 +135,7 @@ class NewSMSACandidateForm(NewCandidateForm):
             if electorate_label == 'SMSA class year':
                 self.fields['electorate'].label = 'SMSA class year'
                 self.fields['electorate'].queryset = instance.candidate_electorates()
+                self.fields['electorate'].help_text = 'Reminder: These are positions for next year. For example, if you are a 1st year, run for 2nd-Year Class Rep.'
             elif electorate_label == 'SMSA population':
                 self.fields['electorate'].label = 'SMSA population'
                 self.fields['electorate'].queryset = instance.candidate_electorates()
