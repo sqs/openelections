@@ -128,7 +128,7 @@ class NewSMSACandidateForm(NewCandidateForm):
     
     def __init__(self, *args, **kwargs):
         super(NewSMSACandidateForm, self).__init__(*args, **kwargs)
-        self.fields['slug'].help_text = 'Your candidate will be at voterguide.stanford.edu/your-url-name. Use only lowercase letters, numbers, and hyphens.'
+        self.fields['slug'].help_text = 'Your candidate statement will be at voterguide.stanford.edu/your-url-name. Use only lowercase letters, numbers, and hyphens.'
         instance = getattr(self, 'instance', None)
         if instance:
             electorate_label = instance.candidate_electorate_label()
