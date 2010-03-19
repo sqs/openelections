@@ -116,6 +116,10 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         self.assertContains(res, 'Super Sophomores')
         self.assertContains(res, 'Leland Q. Senator')
     
+    def test_candidate_url(self):
+        res = self.client.get('/leland-senator')
+        self.assertContains(res, 'Leland Q. Senator')
+    
     def test_index_filtered_senators(self):
         res = self.client.get('/issues/exec')
         self.assertNotContains(res, 'Stanford Test Society')

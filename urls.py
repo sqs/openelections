@@ -13,4 +13,6 @@ urlpatterns = patterns('',
     
    (r'^media/issue_images/(?P<path>.*)$', 'django.views.static.serve',
            {'document_root': 'public/media/issue_images/'}),
+           
+   (r'^(?P<issue_slug>[\w\d-]+)$', 'openelections.issues.views.detail'),
 )
