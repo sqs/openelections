@@ -10,7 +10,7 @@
             <dd>
                 View:
                 <a href="{% url issues.views.detail issue.slug %}">
-                    http://petitions.stanford.edu{% url issues.views.detail issue.slug %}
+                    http://voterguide.stanford.edu{% url issues.views.detail issue.slug %}
                 </a>
             </dd>
             <dd>
@@ -21,8 +21,8 @@
         {% if issue.needs_petition %}
             <dt>Petition:</dt> 
             <dd>
-                <a href="http://elections.stanford.edu/petitions/{{ issue.slug }}">
-                    http://elections.stanford.edu/petitions/{{ issue.slug }}
+                <a href="http://petitions.stanford.edu/petitions/{{ issue.slug }}">
+                    http://petitions.stanford.edu/petitions/{{ issue.slug }}
                 </a>
             </dd>
         {% endif %}
