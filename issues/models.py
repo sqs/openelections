@@ -82,7 +82,7 @@ class Issue(models.Model):
     bio_short = models.TextField(default='', blank=True)
     bio_petition = models.TextField(default='', blank=True)
     image = models.ImageField(upload_to='media/issue_images', blank=True)
-    slug = models.SlugField()
+    slug = models.SlugField(blank=False)
     
     # whether the issue should be shown in the public list of petitions, issues, etc.
     public = models.BooleanField(default=True)
