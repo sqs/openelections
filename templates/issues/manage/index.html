@@ -6,7 +6,7 @@
     <h1>{{ issue.name_and_office }}</h1>
     <dl>
         {% if issue.public_statement %}
-            <dt>Public profile:</dt>
+            <dt>{{ issue.noun|capfirst }} statement:</dt>
             <dd>
                 View:
                 <a href="{% url issues.views.detail issue.slug %}">
@@ -14,7 +14,7 @@
                 </a>
             </dd>
             <dd>
-                <a href="{% url issues.views.manage_edit issue.slug %}">Edit public profile</a>
+                <a href="{% url issues.views.manage_edit issue.slug %}">Edit {{ issue.noun }} statement</a>
             </dd>
         {% endif %}
         
@@ -28,7 +28,7 @@
         {% endif %}
         
         {% if not issue.public_statement and not issue.needs_petition %}
-            <dd>You've declared. You'll be notified when you can post a candidate profile.</p>
+            <dd>You've declared. You'll be notified when you can post a candidate statement.</p>
         {% endif %}
     </dl>
     <br>

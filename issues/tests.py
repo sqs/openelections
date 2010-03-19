@@ -73,14 +73,14 @@ class AuthenticatedIssuesManageTest(OETestCase):
     def test_index_smsa_has_public_statement_no_petition(self):
         self.webauthLogin('ldavid')
         res = self.client.get('/issues/manage')
-        self.assertContains(res, 'public profile')
+        self.assertContains(res, 'Edit candidate statement')
         self.assertNotContains(res, '/petitions/larry-david')
     
     def test_index_assu_has_no_public_statement_but_has_petition(self):
         self.webauthLogin('jsmith')
         res = self.client.get('/issues/manage')
         if not issue('super-sophomores').public_statement():
-            self.assertNotContains(res, 'public profile')
+            self.assertNotContains(res, 'statement')
         self.assertContains(res, '/petitions/super-sophomores')
        
     def test_edit_ldavid(self):
@@ -108,7 +108,7 @@ class AuthenticatedIssuesManageTest(OETestCase):
         res = self.client.get('/issues/issue/larry-david')
         self.assertNotContains(res, 'Hello! New bio.')
         
-    def test_can_only_update_own_profile(self):
+    def test_can_only_update_own_statement(self):
         self.webauthLogin('jsmith')
         res = self.client.post('/issues/issue/larry-david/edit', {'sunetid1': 'ldavid', 'bio': 'Hello! New bio.'})
         self.assertEquals(res.status_code, 403)
@@ -249,12 +249,12 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         self.assertEquals(res.status_code, 404)
         
 class CandidateStatementsTest(OETestCase):
-    def test_index_shows_profile(self):
+    def test_index_shows_statement(self):
         res = self.client.get('/issues/senate')
         self.assertContains(res, 'Leland Q. Senator')
         self.assertContains(res, 'Hello! My name is Leland Q. Senator, and')
         
-    def test_detail_shows_profile(self):
+    def test_detail_shows_statement(self):
         res = self.client.get('/issues/issue/leland-senator')
         self.assertContains(res, 'Leland Q. Senator')
         self.assertContains(res, 'Hello! My name is Leland Q. Senator, and')

@@ -114,7 +114,7 @@ class NewGSCCandidateForm(NewCandidateForm):
             
     def __init__(self, *args, **kwargs):
         super(NewGSCCandidateForm, self).__init__(*args, **kwargs)
-        self.fields['slug'].help_text = 'When candidate profiles open, your profile will be at voterguide.stanford.edu/your-url-name. Use only lowercase letters, numbers, and hyphens.'
+        self.fields['slug'].help_text = 'When candidate statements open, your statement will be at voterguide.stanford.edu/your-url-name. Use only lowercase letters, numbers, and hyphens.'
 
 class NewSMSACandidateForm(NewCandidateForm):
     class Meta:

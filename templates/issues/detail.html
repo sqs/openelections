@@ -7,7 +7,7 @@
 {% include issue.partial_template %}
 
 {% if can_manage %}
-    <p><a href="{% url issues.views.manage_edit issue.slug %}">Edit your public profile &raquo;</a></p>
+    <p><a href="{% url issues.views.manage_edit issue.slug %}">Edit your {{ issue.noun }} statement &raquo;</a></p>
 {% endif %}
 
 <br style="clear:both">

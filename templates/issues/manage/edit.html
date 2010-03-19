@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h1>Editing profile for {{ issue.name_and_office }}</h1>
+<h1>Editing {{ issue.noun }} statement for {{ issue.name_and_office }}</h1>
 
 <form action="{% url issues.views.manage_edit issue.slug %}" method="post" enctype="multipart/form-data">
     <dl>
@@ -23,10 +23,10 @@
         {% endif %}
     {% endfor %}
     </dl>
-    <div><br><input type="submit" value="Save profile"></div>
+    <div><br><input type="submit" value="Save statement"></div>
 </form>
 
-<p><br><a href="{% url issues.views.detail issue.slug %}">&laquo; View public profile (what everyone else sees)</a></p>
+<p><br><a href="{% url issues.views.detail issue.slug %}">&laquo; View public {{ issue.noun }} statement (what everyone else sees)</a></p>
 
 <br style="clear:both">
 
