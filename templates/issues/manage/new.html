@@ -12,7 +12,19 @@
 {% else %}
     <h1>Declare as {{ new_issue.kind_name }}</h1>
 {% endif %}
+
+{% if new_issue.position_description %}
+<h3>Description of position</h3>
+{{ new_issue.position_description|safe }}
+{% endif %}
+
+<p><a href="/issues/manage">&laquo; Back to list of all positions</a></p>
+
 <hr/>
+
+{% if new_issue.position_description %}
+    <h2>Declaration form for {{ new_issue.kind_name }}</h2>
+{% endif %}
 
 <form action="{% url issues.views.create %}" method="post">
     <dl>

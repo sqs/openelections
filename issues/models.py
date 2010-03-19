@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Q
 import simplejson
 from openelections import constants as oe_constants
+from openelections.issues.text import POSITION_DESCRIPTIONS
 
 ELECTORATES = {
     'undergrad': 'Undergrad',
@@ -153,6 +154,9 @@ class Issue(models.Model):
     
     def public_profile(self):
         return True
+        
+    def position_description(self):
+        return POSITION_DESCRIPTIONS.get(self.kind, None)
     
     def kind_name(self):
         return "Generic issue"
@@ -326,7 +330,7 @@ class GSCCandidate(Candidate):
 class SMSACandidate(Candidate):
     class Meta:
         proxy = True
-    
+
     def can_declare(self):
         return True
      
@@ -362,7 +366,7 @@ class SMSACandidate(Candidate):
 class SMSAClassRepCandidate(SMSACandidate):
     class Meta:
         proxy = True
-    
+      
     def candidate_electorate_label(self):
         return 'SMSA class year'
     
@@ -386,7 +390,7 @@ class SMSAClassRepCandidate(SMSACandidate):
 class SMSASocialChairCandidate(SMSACandidate):
     class Meta:
         proxy = True
-    
+
     def candidate_electorate_label(self):
         return 'SMSA population'
     
@@ -434,7 +438,7 @@ class SMSACCAPRepCandidate(SMSACandidate):
 class SMSAPolicyAndAdvocacyChairCandidate(SMSACandidate):
     class Meta:
         proxy = True
-    
+        
     def candidate_electorate_label(self):
         return 'SMSA population'
     
