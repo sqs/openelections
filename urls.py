@@ -8,7 +8,7 @@ urlpatterns = patterns('',
     (r'^petitions/', include('openelections.petitions.urls')),
     (r'^ballot/', include('openelections.ballot.urls')),
     (r'^issues/', include('openelections.issues.urls')),
-    (r'^admin/?', include(admin.site.urls)),
+    (r'^admin/', include(admin.site.urls)),
     (r'^auth/', include('openelections.webauth.urls')),
     
    (r'^media/issue_images/(?P<path>.*)$', 'django.views.static.serve',
