@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 POSITION_DESCRIPTIONS = dict()
 
-SMSA_EXEC_PRES_DESCRIPTION = '''
+POSITION_DESCRIPTIONS['SMSA-ExecP'] = '''
 <ul>
 <li>Must have served as President in a previous year</li>
 <li>Act as official representative of the Stanford Medical Student Association</li>

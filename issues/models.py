@@ -354,6 +354,7 @@ class SMSACandidate(Candidate):
     
     def elected_name(self):
         name_map = {
+            'SMSA-ExecP': 'Executive President',
             'SMSA-P': 'President',
             'SMSA-VP': 'Vice President',
             'SMSA-S': 'Secretary',
@@ -473,6 +474,7 @@ kinds_classes = {
     oe_constants.ISSUE_SPECFEE: SpecialFeeRequest,
     
     # SMSA
+    'SMSA-ExecP': SMSACandidate,
     'SMSA-P': SMSACandidate,
     'SMSA-VP': SMSACandidate,
     'SMSA-S': SMSACandidate,

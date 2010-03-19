@@ -41,6 +41,7 @@ class SMSACandidateTest(OETestCase):
         self.assertEquals(issue('hillary-clinton').kind_name(), 'SMSA Prospective Student Recruitment Chair candidate')
         
     def test_presvpsectreas(self):
+        self.assertEquals(issue('jimmy-carter').kind_name(), 'SMSA Executive President candidate')
         self.assertEquals(issue('jane-stanford').kind_name(), 'SMSA President candidate')
         self.assertEquals(issue('mary-smith').kind_name(), 'SMSA Vice President candidate')
         self.assertEquals(issue('larry-david').kind_name(), 'SMSA Treasurer candidate')

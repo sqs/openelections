@@ -13,6 +13,7 @@ ISSUE_TYPES = [
 ]
 
 SMSA_OFFICES = (
+    ('SMSA-ExecP', 'SMSA Executive President'),
     ('SMSA-P', 'SMSA President'),
     ('SMSA-VP', 'SMSA Vice President'),
     ('SMSA-S', 'SMSA Secretary'),
