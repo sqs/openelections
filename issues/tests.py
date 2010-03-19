@@ -29,10 +29,11 @@ class SMSACandidateTest(OETestCase):
         self.assertEquals(issue('timothy-geithner').kind_name(), 'SMSA CCAP Rep (Pre-clinical) candidate')
         self.assertEquals(issue('kevin-spacey').kind_name(), 'SMSA CCAP Rep (MD-PhD) candidate')
 
-    def test_ccap_elected_name(self):
-        self.assertEquals(issue('joe-biden').kind_name(), 'SMSA CCAP Rep (Clinical) candidate')
-        self.assertEquals(issue('timothy-geithner').kind_name(), 'SMSA CCAP Rep (Pre-clinical) candidate')
-        self.assertEquals(issue('kevin-spacey').kind_name(), 'SMSA CCAP Rep (MD-PhD) candidate')
+    def test_oss_osr_elected_name(self):
+        self.assertEquals(issue('kobe-bryant').kind_name(), 'SMSA OSS/OSR Rep candidate')
+    
+    def test_csac_elected_name(self):
+        self.assertEquals(issue('michael-jordan').kind_name(), 'SMSA Clinical Student Advisory Council Member candidate')
         
     def test_chair_elected_name(self):
         self.assertEquals(issue('howard-dean').kind_name(), 'SMSA Mentorship Chair candidate')
@@ -42,7 +43,7 @@ class SMSACandidateTest(OETestCase):
     def test_presvpsectreas(self):
         self.assertEquals(issue('jane-stanford').kind_name(), 'SMSA President candidate')
         self.assertEquals(issue('mary-smith').kind_name(), 'SMSA Vice President candidate')
-        self.assertEquals(issue('larry-david').kind_name(), 'SMSA Treasurer candidate')    
+        self.assertEquals(issue('larry-david').kind_name(), 'SMSA Treasurer candidate')
 
 class UnauthenticatedVisitorManageTest(OETestCase):    
     def test_manage_index_requires_webauth(self):

@@ -360,6 +360,8 @@ class SMSACandidate(Candidate):
             'SMSA-T': 'Treasurer',
             'SMSA-MC': 'Mentorship Chair',
             'SMSA-PSRC': 'Prospective Student Recruitment Chair',
+            'SMSA-OSS-OSR': 'OSS/OSR Rep',
+            'SMSA-CSAC': 'Clinical Student Advisory Council Member',
         }
         return 'SMSA ' + name_map.get(self.kind, 'Unknown')
 
@@ -481,4 +483,6 @@ kinds_classes = {
     'SMSA-PAC': SMSAPolicyAndAdvocacyChairCandidate,
     'SMSA-MC': SMSACandidate,
     'SMSA-PSRC': SMSACandidate,
+    'SMSA-OSS-OSR': SMSACandidate,
+    'SMSA-CSAC': SMSACandidate,
 }

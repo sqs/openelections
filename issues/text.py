@@ -182,7 +182,7 @@ POSITION_DESCRIPTIONS['SMSA-CCAP'] = '''
 </ul>
 '''
 
-SMSA_OSS_OSR_REP_DESCRIPTION = '''
+POSITION_DESCRIPTIONS['SMSA-OSS-OSR'] = '''
 <ul>
 <li>Liaison to student services- meet monthly with Office of Student Services Steering Committee (OSSSC)</li>
 <li>Monitor all student - OSS mailing lists</li>
@@ -219,5 +219,15 @@ POSITION_DESCRIPTIONS['SMSA-PAC'] = '''
 <li>Pre-clinical- sit on med scholarship committee</li>
 <li>Attend SMSA Meetings &amp; Sit on Curriculum Committee</li>
 <li>Work with CCAP Reps on Curriculum Projects</li>
+</ul>
+'''
+
+POSITION_DESCRIPTIONS['SMSA-CSAC'] = '''
+<ul>
+<li>Not elected--voluntary and unlimited spaces</li>
+<li>Facilitate better communication between SMSA and clinical students</li>
+<li>Provide clinical student feedback on various issues, particularly when input solicited (email list)</li>
+<li>Attend SMSA meetings when available</li>
+<li>Help with SMSA committee projects when relevant to clinical students</li>
 </ul>
 '''

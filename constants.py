@@ -23,6 +23,8 @@ SMSA_OFFICES = (
     ('SMSA-PAC', 'SMSA Policy & Advocacy Chair'),
     ('SMSA-MC', 'SMSA Mentorship Chair'),
     ('SMSA-PSRC', 'SMSA Prospective Student Recruitment Chair'),
+    ('SMSA-OSS-OSR', 'SMSA OSS/OSR Rep'),
+    ('SMSA-CSAC', 'SMSA Clinical Student Advisory Council Member'),
 )
 
 ISSUE_TYPES.extend(SMSA_OFFICES)
