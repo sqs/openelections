@@ -158,6 +158,9 @@ class Issue(models.Model):
     def position_description(self):
         return POSITION_DESCRIPTIONS.get(self.kind, None)
     
+    def noun(self):
+        raise NotImplementedError
+    
     def kind_name(self):
         return "Generic issue"
     
@@ -199,10 +202,16 @@ class Candidate(Issue):
         
     def kind_name(self):
         return "candidate"
+        
+    def noun(self):
+        return "candidate"
 
 class FeeRequest(Issue):
     class Meta:
         proxy = True
+    
+    def noun(self):
+        return "group" # e.g., Special Fee "group"
         
 class SpecialFeeRequest(FeeRequest):
     class Meta:
@@ -228,6 +237,9 @@ class Slate(Issue):
         proxy = True
         
     def kind_name(self):
+        return "slate"
+        
+    def noun(self):
         return "slate"
     
 class ExecutiveSlate(Slate):

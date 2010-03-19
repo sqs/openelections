@@ -125,9 +125,9 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
     def test_index_senators_no_public_profile(self):
         res = self.client.get('/issues/senate')
         if issue('leland-senator').public_profile():
-            self.assertContains(res, 'profile')
+            self.assertContains(res, 'candidate statement')
         else:
-            self.assertNotContains(res, 'profile')
+            self.assertNotContains(res, 'candidate statement')
     
     def test_index_senators_hides_non_public(self):
         res = self.client.get('/issues/senate')

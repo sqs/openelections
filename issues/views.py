@@ -24,6 +24,8 @@ index_filters = {
     'smsa-class-reps': ('SMSA-ClassRep',),
     'smsa-chairs': ('SMSA-PAC', 'SMSA-MC', 'SMSA-PSRC', 'SMSA-SocChair', 'SMSA-CSAC', 'SMSA-OSS-OSR'),
     'smsa-ccap': ('SMSA-CCAP',),
+    
+    'petitioning': [],
 }
 
 def index(request, show=None):

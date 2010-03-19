@@ -6,7 +6,7 @@
         {% endif %}
         {% if issue.bio %}
             {% if detail %}
-                <dt>Profile</dt>
+                <dt>{{ issue.noun|capfirst }} statement</dt>
                 {% if issue.image and detail %}
                     <div style="float:right"><img style="max-width:300px;max-height:400px;margin:0 15px 15px 0" src="/{{ issue.image.url }}"></div>
                 {% endif %}
@@ -18,7 +18,7 @@
     {% endif %}
     {% if issue.public_profile and not detail %}
         <dd>
-            <a href="{% url issues.views.detail issue.slug %}">See full profile</a>
+            <a href="{% url issues.views.detail issue.slug %}">Read full {{issue.noun}} statement</a>
         </dd>
     {% endif %}
     {% if issue.needs_petition and issue.public and issue.show_petition_results %}
