@@ -8,7 +8,7 @@
     <h1>{{ issue_kind.grouper }}s</h1>
     {% for issue in issue_kind.list %}
         <h3>
-            {% if not detail and issue.public_profile %}
+            {% if not detail and issue.public_statement %}
                 <a href="{% url issues.views.detail issue.slug %}">{{ issue.title }}</a>
             {% else %}
                 {{ issue.title }}

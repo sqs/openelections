@@ -70,16 +70,16 @@ class AuthenticatedIssuesManageTest(OETestCase):
         self.assertContains(res, 'Treasurer')
         self.assertNotContains(res, 'Generic issue')
     
-    def test_index_smsa_has_public_profile_no_petition(self):
+    def test_index_smsa_has_public_statement_no_petition(self):
         self.webauthLogin('ldavid')
         res = self.client.get('/issues/manage')
         self.assertContains(res, 'public profile')
         self.assertNotContains(res, '/petitions/larry-david')
     
-    def test_index_assu_has_no_public_profile_but_has_petition(self):
+    def test_index_assu_has_no_public_statement_but_has_petition(self):
         self.webauthLogin('jsmith')
         res = self.client.get('/issues/manage')
-        if not issue('super-sophomores').public_profile():
+        if not issue('super-sophomores').public_statement():
             self.assertNotContains(res, 'public profile')
         self.assertContains(res, '/petitions/super-sophomores')
        
@@ -122,9 +122,9 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         self.assertNotContains(res, 'Super Sophomores')
         # TODO: contains for exec
         
-    def test_index_senators_no_public_profile(self):
+    def test_index_senators_no_public_statement(self):
         res = self.client.get('/issues/senate')
-        if issue('leland-senator').public_profile():
+        if issue('leland-senator').public_statement():
             self.assertContains(res, 'candidate statement')
         else:
             self.assertNotContains(res, 'candidate statement')

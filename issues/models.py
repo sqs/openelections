@@ -152,7 +152,7 @@ class Issue(models.Model):
     def show_petition_results(self):
         return False
     
-    def public_profile(self):
+    def public_statement(self):
         return True
         
     def position_description(self):
@@ -223,7 +223,7 @@ class SpecialFeeRequest(FeeRequest):
     def kind_name(self):
         return "Special Fee group"
         
-    def public_profile(self):
+    def public_statement(self):
         return False
         
     def elected_name(self):
@@ -355,7 +355,7 @@ class SMSACandidate(Candidate):
     def needs_petition(self):
         return False
         
-    def public_profile(self):
+    def public_statement(self):
         return True
     
     def kind_name(self):

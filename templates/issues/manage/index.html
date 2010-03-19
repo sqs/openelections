@@ -5,7 +5,7 @@
 {% for issue in issues %}
     <h1>{{ issue.name_and_office }}</h1>
     <dl>
-        {% if issue.public_profile %}
+        {% if issue.public_statement %}
             <dt>Public profile:</dt>
             <dd>
                 View:
@@ -27,7 +27,7 @@
             </dd>
         {% endif %}
         
-        {% if not issue.public_profile and not issue.needs_petition %}
+        {% if not issue.public_statement and not issue.needs_petition %}
             <dd>You've declared. You'll be notified when you can post a candidate profile.</p>
         {% endif %}
     </dl>
