@@ -108,6 +108,13 @@ class AuthenticatedIssuesManageTest(OETestCase):
         res = self.client.get('/issues/issue/larry-david')
         self.assertNotContains(res, 'Hello! New bio.')
         
+    def test_can_only_update_own_profile(self):
+        self.webauthLogin('jsmith')
+        res = self.client.post('/issues/issue/larry-david/edit', {'sunetid1': 'ldavid', 'bio': 'Hello! New bio.'})
+        self.assertEquals(res.status_code, 403)
+        res = self.client.get('/issues/issue/larry-david')
+        self.assertNotContains(res, 'Hello! New bio.')
+        
 
 class UnauthenticatedVisitorIssuesTest(OETestCase):    
     def test_index(self):
