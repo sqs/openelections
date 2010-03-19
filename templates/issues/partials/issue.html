@@ -16,7 +16,7 @@
             {% endif %}
         {% endif %}
     {% endif %}
-    {% if issue.public_statement and not detail %}
+    {% if issue.public_statement and issue.bio and not detail %}
         <dd>
             <a href="{% url issues.views.detail issue.slug %}">Read full {{issue.noun}} statement</a>
         </dd>
