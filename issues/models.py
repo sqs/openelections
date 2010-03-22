@@ -226,6 +226,12 @@ class SpecialFeeRequest(FeeRequest):
     def public_statement(self):
         return False
         
+    def petition_open(self):
+        return False
+
+    def show_petition_results(self):
+        return False
+        
     def elected_name(self):
         return "Special Fees"
     
