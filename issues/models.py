@@ -92,7 +92,7 @@ class Issue(models.Model):
     petition_signatures_count = models.IntegerField(default=0)
     
     received_declaration = models.BooleanField(default=False)
-    signed_voterguide_agreement = models.BooleanField(default=False)
+    signed_voterguide_agreement = models.BooleanField(default=True)
     
     # restriction to certain populations
     electorate = models.ManyToManyField(Electorate, related_name='issues') #MultipleChoiceField(max_length=250, choices=oe_constants.ELECTORATES)
