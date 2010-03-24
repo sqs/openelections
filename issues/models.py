@@ -227,10 +227,10 @@ class SpecialFeeRequest(FeeRequest):
         return False
         
     def petition_open(self):
-        return False
+        return True
 
     def show_petition_results(self):
-        return False
+        return True
         
     def elected_name(self):
         return "Special Fees"
