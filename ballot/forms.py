@@ -76,6 +76,7 @@ class SenateCandidatesField(CandidatesField):
 def get_all_issues(kind):
     issues = list(Issue.filter_by_kinds([kind]).filter(public=True).all())
     random.shuffle(issues)
+    issues = map(Issue.get_typed, issues)
     return issues
 
 def ballot_form_factory(electorate):
