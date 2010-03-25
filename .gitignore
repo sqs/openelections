@@ -7,4 +7,5 @@ data/
 *.gif
 *.png
 .DS_Store
+._*
 
