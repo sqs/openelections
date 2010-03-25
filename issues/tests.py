@@ -5,6 +5,19 @@ from openelections.petitions.models import Signature
 def issue(slug):
     return Issue.objects.get(slug=slug).get_typed()
 
+class IssueTest(OETestCase):
+    def test_filter_by_kinds(self):
+        senators = Issue.filter_by_kinds(['US']).all()
+        lsenator = senators[0].get_typed()
+        self.assertEquals(issue('leland-senator'), lsenator)
+        execs = Issue.filter_by_kinds(['Exec']).all()
+        self.assertEquals(len(execs), 0)
+    
+    def test_shuffles(self):
+        """We don't actually test that it randomizes the order, obviously, just that it
+        doesn't throw any exceptions, etc."""
+        pass
+
 class GSCCandidateTest(OETestCase):
     def test_district(self):
         self.assertEquals(issue('bill-clinton').district().name, 'School of Law')

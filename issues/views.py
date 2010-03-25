@@ -34,7 +34,7 @@ def index(request, show=None):
         kind_filter = index_filters.get(show, None)
         if kind_filter is None:
             return HttpResponseNotFound()
-        issues = Issue.objects.filter(public=True, kind__in=kind_filter).all()
+        issues = Issue.filter_by_kinds(kind_filter).filter(public=True).all()
     else:
         issues = Issue.objects.filter(public=True).all()
     issues = map(Issue.get_typed, issues)

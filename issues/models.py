@@ -192,6 +192,12 @@ class Issue(models.Model):
         return "issues/partials/issue.html"
     
     @classmethod
+    def filter_by_kinds(klass, kinds):
+        '''Returns all Issues whose kind is one of those in +kinds+, a list
+        of strings.'''
+        return klass.objects.filter(kind__in=kinds)
+    
+    @classmethod
     def filter_by_sponsor(klass, sunetid):
         '''Returns all issues sponsored by sunetid or of which sunetid
         is a member.'''
