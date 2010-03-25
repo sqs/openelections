@@ -7,20 +7,20 @@ from openelections.ballot.models import Vote
 from openelections.issues.models import Issue, SenateCandidate
 
 class CandidatesField(forms.ModelMultipleChoiceField):
-    def label_from_instance(self, obj):
-        s = ['<ul class="issues">']
-        for cand in self.queryset:
-            s.append(self.widget_for_candidate(cand))
-        s.append('</ul>')
-        return mark_safe(''.join(s))
+    # def label_from_instance(self, obj):
+    #     s = ['<ul class="issues">']
+    #     for cand in self.queryset:
+    #         s.append(self.widget_for_candidate(cand))
+    #     s.append('</ul>')
+    #     return mark_safe(''.join(s))
         
-    def widget_for_candidate(self, cand):
-        attrs = dict(issue_pk=cand.pk, html_id="issue_%d" % cand.pk, 
-                     html_name="candidates_us", label=cand.title)
-        return '''<li class="issue">
-                    <input type="checkbox" name="%(html_name)s" id="%(html_id)s" value="%(issue_pk)d">
-                    <label for="%(html_id)s">%(label)s</label>
-                  </li>''' % attrs
+    # def widget_for_candidate(self, cand):
+    #     attrs = dict(issue_pk=cand.pk, html_id="issue_%d" % cand.pk, 
+    #                  html_name="candidates_us", label=cand.title)
+    #     return '''<li class="issue">
+    #                 <input type="checkbox" name="%(html_name)s" id="%(html_id)s" value="%(issue_pk)d">
+    #                 <label for="%(html_id)s">%(label)s</label>
+    #               </li>''' % attrs
         
     def __unicode__(self):
         return self.label_from_instance(None)
@@ -74,17 +74,29 @@ class SenateCandidatesField(CandidatesField):
 # 
 #
 
-def get_all_issues(kind):
-    issues = list(Issue.filter_by_kinds([kind]).filter(public=True).all())
-    random.shuffle(issues)
-    issues = map(Issue.get_typed, issues)
-    return issues
-
-def ballot_form_factory(electorate):
-    class _BallotForm(forms.Form):
-        pass
+def ballot_form_factory(_electorate):
+    if not _electorate:
+        raise Exception
     
-    _BallotForm.votes_us = SenateCandidatesField(queryset=get_all_issues('US'))
+    class _BallotForm(forms.Form):
+        electorate = _electorate
+        voter_id = forms.CharField()
+        
+        votes_us = SenateCandidatesField(widget=forms.CheckboxSelectMultiple, queryset=Issue.objects.filter(kind='US').all())
+        
+        def save(self):
+            # TODO: transactions
+            voter_id = self.cleaned_data['voter_id']
+            for issue in self.cleaned_data['votes_us']:
+                v = Vote(voter_id=voter_id, issue=issue, electorate=self.electorate)
+                v.save()
+                
+        def clean(self):
+            return self.cleaned_data
+        
+    
+    #_BallotForm.electorate = electorate
+    
     #_BallotForm.votes_gsc = CandidatesGSCField(queryset=CandidateGSC.objects.all())
     #_BallotForm.votes_exec = SlatesExecField(queryset=SlateExec.objects.all()) # verify that this maintains order
     #_BallotForm.votes_classpres = SlatesClassPresField(queryset=SlateClassPresident.objects.all())
