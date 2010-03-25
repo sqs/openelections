@@ -9,7 +9,11 @@ def index(request, electorate_name='Freshman'):
     ballotform = ballot_form_factory(electorate)
     return render_to_response('ballot/ballot.html', {'electorate': electorate, 'form': ballotform})
 
-def vote(request, issue_id):
+def vote_all(request):
+    postdata = dict(request.POST)
+    return HttpResponse("%r" % postdata)
+
+def vote_one(request, issue_id):
     postdata = request.POST
     return HttpResponse("%r" % postdata)
 

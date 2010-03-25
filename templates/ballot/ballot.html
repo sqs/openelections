@@ -16,7 +16,7 @@
             padding-top:0 !important;
         }
         
-    br, h1, h2, h3 { clear:both;}
+    br, hr, h1, h2, h3 { clear:both;}
     
     #container {
         margin:0;
@@ -40,6 +40,7 @@
         #profile img {
             float:right;
         }
+
     
     section ul, section li {
         list-style-type:none;
@@ -70,7 +71,7 @@
 
 
 {% block content %}
-<form id="ballot" method="post" action="">
+<form id="ballot" method="post" action="{% url ballot.views.vote_all %}">
 
 {% if form.votes_us %}
     <section class="candidates">
@@ -109,6 +110,13 @@
         {% endfor %}
     </section>
 {% endif %}
+
+<br>
+<hr>
+
+<section class="submit">
+    <input type="submit" value="Submit ballot">
+</section>
 
 </form>
 

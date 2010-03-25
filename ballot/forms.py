@@ -15,10 +15,10 @@ class CandidatesField(forms.ModelMultipleChoiceField):
         return mark_safe(''.join(s))
         
     def widget_for_candidate(self, cand):
-        attrs = dict(html_id="issue_%d" % cand.pk, html_name="candidates_us",
-                     label=cand.title)
+        attrs = dict(issue_pk=cand.pk, html_id="issue_%d" % cand.pk, 
+                     html_name="candidates_us", label=cand.title)
         return '''<li class="issue">
-                    <input type="checkbox" name="%(html_name)s" id="%(html_id)s">
+                    <input type="checkbox" name="%(html_name)s" id="%(html_id)s" value="%(issue_pk)d">
                     <label for="%(html_id)s">%(label)s</label>
                   </li>''' % attrs
         
@@ -27,6 +27,7 @@ class CandidatesField(forms.ModelMultipleChoiceField):
 
 class SenateCandidatesField(CandidatesField):
     pass
+    
 # 
 # class CandidatesGSCField(CandidatesField):
 #     pass
