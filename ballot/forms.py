@@ -1,30 +1,32 @@
+import random
 from django import forms
+from django.forms.formsets import formset_factory
 from django.utils.safestring import mark_safe
 from openelections import constants as oe_constants
 from openelections.ballot.models import Vote
-from openelections.issues.models import Issue #, CandidateUS, CandidateGSC, SlateExec, SlateClassPresident, SpecialFeeRequest
+from openelections.issues.models import Issue, SenateCandidate
 
-# class CandidatesField(forms.ModelMultipleChoiceField):
-#     def label_from_instance(self, obj):
-#         s = ['<ul class="issues">']
-#         for cand in self.queryset:
-#             s.append(self.widget_for_candidate(cand))
-#         s.append('</ul>')
-#         return mark_safe(''.join(s))
-#         
-#     def widget_for_candidate(self, cand):
-#         attrs = dict(html_id="issue_%d" % cand.pk, html_name="candidates_us",
-#                      label=cand.display_title())
-#         return '''<li class="issue">
-#                     <input type="checkbox" name="%(html_name)s" id="%(html_id)s">
-#                     <label for="%(html_id)s">%(label)s</label>
-#                   </li>''' % attrs
-#         
-#     def __unicode__(self):
-#         return self.label_from_instance(None)
-# 
-# class CandidatesUSField(CandidatesField):
-#     pass
+class CandidatesField(forms.ModelMultipleChoiceField):
+    def label_from_instance(self, obj):
+        s = ['<ul class="issues">']
+        for cand in self.queryset:
+            s.append(self.widget_for_candidate(cand))
+        s.append('</ul>')
+        return mark_safe(''.join(s))
+        
+    def widget_for_candidate(self, cand):
+        attrs = dict(html_id="issue_%d" % cand.pk, html_name="candidates_us",
+                     label=cand.title)
+        return '''<li class="issue">
+                    <input type="checkbox" name="%(html_name)s" id="%(html_id)s">
+                    <label for="%(html_id)s">%(label)s</label>
+                  </li>''' % attrs
+        
+    def __unicode__(self):
+        return self.label_from_instance(None)
+
+class SenateCandidatesField(CandidatesField):
+    pass
 # 
 # class CandidatesGSCField(CandidatesField):
 #     pass
@@ -69,22 +71,28 @@ from openelections.issues.models import Issue #, CandidateUS, CandidateGSC, Slat
 #     def __unicode__(self):
 #         return super(SpecialFeeRequestField, self).__unicode__()
 # 
-# 
-def ballot_form_factory(voter_type):
+#
+
+def get_all_issues(kind):
+    issues = list(Issue.filter_by_kinds([kind]).filter(public=True).all())
+    random.shuffle(issues)
+    return issues
+
+def ballot_form_factory(electorate):
     class _BallotForm(forms.Form):
         pass
     
-    _BallotForm.votes_us = CandidatesUSField(queryset=CandidateUS.objects.all())
-    _BallotForm.votes_gsc = CandidatesGSCField(queryset=CandidateGSC.objects.all())
-    _BallotForm.votes_exec = SlatesExecField(queryset=SlateExec.objects.all()) # verify that this maintains order
-    _BallotForm.votes_classpres = SlatesClassPresField(queryset=SlateClassPresident.objects.all())
+    _BallotForm.votes_us = SenateCandidatesField(queryset=get_all_issues('US'))
+    #_BallotForm.votes_gsc = CandidatesGSCField(queryset=CandidateGSC.objects.all())
+    #_BallotForm.votes_exec = SlatesExecField(queryset=SlateExec.objects.all()) # verify that this maintains order
+    #_BallotForm.votes_classpres = SlatesClassPresField(queryset=SlateClassPresident.objects.all())
     
-    _BallotForm.fields_specfees = []
-    for fee in SpecialFeeRequest.objects.all():
-        field_name = "specfee_%d" % fee.pk
-        field = SpecialFeeRequestField()
-        field.specialfeerequest = fee
-        _BallotForm.base_fields[field_name] = field
-        _BallotForm.fields_specfees.append(field)
+    # _BallotForm.fields_specfees = []
+    # for fee in SpecialFeeRequest.objects.all():
+    #     field_name = "specfee_%d" % fee.pk
+    #     field = SpecialFeeRequestField()
+    #     field.specialfeerequest = fee
+    #     _BallotForm.base_fields[field_name] = field
+    #     _BallotForm.fields_specfees.append(field)
     
     return _BallotForm

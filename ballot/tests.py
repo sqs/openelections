@@ -5,4 +5,6 @@ def issue(slug):
     return Issue.objects.get(slug=slug).get_typed()
 
 class UndergradBallotTest(OETestCase):
-    pass
+    def test_has_undergrad_senators(self):
+        res = self.client.get('/ballot/')
+        self.assertContains(res, 'Leland Q. Senator')

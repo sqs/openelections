@@ -1,11 +1,13 @@
-from django.shortcuts import render_to_response
 from django.http import HttpResponse
+from django.shortcuts import render_to_response, get_object_or_404
 from openelections import constants as oe_constants
-from openelections.issues.models import Issue#, CandidateUS, CandidateGSC, SlateExec, SlateClassPresident
+from openelections.issues.models import Electorate, Issue
 from openelections.ballot.forms import ballot_form_factory
 
-def index(request):
-    return render_to_response('ballot/ballot.html', {})
+def index(request, electorate_name='Freshman'):
+    electorate = get_object_or_404(Electorate, name=electorate_name)
+    ballotform = ballot_form_factory(electorate)
+    return render_to_response('ballot/ballot.html', {'electorate': electorate, 'form': ballotform})
 
 def vote(request, issue_id):
     postdata = request.POST
