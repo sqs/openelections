@@ -258,6 +258,20 @@ class CandidateStatementsTest(OETestCase):
         res = self.client.get('/issues/issue/leland-senator')
         self.assertContains(res, 'Leland Q. Senator')
         self.assertContains(res, 'Hello! My name is Leland Q. Senator, and')
+        self.assertContains(res, 'lsenator@stanford.edu')
+        
+    def test_detail_shows_names_of_all_slate_members(self):
+        res = self.client.get('/issues/issue/super-sophomores')
+        self.assertContains(res, 'Super Sophomores')
+        self.assertContains(res, 'John Smith')
+        self.assertContains(res, 'jsmith@stanford.edu')
+        self.assertContains(res, 'Alice Smith')
+        self.assertContains(res, 'asmith@stanford.edu')
+        self.assertContains(res, 'Bob Smith')
+        self.assertContains(res, 'bsmith@stanford.edu')
+        self.assertContains(res, 'Carol Smith')
+        self.assertContains(res, 'csmith@stanford.edu')
+        
         
         
         
