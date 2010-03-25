@@ -5,16 +5,11 @@ from openelections.issues.models import Issue#, CandidateUS, CandidateGSC, Slate
 from openelections.ballot.forms import ballot_form_factory
 
 def index(request):
-    # issues = dict()
-    # issues[oe_constants.ISSUE_US] = CandidateUS.objects.all()
-    # issues[oe_constants.ISSUE_GSC] = CandidateGSC.objects.all()
-    # issues[oe_constants.ISSUE_EXEC] = SlateExec.objects.all()
-    # issues[oe_constants.ISSUE_CLASSPRES] = SlateClassPresident.objects.all()
-    ballotform = ballot_form_factory('a')
-    return render_to_response('ballot/ballot.html', {'voter_type': 'U', 'form': ballotform})
+    return render_to_response('ballot/ballot.html', {})
 
 def vote(request, issue_id):
-    return HttpResponse("type=%s id=%s" % (issue_type, issue_id))
+    postdata = request.POST
+    return HttpResponse("%r" % postdata)
 
 def results(request):
     issues = Issue.objects.all()
