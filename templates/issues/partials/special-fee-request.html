@@ -8,7 +8,7 @@
         <dd>{{ issue.name1 }}, <a href="mailto:{{ issue.sunetid1 }}@stanford.edu">{{ issue.sunetid1 }}@stanford.edu</a></dd>
     {% else %}
         {% if issue.budget %}
-            <dt><a href="/{{ issue.budget.url }}">View budget PDF</a></dt>
+            <dt><a href="/{{ issue.budget.url }}">View request (PDF)</a></dt>
         {% endif %}
     {% endif %}
     
