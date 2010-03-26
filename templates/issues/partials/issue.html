@@ -1,5 +1,5 @@
 <dl>
-    {% if issue.public_statement %}
+    {% if issue.statement_is_public %}
         {% if detail %}
             {% if issue.sunetids|length_is:"1" %}
                 <dt>Email</dt>
@@ -23,19 +23,19 @@
                 {% endif %}
             {% endif %}
         {% endif %}
-        {% if issue.bio %}
+        {% if issue.statement %}
             {% if detail %}
                 <dt>{{ issue.noun|capfirst }} statement</dt>
                 {% if issue.image and detail %}
                     <div style="float:right"><img style="max-width:300px;max-height:400px;margin:0 15px 15px 0" src="/{{ issue.image.url }}"></div>
                 {% endif %}
-                <dd>{{ issue.bio|linebreaks }}</dd>
+                <dd>{{ issue.statement|linebreaks }}</dd>
             {% else %}
-                <dd>{{ issue.bio|linebreaks|truncatewords:200 }}</dd>
+                <dd>{{ issue.statement|linebreaks|truncatewords:200 }}</dd>
             {% endif %}
         {% endif %}
     {% endif %}
-    {% if issue.public_statement and issue.bio and not detail %}
+    {% if issue.statement_is_public and issue.statement and not detail %}
         <dd>
             <a href="{% url issues.views.detail issue.slug %}">Read full {{issue.noun}} statement</a>
         </dd>

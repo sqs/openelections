@@ -5,7 +5,7 @@
 {% for issue in issues %}
     <h1>{{ issue.name_and_office }}</h1>
     <dl>
-        {% if issue.public_statement %}
+        {% if issue.statement_is_public %}
             <dt>{{ issue.noun|capfirst }} statement:</dt>
             <dd>
                 View:
@@ -27,7 +27,7 @@
             </dd>
         {% endif %}
         
-        {% if not issue.public_statement and not issue.needs_petition %}
+        {% if not issue.statement_is_public and not issue.needs_petition %}
             <dd>You've declared. You'll be notified when you can post a candidate statement.</p>
         {% endif %}
     </dl>

@@ -155,9 +155,9 @@ class EditIssueForm(IssueForm):
 class EditIssueForm(EditIssueForm):
     class Meta:
         model = Issue
-        fields = ('bio', 'image',)
+        fields = ('statement', 'image',)
     
-    bio = forms.CharField(widget=forms.Textarea(attrs={'rows':25, 'cols':70, 'style':'width:98%'}))
+    statement = forms.CharField(widget=forms.Textarea(attrs={'rows':25, 'cols':70, 'style':'width:98%'}))
         
     def __init__(self, *args, **kwargs):
         super(EditIssueForm, self).__init__(*args, **kwargs)

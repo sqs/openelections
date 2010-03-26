@@ -78,9 +78,9 @@ class Electorate(models.Model):
 class Issue(models.Model):        
     title = models.CharField(max_length=200)
     kind = models.CharField(max_length=64, choices=oe_constants.ISSUE_TYPES)
-    bio = models.TextField(default='', blank=True)
-    bio_short = models.TextField(default='', blank=True)
-    bio_petition = models.TextField(default='', blank=True)
+    statement = models.TextField(default='', blank=True)
+    statement_short = models.TextField(default='', blank=True)
+    statement_petition = models.TextField(default='', blank=True)
     image = models.ImageField(upload_to='media/issue_images', blank=True)
     slug = models.SlugField(blank=False)
     
@@ -113,8 +113,13 @@ class Issue(models.Model):
     sunetid5 = models.CharField(max_length=8, blank=True)
     
     # special fee groups
-    budget = models.FileField(upload_to='budgets', blank=True)
+    budget = models.FileField(upload_to='media/specialfees', blank=True)
+    past_budget = models.FileField(upload_to='media/specialfees', blank=True)
+    account_statement = models.FileField(upload_to='media/specialfees', blank=True)
+    total_request_amount = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    total_past_request_amount = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     budget_summary = models.TextField(blank=True)
+    petition_budget_summary = models.TextField(blank=True)
     
     def __unicode__(self):
         return "%s: %s" % (self.kind, self.title)
@@ -155,7 +160,7 @@ class Issue(models.Model):
     def show_petition_results(self):
         return False
     
-    def public_statement(self):
+    def statement_is_public(self):
         return True
         
     def position_description(self):
@@ -232,7 +237,7 @@ class SpecialFeeRequest(FeeRequest):
     def kind_name(self):
         return "Special Fee group"
         
-    def public_statement(self):
+    def statement_is_public(self):
         return False
         
     def petition_open(self):
@@ -370,7 +375,7 @@ class SMSACandidate(Candidate):
     def needs_petition(self):
         return False
         
-    def public_statement(self):
+    def statement_is_public(self):
         return True
     
     def kind_name(self):

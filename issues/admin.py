@@ -15,22 +15,23 @@ issue_members.short_description = 'Candidate/members/sponsors'
 
 class IssueAdmin(admin.ModelAdmin):
     fieldsets = [
-        (None, {'fields': ('title', 'kind')}),
-        ('Profile', {'fields': ('bio', 'bio_petition', 'image', 'slug', 'public')}),
+        (None, {'fields': ('title', 'kind', 'slug', 'public')}),
         ('Electorate', {'fields': ('electorate',)}),
         ('Person 1', {'fields': ('name1', 'sunetid1',)}),
-        ('People 2-5', {'classes': ('collapse',),
-                        'fields': ('name2', 'sunetid2',
+        ('People 2-5', {'fields': ('name2', 'sunetid2',
                                    'name3', 'sunetid3',
                                    'name4', 'sunetid4',
                                    'name5', 'sunetid5',)}),
-        ('Petition', {'classes': ('collapse',),
-                      'fields': ('petition_validated', 'petition_signatures_count')}),
-        ('Special Fee group', {'classes': ('collapse',), 'fields': ('budget', 'budget_summary')}),
+        ('Statement', {'fields': ('statement', 'image')}),
+        ('Misc.', {'fields': ('received_declaration', 'signed_voterguide_agreement')}),
+        ('Petition', {'fields': ('petition_validated', 'petition_signatures_count')}),
+        ('Special Fee group', {'fields': ('total_request_amount', 'total_past_request_amount', 
+                                          'budget_summary', 'petition_budget_summary',
+                                          'budget', 'past_budget', 'account_statement')}),
     ]
     prepopulated_fields = {'slug': ('title',)}
     save_on_top = True
-    list_display = ('title', 'kind', issue_members, issue_num_signatures, 'petition_validated', 'received_declaration', 'signed_voterguide_agreement')
+    list_display = ('title', 'kind', issue_members, 'received_declaration', 'signed_voterguide_agreement')
     list_editable = ('received_declaration', 'signed_voterguide_agreement')
 
 admin.site.register(Issue, IssueAdmin)

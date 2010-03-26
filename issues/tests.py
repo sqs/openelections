@@ -92,7 +92,7 @@ class AuthenticatedIssuesManageTest(OETestCase):
     def test_index_assu_has_no_public_statement_but_has_petition(self):
         self.webauthLogin('jsmith')
         res = self.client.get('/issues/manage')
-        if not issue('super-sophomores').public_statement():
+        if not issue('super-sophomores').statement_is_public():
             self.assertNotContains(res, 'statement')
         self.assertContains(res, '/petitions/super-sophomores')
        
@@ -104,10 +104,10 @@ class AuthenticatedIssuesManageTest(OETestCase):
         
     def test_update(self):
         self.webauthLogin('ldavid')
-        res = self.client.post('/issues/issue/larry-david/edit', {'bio': 'Hello! New bio.'})
+        res = self.client.post('/issues/issue/larry-david/edit', {'statement': 'Hello! New statement.'})
         self.assertRedirects(res, '/issues/issue/larry-david/edit')      
         res = self.client.get('/issues/issue/larry-david')
-        self.assertContains(res, 'Hello! New bio.')
+        self.assertContains(res, 'Hello! New statement.')
         
     def test_only_sponsor_can_edit(self):
         self.webauthLogin('jsmith')
@@ -116,17 +116,17 @@ class AuthenticatedIssuesManageTest(OETestCase):
         
     def test_only_sponsor_can_update(self):
         self.webauthLogin('jsmith')
-        res = self.client.post('/issues/issue/larry-david/edit', {'bio': 'Hello! New bio.'})
+        res = self.client.post('/issues/issue/larry-david/edit', {'statement': 'Hello! New statement.'})
         self.assertEquals(res.status_code, 403)
         res = self.client.get('/issues/issue/larry-david')
-        self.assertNotContains(res, 'Hello! New bio.')
+        self.assertNotContains(res, 'Hello! New statement.')
         
     def test_can_only_update_own_statement(self):
         self.webauthLogin('jsmith')
-        res = self.client.post('/issues/issue/larry-david/edit', {'sunetid1': 'ldavid', 'bio': 'Hello! New bio.'})
+        res = self.client.post('/issues/issue/larry-david/edit', {'sunetid1': 'ldavid', 'statement': 'Hello! New statement.'})
         self.assertEquals(res.status_code, 403)
         res = self.client.get('/issues/issue/larry-david')
-        self.assertNotContains(res, 'Hello! New bio.')
+        self.assertNotContains(res, 'Hello! New statement.')
         
 
 class UnauthenticatedVisitorIssuesTest(OETestCase):    
@@ -148,7 +148,7 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         
     def test_index_senators_no_public_statement(self):
         res = self.client.get('/issues/senate')
-        if issue('leland-senator').public_statement():
+        if issue('leland-senator').statement_is_public():
             self.assertContains(res, 'candidate statement')
         else:
             self.assertNotContains(res, 'candidate statement')
