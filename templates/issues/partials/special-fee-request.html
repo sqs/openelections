@@ -1,3 +1,4 @@
+{% load markup %}
 <dl>
     <dt>Total request amount</dt>
     <dd>${{ issue.total_request_amount|floatformat:2 }}</dd>
@@ -13,9 +14,9 @@
             {% if issue.image and detail %}
                 <div style="float:right"><img style="max-width:300px;max-height:400px;margin:0 15px 15px 0" src="/{{ issue.image.url }}"></div>
             {% endif %}
-            <dd>{{ issue.statement|linebreaks }}</dd>
+            <dd>{{ issue.statement|markdown }}</dd>
         {% else %}
-            <dd>{{ issue.statement|linebreaks|truncatewords:200 }}</dd>
+            <dd>{{ issue.statement|markdown|truncatewords_html:200 }}</dd>
             <dt>
                 <a href="{% url issues.views.detail issue.slug %}">See full budget &amp; group statement</a>
             </dt>

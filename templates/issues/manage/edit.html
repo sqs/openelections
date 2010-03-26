@@ -4,6 +4,8 @@
 
 <h1>Editing {{ issue.noun }} statement for {{ issue.name_and_office }}</h1>
 
+<p>To format your statement with bold text, add bullet points, etc., use <a href="http://daringfireball.net/projects/markdown/basics">Markdown</a>. For example, surround phrases **with two asterisks** to make them bold.</p>
+
 <form action="{% url issues.views.manage_edit issue.slug %}" method="post" enctype="multipart/form-data">
     <dl>
     {% for field in form %}
