@@ -121,6 +121,8 @@ class Issue(models.Model):
     budget_summary = models.TextField(blank=True)
     petition_budget_summary = models.TextField(blank=True)
     
+    admin_notes = models.TextField(default='', blank=True)
+    
     def __unicode__(self):
         return "%s: %s" % (self.kind, self.title)
 
