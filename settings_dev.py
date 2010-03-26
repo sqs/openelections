@@ -12,3 +12,5 @@ DATABASE_PORT = ''             # Set to empty string for default. Not used with 
 
 MEDIA_ROOT = '/home/sqs/proj/ec/openelections/public'
 
+WEBAUTH_SECRET = '2aca147905asioerhdf67fds7y7ydsyhdsg6afbfbyfbbo4957'
+WEBAUTH_URL = "http://stanford.edu/~sqs/cgi-bin/authenticate_elections2_dev.php?from="

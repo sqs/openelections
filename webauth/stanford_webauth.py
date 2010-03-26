@@ -6,14 +6,11 @@ from django.conf import settings
 
 AUTH_URL = "https://weblogin.stanford.edu" 
 CAS_NS = {'cas': 'http://www.yale.edu/tp/cas'}
-WEBAUTH_SECRET = '2aca147905asioerhdf67fds7y7ydsyhdsg6afbfbyfbbo4957'
 
 def make_secret_hash(sunetid):
     m = hashlib.md5()
-    m.update(WEBAUTH_SECRET + sunetid)
+    m.update(settings.WEBAUTH_SECRET + sunetid)
     return m.hexdigest()
-
-WEBAUTH_URL = "http://stanford.edu/~sqs/cgi-bin/authenticate_elections2.php?from="
 
 def webauth_required(function):
     def _dec(view_func):
@@ -48,7 +45,7 @@ def webauth_required(function):
                     return HttpResponse("authentication error")
             else:
                 url = urllib2.quote(request.build_absolute_uri())
-                return HttpResponseRedirect(WEBAUTH_URL + url)
+                return HttpResponseRedirect(settings.WEBAUTH_URL + url)
         _view.__name__ = view_func.__name__
         _view.__dict__ = view_func.__dict__
         _view.__doc__ = view_func.__doc__
