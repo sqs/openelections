@@ -11,4 +11,4 @@ TEMPLATE_DIRS = ('/var/www/openelections/templates/',)
 MEDIA_ROOT = '/var/www/openelections/public/'
 
 WEBAUTH_URL = "http://stanford.edu/~sqs/cgi-bin/authenticate_elections2.php?from="
-from openelections.settings_private import WEBAUTH_SECRET
+from openelections.settings_secret import WEBAUTH_SECRET
