@@ -33,5 +33,6 @@ class IssueAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = ('title', 'kind', issue_members, 'received_declaration', 'signed_voterguide_agreement', 'admin_notes')
     list_editable = ('received_declaration', 'signed_voterguide_agreement')
+    list_filter = ('kind',)
 
 admin.site.register(Issue, IssueAdmin)
