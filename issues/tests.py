@@ -88,13 +88,14 @@ class AuthenticatedIssuesManageTest(OETestCase):
         res = self.client.get('/issues/manage')
         self.assertContains(res, 'Edit candidate statement')
         self.assertNotContains(res, '/petitions/larry-david')
-    
-    def test_index_assu_has_no_public_statement_but_has_petition(self):
-        self.webauthLogin('jsmith')
-        res = self.client.get('/issues/manage')
-        if not issue('super-sophomores').statement_is_public():
-            self.assertNotContains(res, 'statement')
-        self.assertContains(res, '/petitions/super-sophomores')
+
+    # DISABLED because petitions are closed
+    # def test_index_assu_has_no_public_statement_but_has_petition(self):
+    #     self.webauthLogin('jsmith')
+    #     res = self.client.get('/issues/manage')
+    #     if not issue('super-sophomores').statement_is_public():
+    #         self.assertNotContains(res, 'statement')
+    #     self.assertContains(res, '/petitions/super-sophomores')
        
     def test_edit_ldavid(self):
         self.webauthLogin('ldavid')
@@ -285,6 +286,18 @@ class CandidateStatementsTest(OETestCase):
         self.assertContains(res, 'Carol Smith')
         self.assertContains(res, 'csmith@stanford.edu')
         
+class SpecialFeeStatementsTest(OETestCase):
+    def test_index_shows_total_and_statement_excerpt(self):
+        res = self.client.get('/issues/special-fee-requests')
+        self.assertContains(res, 'Stanford Test Society')
+        self.assertContains(res, 'Support Stanford Test Society!')
+        self.assertContains(res, '$34567.89')
         
+    def test_detail_shows_total_and_statement_excerpt(self):
+        res = self.client.get('/sts')
+        self.assertContains(res, 'Stanford Test Society')
+        self.assertContains(res, 'Support Stanford Test Society!')
+        self.assertContains(res, '$34567.89')
+        #self.assertContains(res, '$23456.78')
         
         

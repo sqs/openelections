@@ -1,0 +1,27 @@
+<dl>
+    <dt>Total request amount</dt>
+    <dd>${{ issue.total_request_amount|floatformat:2 }}</dd>
+    
+    {% if detail %}
+        <dt>Special Fee request sponsor</dt>
+        <dd>{{ issue.name1 }}, <a href="mailto:{{ issue.sunetid1 }}@stanford.edu">{{ issue.sunetid1 }}@stanford.edu</a></dd>
+    {% endif %}
+    
+    {% if issue.statement %}
+        <dt>Group statement</dt>
+        {% if detail %}
+            {% if issue.image and detail %}
+                <div style="float:right"><img style="max-width:300px;max-height:400px;margin:0 15px 15px 0" src="/{{ issue.image.url }}"></div>
+            {% endif %}
+            <dd>{{ issue.statement|linebreaks }}</dd>
+        {% else %}
+            <dd>{{ issue.statement|linebreaks|truncatewords:200 }}</dd>
+            <dt>
+                <a href="{% url issues.views.detail issue.slug %}">See full budget &amp; group statement</a>
+            </dt>
+        {% endif %}
+    {% endif %}
+</dl>
+
+<br style="clear:both">
+

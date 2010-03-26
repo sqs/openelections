@@ -152,7 +152,7 @@ class Issue(models.Model):
         raise NotImplementedError
     
     def needs_petition(self):
-        return True
+        return False
     
     def petition_open(self):
         return False
@@ -240,17 +240,14 @@ class SpecialFeeRequest(FeeRequest):
     def statement_is_public(self):
         return False
         
-    def petition_open(self):
-        return True
-
-    def show_petition_results(self):
-        return True
-        
     def elected_name(self):
         return "Special Fees"
     
     def name_and_office(self):
         return "a Special Fee request from %s" % self.title
+        
+    def partial_template(self):
+        return "issues/partials/special-fee-request.html"
 
 class Slate(Issue):
     class Meta:
