@@ -83,6 +83,7 @@ class Issue(models.Model):
     statement_petition = models.TextField(default='', blank=True)
     image = models.ImageField(upload_to='media/issue_images', blank=True)
     slug = models.SlugField(blank=False)
+    external_url = models.CharField(max_length=200, blank=True)
     
     # whether the issue should be shown in the public list of petitions, issues, etc.
     public = models.BooleanField(default=True)
@@ -176,7 +177,13 @@ class Issue(models.Model):
     
     def name_and_office(self):
         return "Generic issue"
-        
+    
+    def get_absolute_url(self):
+        if self.external_url:
+            return self.external_url
+        else:
+            return '/' + self.slug
+    
     def sunetids(self):
         """Returns the SUNet IDs associated with this issue, such as 
         the candidate's, the slate members', the sponsor's, etc.

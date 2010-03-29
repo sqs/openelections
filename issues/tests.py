@@ -288,6 +288,11 @@ class CandidateStatementsTest(OETestCase):
         self.assertContains(res, 'Carol Smith')
         self.assertContains(res, 'csmith@stanford.edu')
         
+    def test_index_uses_external_urls(self):
+        res = self.client.get('/issues/senate')
+        self.assertContains(res, '<a href="http://example.com"')
+        self.assertNotContains(res, '<a href="/thomas-sowell"')
+        
 class SpecialFeeStatementsTest(OETestCase):
     def test_index_shows_total_and_statement_excerpt(self):
         res = self.client.get('/issues/special-fee-requests')
