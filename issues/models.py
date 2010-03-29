@@ -239,9 +239,6 @@ class SpecialFeeRequest(FeeRequest):
     def kind_name(self):
         return "Special Fee group"
         
-    def statement_is_public(self):
-        return False
-        
     def elected_name(self):
         return "Special Fees"
     
@@ -374,9 +371,6 @@ class SMSACandidate(Candidate):
     def needs_petition(self):
         return False
         
-    def statement_is_public(self):
-        return True
-    
     def kind_name(self):
         return "%s candidate" % self.elected_name()
     
