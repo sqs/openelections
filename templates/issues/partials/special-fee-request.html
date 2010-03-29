@@ -4,30 +4,55 @@
     <dt>Total request amount</dt>
     <dd>{{ issue.total_request_amount|currency }}</dd>
     
+    <dt>Previous year request amount</dt>
+    <dd>
+        {% if issue.total_past_request_amount %}
+            {{ issue.total_past_request_amount|currency }}
+        {% else %}
+            (none)
+            {% endif %}
+    </dd>
+    
+    <dt>Change from previous request</dt>
+    <dd>{{ issue.total_request_percent_change|floatformat:"0" }}%</dd>
+    
     {% if detail %}
         <dt>Special Fee request sponsor</dt>
         <dd>{{ issue.name1 }}, <a href="mailto:{{ issue.sunetid1 }}@stanford.edu">{{ issue.sunetid1 }}@stanford.edu</a></dd>
     {% else %}
         {% if issue.budget %}
-            <dt><a href="/{{ issue.budget.url }}">View request (PDF)</a></dt>
-        {% endif %}
-    {% endif %}
-    
-    {% if issue.statement %}
-        <dt>Group statement</dt>
-        {% if detail %}
-            {% if issue.image and detail %}
-                <div style="float:right"><img style="max-width:300px;max-height:400px;margin:0 15px 15px 0" src="/{{ issue.image.url }}"></div>
-            {% endif %}
-            <dd>{{ issue.statement|markdown }}</dd>
-        {% else %}
-            <dd>{{ issue.statement|markdown|truncatewords_html:200 }}</dd>
-            <dt>
-                <a href="{% url issues.views.detail issue.slug %}">See full budget &amp; group statement</a>
-            </dt>
+            <dt><a href="{{ issue.budget.url }}">View request (PDF)</a></dt>
         {% endif %}
     {% endif %}
 </dl>
+
+{% if issue.budget %}
+    <h2>Special Fee request</h2>
+    <p><a href="{{ issue.budget.url }}">View/download request PDF</a></p>
+    {{ issue.budget.url|pdf_viewer|safe }}
+{% endif %} 
+ 
+{% if issue.statement %}
+    <h2>Group statement</h2>
+    {% if issue.image and detail %}
+        <div style="float:right"><img style="max-width:300px;max-height:400px;margin:0 15px 15px 0" src="{{ issue.image.url }}"></div>
+    {% endif %}
+    
+    {{ issue.statement|markdown }}
+{% endif %}
+
+{% if issue.past_budget %}
+    <h2>Previous request</h2>
+    <p><a href="{{ issue.past_budget.url }}">View/download previous request PDF</a></p>
+    {{ issue.past_budget.url|pdf_viewer|safe }}
+{% endif %}
+
+{% if issue.account_statement %}
+    <h2>Current account statement</h2>
+    <p><a href="{{ issue.account_statement.url }}">View/download account statement PDF</a></p>
+    {{ issue.account_statement.url|pdf_viewer|safe }}
+{% endif %}
+
 
 <br style="clear:both">
 

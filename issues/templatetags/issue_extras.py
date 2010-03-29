@@ -56,3 +56,10 @@ def currency(value):
     return moneyfmt(value, curr='$', sep=',')
     
 currency.is_safe = True
+
+@register.filter
+def pdf_viewer(url):
+    return '''<iframe src="http://docs.google.com/gview?url=%s&amp;embedded=true" 
+    style="width:100%%; height:700px;" frameborder="0"></iframe>''' % url
+    
+pdf_viewer.is_safe = True

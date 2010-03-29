@@ -1,11 +1,14 @@
 {% load markup %}
 {% load issue_extras %}
 
-<table>
+<table class="specialfees">
     <thead>
         <tr>
             <th>Group</th>
-            <th>Request amount</th>
+            <th>Total request</th>
+            <th>Prev year request</th>
+            <th>% chg</th>
+            <th>Acct statement</th>
         </tr>
     </thead>
     <tbody>
@@ -14,10 +17,29 @@
             <th>
                 <a href="{% url issues.views.detail issue.slug %}">{{ issue.title }}</a>
             </th>
-            <td>{{ issue.total_request_amount|currency }}</td>
-            {% if issue.budget %}
-                <td><a href="/{{ issue.budget.url }}">View request (PDF)</a></td>
-            {% endif %}
+            <td class="figure">
+                {% if issue.budget %}<a target="_blank" href="{{ issue.budget.url }}">{% endif %}
+                {{ issue.total_request_amount|currency }}
+                {% if issue.budget %}</a>{% endif %}
+            </td>
+            <td class="figure">
+                {% if issue.past_budget %}<a target="_blank" href="{{ issue.past_budget.url }}">{% endif %}
+                {% if issue.total_past_request_amount %}
+                    {{ issue.total_past_request_amount|currency }}
+                {% else %}
+                    (none)
+                {% endif %}
+                {% if issue.past_budget %}</a>{% endif %}
+            </td>
+            <td class="figure">{{ issue.total_request_percent_change|floatformat:"0" }}%</td>
+            <td>
+                {% if issue.account_statement %}
+                    <a target="_blank" href="{{ issue.account_statement.url }}">PDF</a>
+                {% endif %}
+            </td>
+            <td>
+                <a href="{% url issues.views.detail issue.slug %}">More info &raquo;</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

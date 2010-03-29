@@ -4,14 +4,30 @@
     <title>ASSU Elections</title>
     <link rel="stylesheet" href="http://elections.stanford.edu/res/screen-oe.css">
     <style>
-        th { min-width: 110px; }
+        th { min-width: 75px; }
         form ul, form li { list-style-type: none; padding:0 !important; margin:0 !important; }
 
         form .errors { color:red; }
         form .help_text { color:#333; font-size:0.9em; }
         form .error_field { background-color:red; padding:5px; color:white; }
         
-        ul ul, ul ul li { list-style-type:circle; }        
+        ul ul, ul ul li { list-style-type:circle; }    
+
+        th {
+            border-bottom: solid 3px #aaa;
+        }
+        
+        .specialfees th { 
+            text-align: right !important;
+            padding:5px 5px !important;
+        }
+        
+        td {
+            border-bottom: solid 1px #bbb;
+        }
+        
+        .figure { text-align:right; }
+            
         {% block style %}{% endblock %}
     </style>
     

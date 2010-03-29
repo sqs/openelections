@@ -11,8 +11,8 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
     (r'^auth/', include('openelections.webauth.urls')),
     
-   (r'^media/issue_images/(?P<path>.*)$', 'django.views.static.serve',
-           {'document_root': 'public/media/issue_images/'}),
+   (r'^media/(?P<path>.*)$', 'django.views.static.serve',
+           {'document_root': 'public/media/'}),
            
    (r'^(?P<issue_slug>[\w\d-]+)$', 'openelections.issues.views.detail'),
 )

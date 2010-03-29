@@ -254,7 +254,13 @@ class SpecialFeeRequest(FeeRequest):
         return "issues/partials/special-fee-request.html"
         
     def partial_index_template(self):
-        return "issues/partials/special-fee-requests.html"    
+        return "issues/partials/special-fee-requests.html"
+        
+    def total_request_percent_change(self):
+        if self.total_past_request_amount > 0:
+            return 100 * (self.total_request_amount - self.total_past_request_amount) / self.total_past_request_amount
+        else:
+            return 0
 
 class Slate(Issue):
     class Meta:
