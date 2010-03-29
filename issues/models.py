@@ -197,6 +197,11 @@ class Issue(models.Model):
         '''Returns the name of the partial template that should be used
         to render this issue in views, relative to the templates/ dir.'''
         return "issues/partials/issue.html"
+        
+    def partial_index_template(self):
+        '''Returns the name of the partial template for the index listing
+        of multiple such instances, relative to the templates/ dir.'''
+        return "issues/partials/issues.html"
     
     @classmethod
     def filter_by_kinds(klass, kinds):

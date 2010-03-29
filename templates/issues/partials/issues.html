@@ -1,0 +1,23 @@
+<h3>
+    {% if not detail and issue.statement_is_public %}
+        <!-- only show link if they've agreed to terms of voterguide site -->
+        {% if issue.signed_voterguide_agreement %}
+            <a href="{% url issues.views.detail issue.slug %}">
+        {% endif %}
+        {{ issue.title }}
+        {% if issue.signed_voterguide_agreement %}
+            </a>
+        {% endif %}
+    {% else %}
+        {{ issue.title }}
+    {% endif %}
+    
+    {% if issue.needs_petition and issue.show_petition_results %}
+        {% if issue.petition_validated %}
+            (validated with {{ issue.petition_signatures_count }} signatures)
+        {% else %}
+            (pending validation)
+        {% endif %}
+    {% endif %}
+</h3>
+{% include issue.partial_template %}
