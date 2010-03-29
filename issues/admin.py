@@ -22,7 +22,7 @@ class IssueAdmin(admin.ModelAdmin):
                                    'name3', 'sunetid3',
                                    'name4', 'sunetid4',
                                    'name5', 'sunetid5',)}),
-        ('Statement', {'fields': ('statement', 'statement_short', 'image', 'external_url')}),
+        ('Statement', {'fields': ('statement', 'image', 'external_url')}),
         ('Misc.', {'fields': ('received_declaration', 'signed_voterguide_agreement')}),
         ('Petition', {'fields': ('petition_validated', 'petition_signatures_count')}),
         ('Special Fee group', {'fields': ('total_request_amount', 'total_past_request_amount', 

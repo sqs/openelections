@@ -33,12 +33,12 @@
             {% endif %}
             <dd>{{ issue.statement|markdown:"safe" }}</dd>
         {% else %}
-            {% if issue.statement_short %}
+            {% if issue.statement %}
                 <dd class="statement_short">{{ issue.statement|markdown:"safe" }}</dd>
             {% endif %}
         {% endif %}
     {% endif %}
-    {% if issue.statement_is_public and issue.statement_short and not detail %}
+    {% if issue.statement_is_public and issue.statement and not detail %}
         <dd>
             <a href="{{ issue.get_absolute_url }}" {% if issue.external_url %}target="_blank"{% endif %}>Read full {{issue.noun}} statement</a>
             {% if issue.external_url %}(off-site){% endif %}
