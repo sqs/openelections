@@ -153,7 +153,7 @@ class EditIssueForm(IssueForm):
         model = Issue
         fields = ('statement', 'image',)
     
-    statement = forms.CharField(widget=forms.Textarea(attrs={'rows':25, 'cols':70, 'style':'width:98%'}))
+    statement = forms.CharField(widget=forms.Textarea(attrs={'rows':25, 'cols':70, 'style':'width:98%'}), required=False)
         
     def __init__(self, *args, **kwargs):
         super(EditIssueForm, self).__init__(*args, **kwargs)
