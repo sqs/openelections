@@ -39,7 +39,11 @@
     <h2>Special Fee request</h2>
     <p><a href="{{ issue.budget.url }}">View/download request PDF</a></p>
     {{ issue.budget.url|pdf_viewer|safe }}
-{% endif %} 
+{% endif %}
+
+{% if issue.budget_summary %}
+    {{ issue.budget_summary|safe }}
+{% endif %}
 
 {% if issue.past_budget %}
     <h2>Previous request</h2>
