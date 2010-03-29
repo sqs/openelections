@@ -30,9 +30,9 @@
                 {% if issue.image and detail %}
                     <div style="float:right"><img style="max-width:300px;max-height:400px;margin:0 15px 15px 0" src="{{ issue.image.url }}"></div>
                 {% endif %}
-                <dd>{{ issue.statement|markdown }}</dd>
+                <dd>{{ issue.statement|markdown:"safe" }}</dd>
             {% else %}
-                <dd>{{ issue.statement|markdown|truncatewords_html:200 }}</dd>
+                <dd>{{ issue.statement_short }}</dd>
             {% endif %}
         {% endif %}
     {% endif %}
