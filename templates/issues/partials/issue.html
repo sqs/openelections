@@ -9,8 +9,10 @@
             {% else %}
                 <dt>{{ issue.name1 }}</dt>
                 <dd><a href="mailto:{{ issue.sunetid1 }}@stanford.edu">{{ issue.sunetid1 }}@stanford.edu</a></dd>
-                <dt>{{ issue.name2 }}</dt>
-                <dd><a href="mailto:{{ issue.sunetid2 }}@stanford.edu">{{ issue.sunetid2 }}@stanford.edu</a></dd>
+                {% if issue.name2 %}
+                    <dt>{{ issue.name2 }}</dt>
+                    <dd><a href="mailto:{{ issue.sunetid2 }}@stanford.edu">{{ issue.sunetid2 }}@stanford.edu</a></dd>
+                {% endif %}
                 {% if issue.sunetid3 %}
                     <dt>{{ issue.name3 }}</dt>
                     <dd><a href="mailto:{{ issue.sunetid3 }}@stanford.edu">{{ issue.sunetid3 }}@stanford.edu</a></dd>
