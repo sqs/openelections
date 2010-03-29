@@ -295,13 +295,12 @@ class SpecialFeeStatementsTest(OETestCase):
         res = self.client.get('/issues/special-fee-requests')
         self.assertContains(res, 'Stanford Test Society')
         self.assertContains(res, 'Support Stanford Test Society!')
-        self.assertContains(res, '$34567.89')
+        self.assertContains(res, '$34,567.89')
         
     def test_detail_shows_total_and_statement_excerpt(self):
         res = self.client.get('/sts')
         self.assertContains(res, 'Stanford Test Society')
         self.assertContains(res, 'Support Stanford Test Society!')
-        self.assertContains(res, '$34567.89')
-        #self.assertContains(res, '$23456.78')
+        self.assertContains(res, '$34,567.89')
         
         

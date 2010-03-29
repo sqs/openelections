@@ -1,7 +1,8 @@
 {% load markup %}
+{% load issue_extras %}
 <dl>
     <dt>Total request amount</dt>
-    <dd>${{ issue.total_request_amount|floatformat:2 }}</dd>
+    <dd>{{ issue.total_request_amount|currency }}</dd>
     
     {% if detail %}
         <dt>Special Fee request sponsor</dt>
