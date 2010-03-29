@@ -151,14 +151,9 @@ class NewSMSACandidateForm(NewCandidateForm):
 class EditIssueForm(IssueForm):
     class Meta:
         model = Issue
-        fields = ('statement', 'statement_short', 'image',)
+        fields = ('statement', 'image',)
     
     statement = forms.CharField(widget=forms.Textarea(attrs={'rows':15, 'cols':70, 'style':'width:98%'}), required=False)
-    
-    statement_short = forms.CharField(widget=forms.Textarea(attrs={'rows':6, 'cols':50, 'style':'width:98%'}), required=False,
-                                      label='Short statement', 
-                                      help_text='This short statement (1000 chars max) is displayed on the listing pages. Use only text, no Markdown or HTML.',
-                                      max_length=1000)
         
     def __init__(self, *args, **kwargs):
         super(EditIssueForm, self).__init__(*args, **kwargs)

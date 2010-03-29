@@ -149,8 +149,7 @@ class UnauthenticatedVisitorIssuesTest(OETestCase):
         
     def test_index_senators_public_statement(self):
         res = self.client.get('/issues/senate')
-        self.assertContains(res, '**Short hello**')
-        self.assertContains(res, 'Hello! My name is Leland Q. Senator.')
+        self.assertContains(res, 'Hello! My name is Leland Q. Senator')
     
     def test_index_senators_hides_non_public(self):
         res = self.client.get('/issues/senate')
@@ -264,7 +263,7 @@ class CandidateStatementsTest(OETestCase):
     def test_index_shows_statement(self):
         res = self.client.get('/issues/senate')
         self.assertContains(res, 'Leland Q. Senator')
-        self.assertContains(res, 'Hello! My name is Leland Q. Senator.')
+        self.assertContains(res, 'Hello! My name is Leland Q. Senator, and')
         
     def test_detail_shows_statement(self):
         res = self.client.get('/issues/issue/leland-senator')

@@ -34,7 +34,7 @@
             <dd>{{ issue.statement|markdown:"safe" }}</dd>
         {% else %}
             {% if issue.statement_short %}
-                <dd>{{ issue.statement_short|urlize }}</dd>
+                <dd class="statement_short">{{ issue.statement|markdown:"safe" }}</dd>
             {% endif %}
         {% endif %}
     {% endif %}
