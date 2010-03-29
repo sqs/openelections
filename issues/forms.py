@@ -1,7 +1,7 @@
 from django import forms
 from openelections.constants import ISSUE_TYPES
 from openelections.ballot.models import Vote
-from openelections.issues.models import Electorate, Issue, Slate, ExecutiveSlate, ClassPresidentSlate, Candidate, SenateCandidate, GSCCandidate, SMSACandidate
+from openelections.issues.models import Electorate, Issue, SpecialFeeRequest, Slate, ExecutiveSlate, ClassPresidentSlate, Candidate, SenateCandidate, GSCCandidate, SMSACandidate
 
 class IssueForm(forms.ModelForm):
     class Meta:
@@ -150,10 +150,6 @@ class NewSMSACandidateForm(NewCandidateForm):
 
 class EditIssueForm(IssueForm):
     class Meta:
-        pass
-
-class EditIssueForm(EditIssueForm):
-    class Meta:
         model = Issue
         fields = ('statement', 'image',)
     
@@ -165,11 +161,16 @@ class EditIssueForm(EditIssueForm):
         if instance:
             if instance.image:
                 self.fields['image'].label = 'Replace existing image with another image'
-        
+
+class EditSpecialFeeRequestForm(EditIssueForm):
+    class Meta:
+        model = SpecialFeeRequest
+        fields = ('statement', 'image', 'account_statement')
 
 issue_edit_forms = {
     #'CandidateUS': EditCandidateUSForm,
-    'Issue': EditIssueForm
+    'Issue': EditIssueForm,
+    'SpecialFeeRequest': EditSpecialFeeRequestForm,
 }
 
 issue_new_forms = {
