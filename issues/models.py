@@ -252,6 +252,9 @@ class SpecialFeeRequest(FeeRequest):
         
     def partial_template(self):
         return "issues/partials/special-fee-request.html"
+        
+    def partial_index_template(self):
+        return "issues/partials/special-fee-requests.html"    
 
 class Slate(Issue):
     class Meta:

@@ -1,0 +1,28 @@
+{% load markup %}
+{% load issue_extras %}
+
+<table>
+    <thead>
+        <tr>
+            <th>Group</th>
+            <th>Request amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for issue in issue_kind.list %}
+        <tr>
+            <th>
+                <a href="{% url issues.views.detail issue.slug %}">{{ issue.title }}</a>
+            </th>
+            <td>{{ issue.total_request_amount|currency }}</td>
+            {% if issue.budget %}
+                <td><a href="/{{ issue.budget.url }}">View request (PDF)</a></td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<br style="clear:both">
+

@@ -5,11 +5,9 @@
 {% regroup issues|dictsort:"kind_name" by kind_name as issues_list %}
 
 {% for issue_kind in issues_list %}
-    <h1>{{ issue_kind.grouper }}s</h1>
-    {% for issue in issue_kind.list %}
-        {% include issue.partial_index_template %}
-    {% endfor %}
-    
+    {% with issue_kind.list|first as first_issue %}
+        {% include first_issue.partial_index_template %}
+    {% endwith %}
 {% empty %}
     <!-- empty list -->
     <p>No items to show.</p>
