@@ -41,6 +41,7 @@ class SMSACandidateTest(OETestCase):
         self.assertEquals(issue('joe-biden').kind_name(), 'SMSA CCAP Rep (Clinical) candidate')
         self.assertEquals(issue('timothy-geithner').kind_name(), 'SMSA CCAP Rep (Pre-clinical) candidate')
         self.assertEquals(issue('kevin-spacey').kind_name(), 'SMSA CCAP Rep (MD-PhD) candidate')
+        self.assertEquals(issue('house').kind_name(), 'SMSA CCAP Rep (MD+) candidate')
 
     def test_oss_osr_elected_name(self):
         self.assertEquals(issue('kobe-bryant').kind_name(), 'SMSA OSS/OSR Rep candidate')

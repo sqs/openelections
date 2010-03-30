@@ -33,12 +33,14 @@ ELECTORATES = {
     'smsa-preclinical': 'SMSA Pre-clinical',
     'smsa-clinical': 'SMSA Clinical', 
     'smsa-mdphd': 'SMSA MD-PhD',
+    'smsa-mdplus': 'SMSA MD+',
 }
 
 UNDERGRAD_CLASS_YEARS = ('undergrad-sophomore', 'undergrad-junior', 'undergrad-senior')
 ASSU_POPULATIONS_ALL = ('undergrad', 'coterm', 'grad')
 SMSA_CLASS_YEARS = ('smsa-2', 'smsa-3', 'smsa-4', 'smsa-5plus')
 SMSA_POPULATIONS = ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')
+SMSA_CCAP_POPULATIONS = SMSA_POPULATIONS + ('smsa-mdplus',)
 GSC_DISTRICTS = ('gsb', 'earthsci', 'edu', 'eng', 'humsci-hum', 'humsci-natsci', 'humsci-socsci', 'law', 'med', 'gsc-atlarge')
 
 def no_smsa(s):
@@ -67,6 +69,10 @@ class Electorate(models.Model):
     @classmethod
     def smsa_populations(klass):
         return klass.queryset_with_names(SMSA_POPULATIONS)
+        
+    @classmethod
+    def smsa_ccap_populations(klass):
+        return klass.queryset_with_names(SMSA_CCAP_POPULATIONS)
         
     @classmethod
     def gsc_districts(klass):
@@ -468,10 +474,10 @@ class SMSACCAPRepCandidate(SMSACandidate):
         return 'SMSA population'
     
     def candidate_electorate_names(self):
-        return ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')
+        return SMSA_CCAP_POPULATIONS
     
     def population(self):
-        pops = Electorate.smsa_populations()
+        pops = Electorate.smsa_ccap_populations()
         pops = [p.name for p in pops]
         pop = self.electorate.filter(name__in=pops)
         if not pop:

@@ -180,6 +180,10 @@ POSITION_DESCRIPTIONS['SMSA-CCAP'] = '''
 <li>One-CCAP Rep--becomes CCAP Student Chair/Alternate OSR Rep= Attend AAMC</li>
 <li>Attend SMSA Meetings &amp; Sit on Curriculum Committee</li>
 </ul>
+<h3>MD+ CCAP Rep</h3>
+<p>Intended for a student not in the
+traditional pre-clinical or clinical portion of the curriculum (for
+example: taking year off to do research or other joint degree).</p>
 '''
 
 POSITION_DESCRIPTIONS['SMSA-OSS-OSR'] = '''
