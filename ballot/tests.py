@@ -26,25 +26,25 @@ class UndergradBallotDisplayTest(OETestCase):
         self.assertContains(res, 'Clinton/Bloomberg')
         self.assertContains(res, 'McCain/Palin')    
         
-class UndergradVoteTest(OETestCase):
-    def test_vote_for_senators(self):
-        self.webauthLogin('xyz')
-        tsowell = issue('thomas-sowell')
-        tsowell_id = str(tsowell.pk)
-        res = self.client.post('/ballot/vote', {'votes_us': [tsowell_id]})
-        v = votes('xyz', 'US')
-        self.assertTrue(len(v) == 1)
-        self.assertTrue(v[0].issue == tsowell)
-    
-    def test_ranked_vote_for_exec(self):
-        self.webauthLogin('xyz')
-        obama = issue('obama-biden')
-        mccain = issue('mccain-palin')
-        clinton = issue('clinton-bloomberg')
-        res = self.client.post('/ballot/vote', {'votes_exec': (obama.pk, clinton.pk, mccain.pk)})
-        v = votes('xyz', 'Exec')
-        self.assertTrue(len(v) == 3)
-        issues = (v[0].issue, v[1].issue, v[2].issue)
-        self.assertTrue(obama in issues)
-        self.assertTrue(mccain in issues)
-        self.assertTrue(clinton in issues)
+# class UndergradVoteTest(OETestCase):
+#     def test_vote_for_senators(self):
+#         self.webauthLogin('xyz')
+#         tsowell = issue('thomas-sowell')
+#         tsowell_id = str(tsowell.pk)
+#         res = self.client.post('/ballot/vote', {'votes_us': [tsowell_id]})
+#         v = votes('xyz', 'US')
+#         self.assertTrue(len(v) == 1)
+#         self.assertTrue(v[0].issue == tsowell)
+#     
+#     def test_ranked_vote_for_exec(self):
+#         self.webauthLogin('xyz')
+#         obama = issue('obama-biden')
+#         mccain = issue('mccain-palin')
+#         clinton = issue('clinton-bloomberg')
+#         res = self.client.post('/ballot/vote', {'votes_exec': (obama.pk, clinton.pk, mccain.pk)})
+#         v = votes('xyz', 'Exec')
+#         self.assertTrue(len(v) == 3)
+#         issues = (v[0].issue, v[1].issue, v[2].issue)
+#         self.assertTrue(obama in issues)
+#         self.assertTrue(mccain in issues)
+#         self.assertTrue(clinton in issues)

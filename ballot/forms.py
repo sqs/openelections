@@ -1,10 +1,75 @@
 import random
 from django import forms
-from django.forms.formsets import formset_factory
+from django.forms.formsets import formset_factory, BaseFormSet
 from django.utils.safestring import mark_safe
 from openelections import constants as oe_constants
 from openelections.ballot.models import Vote
 from openelections.issues.models import Issue, SenateCandidate
+
+class BallotFormSet(BaseFormSet):
+    max_num = 0
+    extra = 0
+    
+    def __init__(self, electorate, *args, **kwargs):
+        self.electorate = electorate
+        super(BallotFormSet, self).__init__(*args, **kwargs)
+        self.make_forms()
+        
+    def make_forms(self):
+        forms = {
+            'form_us': (oe_constants.ISSUE_US, CandidatesForm),
+            'form_exec': (oe_constants.ISSUE_EXEC, SlatesIRVForm),
+            'form_classpres': (oe_constants.ISSUE_CLASSPRES, SlatesIRVForm)
+        }
+        for form_name, (kind, form_class) in forms.items():
+            setattr(self, form_name, form_class(queryset=Issue.objects.filter(kind=kind).all()))
+            self.forms.append(getattr(self, form_name))
+        
+        
+    
+class CandidatesForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.queryset = kwargs.pop('queryset')
+        super(CandidatesForm, self).__init__(*args, **kwargs)
+        self.make_fields()
+    
+    def make_fields(self):
+        for s in self.queryset:
+            field_id = 'vote_%d' % s.pk
+            field = forms.BooleanField(label=s.title, required=False)
+            self.fields[field_id] = field
+
+class SlatesIRVForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.queryset = kwargs.pop('queryset')
+        super(SlatesIRVForm, self).__init__(*args, **kwargs)
+        self.make_fields()
+
+    def make_fields(self):
+        for s in self.queryset:
+            field_id = 'vote_%d' % s.pk
+            field = forms.CharField(label=s.title, required=False)
+            self.fields[field_id] = field
+
+class PrefRankWidget(forms.TextInput):
+    pass
+
+# class IRVWidget(forms.MultiWidget):
+#     def __init__(self):
+#         widgets = (forms.TextInput(),)
+#         super(IRVWidget, self).__init__(widgets)
+#     
+#     def decompress(self, value):
+#         return value
+#     
+#     def format_output(self, rendered_widgets):
+#         return 'abcd'
+#         return ' | '.join(rendered_widgets)
+    
+        # 
+        # def render(self, name, value, attrs=None, choices=()):
+        #     if not value: value = []
+        #     return 'asdf'
 
 class CandidatesField(forms.ModelMultipleChoiceField):
     # def label_from_instance(self, obj):
@@ -25,9 +90,10 @@ class CandidatesField(forms.ModelMultipleChoiceField):
     def __unicode__(self):
         return self.label_from_instance(None)
 
-class SenateCandidatesField(CandidatesField):
-    pass
-
+class SenateCandidateField(forms.BooleanField):
+    def __unicode__(self):
+        return self.label_from_instance(None)
+        
 class SlatesIRVField(forms.ModelMultipleChoiceField):
     pass
 
@@ -36,6 +102,27 @@ class ClassPresidentsField(SlatesIRVField):
 
 class ExecField(SlatesIRVField):
     pass
+
+class ExecMultiWidget(forms.MultiWidget):
+    def __init__(self, attrs=None):
+        widgets = (forms.CharField(),)
+        super(ExecMultiWidget, self).__init__(widgets=widgets, attrs=attrs)
+    
+    def decompress(self, value):
+        return value
+
+class ExecMultiField(forms.MultiValueField):
+    widget = ExecMultiWidget
+    
+    def __init__(self, **kwargs):
+        fields = (forms.CharField(), forms.CharField(), forms.CharField(),)
+        del kwargs['queryset']
+        super(ExecMultiField, self).__init__(fields=fields, **kwargs)
+    
+    def compress(self, data_list):
+        return data_list
+        #return ','.join(data_list)
+    
 # 
 # class CandidatesGSCField(CandidatesField):
 #     pass
@@ -90,10 +177,27 @@ def ballot_form_factory(_electorate):
         electorate = _electorate
         voter_id = forms.CharField()
         
-        votes_us = SenateCandidatesField(widget=forms.CheckboxSelectMultiple, queryset=Issue.objects.filter(kind='US').all(), required=False)
-        votes_classpres = ClassPresidentsField(widget=forms.CheckboxSelectMultiple, queryset=Issue.objects.filter(kind=oe_constants.ISSUE_CLASSPRES).all(), required=False)
-        votes_exec = ExecField(widget=forms.CheckboxSelectMultiple, queryset=Issue.objects.filter(kind=oe_constants.ISSUE_EXEC).all(), required=False)
+        def __init__(self, *args, **kwargs):
+            super(_BallotForm, self).__init__(*args, **kwargs)
+            self.make_fields()
         
+        def make_fields(self):
+            self.votes_us = []
+            self.votes_classpres = []
+            self.votes_exec = []
+            
+            senators = Issue.objects.filter(kind='US').all()
+            for s in senators:
+                field_id = 'vote_us_%d' % s.pk
+                field = SenateCandidateField(required=False, label='hello')
+                self.fields[field_id] = field
+                self.votes_us.append(field)
+        
+        # votes_us = SenateCandidatesField(widget=forms.CheckboxSelectMultiple, queryset=Issue.objects.filter(kind='US').all(), required=False)
+        # votes_classpres = ClassPresidentsField(widget=forms.CheckboxSelectMultiple, queryset=Issue.objects.filter(kind=oe_constants.ISSUE_CLASSPRES).all(), required=False)
+        # 
+        # votes_exec = ExecMultiField(widget=ExecMultiWidget, queryset=Issue.objects.filter(kind=oe_constants.ISSUE_EXEC).all(), required=False)
+        # 
         def save(self):
             # TODO: transactions
             voter_id = self.cleaned_data['voter_id']
