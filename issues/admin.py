@@ -1,7 +1,14 @@
 from openelections.issues.models import Electorate, Issue
 from django.contrib import admin
 
-admin.site.register(Electorate)
+class ElectorateAdmin(admin.ModelAdmin):
+    save_on_top = True
+    list_display_links = ('pk', )
+    list_display = ('pk', 'name', 'slug')
+    list_editable = ('name', 'slug',)
+    ordering = ('slug',)
+
+admin.site.register(Electorate, ElectorateAdmin)
 
 def issue_num_signatures(issue):
     return issue.signatures.count()
@@ -16,7 +23,7 @@ issue_members.short_description = 'Candidate/members/sponsors'
 class IssueAdmin(admin.ModelAdmin):
     fieldsets = [
         (None, {'fields': ('title', 'kind', 'slug', 'public', 'admin_notes')}),
-        ('Electorate', {'fields': ('electorate',)}),
+        ('Electorate', {'fields': ('electorates',)}),
         ('Person 1', {'fields': ('name1', 'sunetid1',)}),
         ('People 2-5', {'fields': ('name2', 'sunetid2',
                                    'name3', 'sunetid3',

@@ -4,79 +4,23 @@ import simplejson
 from openelections import constants as oe_constants
 from openelections.issues.text import POSITION_DESCRIPTIONS
 
-ELECTORATES = {
-    'undergrad': 'Undergrad',
-    'grad': 'Grad',
-    'coterm': 'Coterm',
-    'undergrad-freshman': 'Freshman',
-    'undergrad-sophomore': 'Sophomore',
-    'undergrad-junior': 'Junior',
-    'undergrad-senior': 'Senior',
-    
-    # GSC
-    'gsb': 'School of Business',
-    'earthsci': 'School of Earth Sciences',
-    'edu': 'School of Education',
-    'eng': 'School of Engineering',
-    'humsci-hum': 'School of Humanities and Sciences, Humanities',
-    'humsci-natsci': 'School of Humanities and Sciences, Natural Sciences',
-    'humsci-socsci': 'School of Humanities and Sciences, Social Sciences',
-    'law': 'School of Law',
-    'med': 'School of Medicine',
-    'gsc-atlarge': 'At-Large',
-    
-    # SMSA
-    'smsa-2': 'SMSA 2nd Year', 
-    'smsa-3': 'SMSA 3rd Year', 
-    'smsa-4': 'SMSA 4th Year', 
-    'smsa-5plus': 'SMSA 5th-Plus Year',
-    'smsa-preclinical': 'SMSA Pre-clinical',
-    'smsa-clinical': 'SMSA Clinical', 
-    'smsa-mdphd': 'SMSA MD-PhD',
-    'smsa-mdplus': 'SMSA MD+',
-}
-
-UNDERGRAD_CLASS_YEARS = ('undergrad-sophomore', 'undergrad-junior', 'undergrad-senior')
-ASSU_POPULATIONS_ALL = ('undergrad', 'coterm', 'grad')
-SMSA_CLASS_YEARS = ('smsa-2', 'smsa-3', 'smsa-4', 'smsa-5plus')
-SMSA_POPULATIONS = ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')
-SMSA_CCAP_POPULATIONS = SMSA_POPULATIONS + ('smsa-mdplus',)
-GSC_DISTRICTS = ('gsb', 'earthsci', 'edu', 'eng', 'humsci-hum', 'humsci-natsci', 'humsci-socsci', 'law', 'med', 'gsc-atlarge')
-
 def no_smsa(s):
     return str(s).replace('SMSA ', '')
 
 class Electorate(models.Model):
     name = models.CharField(max_length=64)
+    slug = models.SlugField(max_length=64)
+    
+    UNDERGRAD_CLASS_YEARS = ('undergrad-1', 'undergrad-2', 'undergrad-3', 'undergrad-4', 'undergrad-5plus')
+    ASSU_POPULATIONS_ALL = ('undergrad', 'coterm', 'grad')
+    SMSA_CLASS_YEARS = ('smsa-2', 'smsa-3', 'smsa-4', 'smsa-5plus')
+    SMSA_POPULATIONS = ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')
+    SMSA_CCAP_POPULATIONS = SMSA_POPULATIONS + ('smsa-mdplus',)
+    GSC_DISTRICTS = ('gsc-gsb', 'gsc-earthsci', 'gsc-edu', 'gsc-eng', 'gsc-hs-hum', 'gsc-hs-natsci', 'gsc-hs-socsci', 'gsc-law', 'gsc-med', 'gsc-atlarge')
     
     @classmethod
-    def queryset_with_names(klass, names):
-        full_names = [ELECTORATES[name] for name in names]
-        return klass.objects.filter(name__in=full_names)
-    
-    @classmethod
-    def undergrad_class_years(klass):
-        return klass.queryset_with_names(UNDERGRAD_CLASS_YEARS)
-    
-    @classmethod
-    def assu_populations_all(klass):
-        return klass.queryset_with_names(ASSU_POPULATIONS_ALL)
-    
-    @classmethod
-    def smsa_class_years(klass):
-        return klass.queryset_with_names(SMSA_CLASS_YEARS)
-        
-    @classmethod
-    def smsa_populations(klass):
-        return klass.queryset_with_names(SMSA_POPULATIONS)
-        
-    @classmethod
-    def smsa_ccap_populations(klass):
-        return klass.queryset_with_names(SMSA_CCAP_POPULATIONS)
-        
-    @classmethod
-    def gsc_districts(klass):
-        return klass.queryset_with_names(GSC_DISTRICTS)
+    def queryset_with_slugs(klass, slugs):
+        return klass.objects.filter(slug__in=slugs)
     
     def __unicode__(self):
         return self.name
@@ -102,7 +46,7 @@ class Issue(models.Model):
     signed_voterguide_agreement = models.BooleanField(default=True)
     
     # restriction to certain populations
-    electorate = models.ManyToManyField(Electorate, related_name='issues') #MultipleChoiceField(max_length=250, choices=oe_constants.ELECTORATES)
+    electorates = models.ManyToManyField(Electorate, related_name='issues') #MultipleChoiceField(max_length=250, choices=oe_constants.ELECTORATES)
 
     name1 = models.CharField(max_length=100)
     sunetid1 = models.CharField(max_length=15)
@@ -144,7 +88,7 @@ class Issue(models.Model):
     def petition_electorates(self):
         names = self.petition_electorate_names()
         if names:
-            return Electorate.queryset_with_names(names)
+            return Electorate.queryset_with_slugs(names)
         else:
             return None
             
@@ -153,7 +97,7 @@ class Issue(models.Model):
             return None
         names = self.candidate_electorate_names()
         if names:
-            return Electorate.queryset_with_names(names)
+            return Electorate.queryset_with_slugs(names)
         else:
             return None
     
@@ -310,9 +254,7 @@ class ClassPresidentSlate(Slate):
         return ('undergrad', 'coterm')
         
     def class_year(self):
-        class_years = Electorate.undergrad_class_years()
-        class_years = [cy.name for cy in class_years]
-        slate_year = self.electorate.filter(name__in=class_years)
+        slate_year = self.electorates.filter(slug__in=Electorate.UNDERGRAD_CLASS_YEARS)
         if not slate_year:
             raise Exception('no slate year found for class president slate %d' % self.pk)
         return slate_year[0]
@@ -359,9 +301,7 @@ class GSCCandidate(Candidate):
         return True
     
     def district(self):
-        district_names = Electorate.gsc_districts()
-        district_names = [d.name for d in district_names]
-        districts = self.electorate.filter(name__in=district_names)
+        districts = self.electorates.filter(slug__in=Electorate.GSC_DISTRICTS)
         if not districts:
             raise Exception('no district found for GSC candidate %d' % self.pk)
         return districts[0]
@@ -426,12 +366,10 @@ class SMSAClassRepCandidate(SMSACandidate):
         return 'SMSA class year'
     
     def candidate_electorate_names(self):
-        return SMSA_CLASS_YEARS
+        return Electorate.SMSA_CLASS_YEARS
     
     def class_year(self):
-        class_years = Electorate.smsa_class_years()
-        class_years = [cy.name for cy in class_years]
-        year = self.electorate.filter(name__in=class_years)
+        year = self.electorates.filter(slug__in=Electorate.SMSA_CLASS_YEARS)
         if not year:
             raise Exception('no year found for smsa class rep %d' % self.pk)
         return year[0]
@@ -453,9 +391,7 @@ class SMSASocialChairCandidate(SMSACandidate):
         return ('smsa-preclinical', 'smsa-clinical')
     
     def population(self):
-        pops = Electorate.smsa_populations()
-        pops = [p.name for p in pops]
-        pop = self.electorate.filter(name__in=pops)
+        pop = self.electorates.filter(slug__in=Electorate.SMSA_POPULATIONS)
         if not pop:
             raise Exception('no pop found for smsa social chair %d' % self.pk)
         return pop[0]
@@ -474,12 +410,10 @@ class SMSACCAPRepCandidate(SMSACandidate):
         return 'SMSA population'
     
     def candidate_electorate_names(self):
-        return SMSA_CCAP_POPULATIONS
+        return Electorate.SMSA_CCAP_POPULATIONS
     
     def population(self):
-        pops = Electorate.smsa_ccap_populations()
-        pops = [p.name for p in pops]
-        pop = self.electorate.filter(name__in=pops)
+        pop = self.electorates.filter(slug__in=Electorate.SMSA_CCAP_POPULATIONS)
         if not pop:
             raise Exception('no pop found for smsa ccap rep %d' % self.pk)
         return pop[0]
@@ -501,9 +435,7 @@ class SMSAPolicyAndAdvocacyChairCandidate(SMSACandidate):
         return ('smsa-preclinical', 'smsa-clinical')
         
     def population(self):
-        pops = Electorate.smsa_populations()
-        pops = [p.name for p in pops]
-        pop = self.electorate.filter(name__in=pops)
+        pop = self.electorates.filter(slug__in=Electorate.SMSA_POPULATIONS)
         if not pop:
             raise Exception('no pop found for smsa p and a rep %d' % self.pk)
         return pop[0]
