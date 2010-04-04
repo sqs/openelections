@@ -19,7 +19,8 @@ class BallotFormSet(BaseFormSet):
         forms = {
             'form_us': (oe_constants.ISSUE_US, CandidatesForm),
             'form_exec': (oe_constants.ISSUE_EXEC, SlatesIRVForm),
-            'form_classpres': (oe_constants.ISSUE_CLASSPRES, SlatesIRVForm)
+            'form_classpres': (oe_constants.ISSUE_CLASSPRES, SlatesIRVForm),
+            'form_specfees': (oe_constants.ISSUE_SPECFEE, SpecialFeesForm)
         }
         for form_name, (kind, form_class) in forms.items():
             setattr(self, form_name, form_class(queryset=Issue.objects.filter(kind=kind).all()))
@@ -46,13 +47,26 @@ class SlatesIRVForm(forms.Form):
         self.make_fields()
 
     def make_fields(self):
+        self.num_slates = len(self.queryset)
+        choices = [(i,i) for i in range(1,self.num_slates+1)]
+        choices.insert(0, (0, '----'))
+        
         for s in self.queryset:
             field_id = 'vote_%d' % s.pk
-            field = forms.CharField(label=s.title, required=False)
+            field = forms.ChoiceField(label=s.title, required=False, choices=choices)
             self.fields[field_id] = field
 
-class PrefRankWidget(forms.TextInput):
-    pass
+class SpecialFeesForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.queryset = kwargs.pop('queryset')
+        super(SpecialFeesForm, self).__init__(*args, **kwargs)
+        self.make_fields()
+
+    def make_fields(self):
+        for s in self.queryset:
+            field_id = 'vote_%d' % s.pk
+            field = forms.ChoiceField(label=s.title, required=False, choices=oe_constants.VOTES_YNA, widget=forms.RadioSelect)
+            self.fields[field_id] = field
 
 # class IRVWidget(forms.MultiWidget):
 #     def __init__(self):

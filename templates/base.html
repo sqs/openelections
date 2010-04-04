@@ -2,7 +2,9 @@
 <html>
 <head>
     <title>ASSU Elections</title>
-    <link rel="stylesheet" href="http://elections.stanford.edu/res/screen-oe.css">
+    {% block style_link %}
+        <link rel="stylesheet" href="http://elections.stanford.edu/res/screen-oe.css">
+    {% endblock %}
     <style>
         th { min-width: 75px; }
         form ul, form li { list-style-type: none; padding:0 !important; margin:0 !important; }

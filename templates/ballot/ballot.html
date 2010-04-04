@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "ballot/base-ballot.html" %}
 
 {% block header %}
 <h1 id="site_title"><a href="http://elections.stanford.edu/"><img alt="ASSU Elections Commission" src="http://elections.stanford.edu/res/web-logo1.png"></a></h1>
@@ -107,12 +107,10 @@
     </section>
 {% endif %}
 
-{% if form.fields_specfees %}
+{% if formset.form_specfees %}
     <section class="fees">
         <h1>Special Fees</h1>
-        {% for field_specfee in form.fields_specfees %}
-            {{ field_specfee.as_widget }}
-        {% endfor %}
+        {{ formset.form_specfees.as_ul }}
     </section>
 {% endif %}
 

@@ -1,6 +1,18 @@
-from openelections.tests import OETestCase
+from selenium import selenium
+import unittest
+# from openelections.tests import OETestCase
 from openelections.ballot.models import Vote
 from openelections.issues.models import Electorate, Issue
+
+class OESeleniumTestCase(unittest.TestCase):
+    def setUp(self):
+        self.verificationErrors = []
+        self.selenium = selenium("localhost", 32146, "*firefox", "http://corn16.stanford.edu:32145/")
+        self.selenium.start()
+        
+    def tearDown(self):
+        self.selenium.stop()
+        self.assertEqual([], self.verificationErrors)
 
 def issue(slug):
     return Issue.objects.get(slug=slug)
@@ -25,7 +37,13 @@ class UndergradBallotDisplayTest(OETestCase):
         self.assertContains(res, 'Obama/Biden')
         self.assertContains(res, 'Clinton/Bloomberg')
         self.assertContains(res, 'McCain/Palin')    
+
+class BallotTest(OESeleniumTestCase):
+    def testLoad(self):
+        sel = self.selenium
+        sel.open('/ballot/')
         
+       
 # class UndergradVoteTest(OETestCase):
 #     def test_vote_for_senators(self):
 #         self.webauthLogin('xyz')
