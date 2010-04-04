@@ -16,35 +16,81 @@ class BallotFormSet(BaseFormSet):
         self.make_forms()
         
     def make_forms(self):
-        forms = {
-            'form_us': (oe_constants.ISSUE_US, CandidatesForm),
-            'form_exec': (oe_constants.ISSUE_EXEC, SlatesIRVForm),
-            'form_classpres': (oe_constants.ISSUE_CLASSPRES, SlatesIRVForm),
-            'form_specfees': (oe_constants.ISSUE_SPECFEE, SpecialFeesForm)
-        }
-        for form_name, (kind, form_class) in forms.items():
-            setattr(self, form_name, form_class(queryset=Issue.objects.filter(kind=kind).all()))
+        forms = [
+            ('form_gsc_district', (oe_constants.ISSUE_GSC, GSCDistrictCandidatesForm)),
+            ('form_gsc_atlarge', (oe_constants.ISSUE_GSC, GSCAtLargeCandidatesForm)),
+            ('form_us', (oe_constants.ISSUE_US, SenateCandidatesForm)),
+            ('form_exec', (oe_constants.ISSUE_EXEC, SlatesIRVForm)),
+            ('form_classpres', (oe_constants.ISSUE_CLASSPRES, SlatesIRVForm)),
+            ('form_specfees', (oe_constants.ISSUE_SPECFEE, SpecialFeesForm)),
+        ]
+        
+        for kind, title in oe_constants.SMSA_OFFICES:
+            form_name = 'form_' + kind
+            forms.append((form_name, (kind, SMSACandidatesForm)))
+        
+        for form_name, (kind, form_class) in forms:
+            setattr(self, form_name, form_class(kind=kind, queryset=Issue.objects.filter(kind=kind).all()))
             self.forms.append(getattr(self, form_name))
         
-        
-    
-class CandidatesForm(forms.Form):
-    def __init__(self, *args, **kwargs):
+class IssueForm(forms.Form):
+    def __init__(self, *attrs, **kwargs):
+        self.kind = kwargs.pop('kind')
         self.queryset = kwargs.pop('queryset')
-        super(CandidatesForm, self).__init__(*args, **kwargs)
+        super(IssueForm, self).__init__(*attrs, **kwargs)
         self.make_fields()
     
+    def section_title(self):
+        return "(No section title)"
+    
+    def help_text(self):
+        return "(No help text)"
+    
+class CandidatesForm(IssueForm):
     def make_fields(self):
         for s in self.queryset:
             field_id = 'vote_%d' % s.pk
             field = forms.BooleanField(label=s.title, required=False)
             self.fields[field_id] = field
 
-class SlatesIRVForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        self.queryset = kwargs.pop('queryset')
-        super(SlatesIRVForm, self).__init__(*args, **kwargs)
-        self.make_fields()
+class SenateCandidatesForm(CandidatesForm):
+    def section_title(self):
+        return "ASSU Undergraduate Senate"
+    
+    def help_text(self):
+        return "Choose up to 15."
+        
+class GSCCandidatesForm(CandidatesForm):
+    pass
+    
+class GSCDistrictCandidatesForm(GSCCandidatesForm):
+    def section_title(self):
+        return "GSC District"
+    
+    def help_text(self):
+        return "Choose 1-2."
+        
+class GSCAtLargeCandidatesForm(GSCCandidatesForm):
+    def section_title(self):
+        return "GSC At-Large"
+    
+    def help_text(self):
+        return "Choose 5."
+            
+class SMSACandidatesForm(CandidatesForm):
+    def section_title(self):
+        if not self.queryset: return "Empty (%s)" % self.kind
+        return self.queryset[0].get_typed().kind_name()
+    
+    def help_text(self):
+        return None
+        
+class SlatesIRVForm(IssueForm):
+    def section_title(self):
+        return "%s" % self.kind
+    
+    def help_text(self):
+        return None
 
     def make_fields(self):
         self.num_slates = len(self.queryset)
@@ -56,34 +102,20 @@ class SlatesIRVForm(forms.Form):
             field = forms.ChoiceField(label=s.title, required=False, choices=choices)
             self.fields[field_id] = field
 
-class SpecialFeesForm(forms.Form):
-    def __init__(self, *args, **kwargs):
-        self.queryset = kwargs.pop('queryset')
-        super(SpecialFeesForm, self).__init__(*args, **kwargs)
-        self.make_fields()
-
+class SpecialFeesForm(IssueForm):
+    def section_title(self):
+        return "Special Fees"
+    
+    def help_text(self):
+        return None
+    
     def make_fields(self):
         for s in self.queryset:
             field_id = 'vote_%d' % s.pk
             field = forms.ChoiceField(label=s.title, required=False, choices=oe_constants.VOTES_YNA, widget=forms.RadioSelect)
             self.fields[field_id] = field
 
-# class IRVWidget(forms.MultiWidget):
-#     def __init__(self):
-#         widgets = (forms.TextInput(),)
-#         super(IRVWidget, self).__init__(widgets)
-#     
-#     def decompress(self, value):
-#         return value
-#     
-#     def format_output(self, rendered_widgets):
-#         return 'abcd'
-#         return ' | '.join(rendered_widgets)
-    
-        # 
-        # def render(self, name, value, attrs=None, choices=()):
-        #     if not value: value = []
-        #     return 'asdf'
+
 
 class CandidatesField(forms.ModelMultipleChoiceField):
     # def label_from_instance(self, obj):

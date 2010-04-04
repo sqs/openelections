@@ -1,118 +1,17 @@
 {% extends "ballot/base-ballot.html" %}
 
-{% block header %}
-<h1 id="site_title"><a href="http://elections.stanford.edu/"><img alt="ASSU Elections Commission" src="http://elections.stanford.edu/res/web-logo1.png"></a></h1>
-
-{% endblock %}
-
-{% block style %}
-<style>
-    section {
-        display:block;
-        clear:both;
-        padding-top:15px;
-    }
-        section:first-child {
-            padding-top:0 !important;
-        }
-        
-    br, hr, h1, h2, h3 { clear:both;}
-    
-    #container {
-        margin:0;
-        max-width:none;
-    }
-    
-    #content {
-        padding-right:35%;
-    }
-
-    #profile {
-        border-left:solid 1px #813434;
-        position:fixed;
-        top:99px;
-        right:0;
-        width:30%;
-        min-height:500px;
-        padding:25px;
-        background-color:white;
-    }
-        #profile img {
-            float:right;
-        }
-
-    
-    section ul, section li {
-        list-style-type:none;
-    }
-    
-    ul.issues {
-        width:718px;
-    }
-    
-    li.issue {
-        width:220px;
-        padding:8px;
-        float:left;
-    }
-        li.issue:hover {
-            background-color:#F8E5E2;
-        }
-        .fees li.issue {
-            width:680px;
-        }
-    
-    label {
-        font-weight:bold;
-        margin-left:5px;
-    }
-</style>
-{% endblock %}
-
-
 {% block content %}
 <form id="ballot" method="post" action="{% url ballot.views.vote_all %}">
 
 {{ formset.management_form }}
 
-{% if formset.form_us %}
-    <section class="candidates">
-        <h1>Undergrad Senate</h1>
-        <p>Choose 15.</p>
-        {{ formset.form_us.as_ul }}
-        <!-- {% for f in form.votes_us %}
-                    {{ f }}
-                {% endfor %} -->
+{% for f in formset.forms %}
+    <section class="abc">
+        <h1>{{ f.section_title }}</h1>
+        {% if f.help_text %}<p>{{ f.help_text }}</p>{% endif %}
+        {{ f.as_ul }}
     </section>
-{% endif %}
-
-{% if form.votes_gsc %}
-    <section class="candidates">
-        <h1>Grad Student Council</h1>
-        {{ form.votes_gsc }}
-    </section>
-{% endif %}
-
-{% if formset.form_exec %}
-    <section class="slates">
-        <h1>Exec</h1>
-        {{ formset.form_exec.as_ul }}
-    </section>
-{% endif %}
-
-{% if formset.form_classpres %}
-    <section class="slates">
-        <h1>Class President</h1>
-        {{ formset.form_classpres.as_ul }}
-    </section>
-{% endif %}
-
-{% if formset.form_specfees %}
-    <section class="fees">
-        <h1>Special Fees</h1>
-        {{ formset.form_specfees.as_ul }}
-    </section>
-{% endif %}
+{% endfor %}
 
 <br>
 <hr>
