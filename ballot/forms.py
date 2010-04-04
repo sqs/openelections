@@ -27,7 +27,15 @@ class CandidatesField(forms.ModelMultipleChoiceField):
 
 class SenateCandidatesField(CandidatesField):
     pass
-    
+
+class SlatesIRVField(forms.ModelMultipleChoiceField):
+    pass
+
+class ClassPresidentsField(SlatesIRVField):
+    pass
+
+class ExecField(SlatesIRVField):
+    pass
 # 
 # class CandidatesGSCField(CandidatesField):
 #     pass
@@ -82,14 +90,18 @@ def ballot_form_factory(_electorate):
         electorate = _electorate
         voter_id = forms.CharField()
         
-        votes_us = SenateCandidatesField(widget=forms.CheckboxSelectMultiple, queryset=Issue.objects.filter(kind='US').all())
+        votes_us = SenateCandidatesField(widget=forms.CheckboxSelectMultiple, queryset=Issue.objects.filter(kind='US').all(), required=False)
+        votes_classpres = ClassPresidentsField(widget=forms.CheckboxSelectMultiple, queryset=Issue.objects.filter(kind=oe_constants.ISSUE_CLASSPRES).all(), required=False)
+        votes_exec = ExecField(widget=forms.CheckboxSelectMultiple, queryset=Issue.objects.filter(kind=oe_constants.ISSUE_EXEC).all(), required=False)
         
         def save(self):
             # TODO: transactions
             voter_id = self.cleaned_data['voter_id']
-            for issue in self.cleaned_data['votes_us']:
-                v = Vote(voter_id=voter_id, issue=issue, electorate=self.electorate)
-                v.save()
+            vote_fields = ('votes_us', 'votes_classpres', 'votes_exec',)
+            for vote_field in vote_fields:
+                for issue in self.cleaned_data[vote_field]:
+                    v = Vote(voter_id=voter_id, issue=issue, electorate=self.electorate)
+                    v.save()
                 
         def clean(self):
             return self.cleaned_data
