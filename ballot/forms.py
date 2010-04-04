@@ -30,13 +30,14 @@ class BallotFormSet(BaseFormSet):
             forms.append((form_name, (kind, SMSACandidatesForm)))
         
         for form_name, (kind, form_class) in forms:
-            setattr(self, form_name, form_class(kind=kind, queryset=Issue.objects.filter(kind=kind).all()))
+            setattr(self, form_name, form_class(kind=kind, electorate=self.electorate, queryset=Issue.objects.filter(kind=kind).all()))
             self.forms.append(getattr(self, form_name))
         
 class IssueForm(forms.Form):
     def __init__(self, *attrs, **kwargs):
         self.kind = kwargs.pop('kind')
         self.queryset = kwargs.pop('queryset')
+        self.electorate = kwargs.pop('electorate')
         super(IssueForm, self).__init__(*attrs, **kwargs)
         self.make_fields()
     
@@ -65,17 +66,23 @@ class GSCCandidatesForm(CandidatesForm):
     
 class GSCDistrictCandidatesForm(GSCCandidatesForm):
     def section_title(self):
-        return "GSC District"
+        return "GSC %s District" % self.electorate.name
+    
+    def is_engineering(self):
+        return self.electorate.name == 'School of Engineering'
     
     def help_text(self):
-        return "Choose 1-2."
+        if self.is_engineering():
+            return "Choose up to 2."
+        else:
+            return "Choose 1."
         
 class GSCAtLargeCandidatesForm(GSCCandidatesForm):
     def section_title(self):
         return "GSC At-Large"
     
     def help_text(self):
-        return "Choose 5."
+        return "At-large votes are tallied independently of GSC district votes.  You can vote for the same candidate(s) for both at-large and in your district, if you want."
             
 class SMSACandidatesForm(CandidatesForm):
     def section_title(self):
