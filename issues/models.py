@@ -68,6 +68,11 @@ class Issue(models.Model):
     past_budget = models.FileField(upload_to='media/specialfees', blank=True)
     account_statement = models.FileField(upload_to='media/specialfees', blank=True)
     total_request_amount = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    amount_per_undergrad_annual = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    amount_per_grad_annual = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    advisory_vote_senate = models.CharField(max_length=128, blank=True)
+    advisory_vote_gsc = models.CharField(max_length=128, blank=True)
+    statement_gsc = models.TextField(default='', blank=True)
     total_past_request_amount = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     budget_summary = models.TextField(blank=True)
     petition_budget_summary = models.TextField(blank=True)
@@ -199,7 +204,7 @@ class SpecialFeeRequest(FeeRequest):
         proxy = True
     
     def petition_electorates(self):
-        return self.electorate
+        return self.electorates
     
     def kind_name(self):
         return "Special Fee group"

@@ -58,17 +58,19 @@ class Ballot(models.Model):
     # updated_at
     
     def electorate_objs(self):
-        slugs = self.electorates.split(',')
-        return Electorate.objects.filter(slug__in=slugs).all()
-        
+        return Electorate.objects.filter(slug__in=self.electorates_list()).all()
+    
+    def electorates_list(self):
+        return self.electorates.split(',')
+    
     def is_undergrad(self):
-        return 'undergrad' in self.electorates
+        return 'undergrad' in self.electorates_list()
         
     def is_gsc(self):
-        return 'gsc' in self.electorates
+        return 'gsc' in self.electorates_list()
     
     def is_smsa(self):
-        return 'smsa' in self.electorates
+        return 'smsa' in self.electorates_list()
     
     def __unicode__(self):
         return "Ballot: voter %s [%s]" % (self.voter_id, self.electorates)
