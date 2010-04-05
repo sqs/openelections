@@ -159,8 +159,9 @@ def ballot_form_factory(ballot):
             initial = c.VOTE_AB
         print initial
         f_id = 'vote_specfee_%d' % sf.pk
-        f = forms.ChoiceField(choices=c.VOTES_YNA, label=sf.title, widget=forms.RadioSelect, required=False, initial=initial)
+        f = forms.ChoiceField(choices=c.VOTES_YNA, label=sf.title, required=False, initial=initial)
         f.is_special_fee = True
+        f.issue = sf
         _BallotForm.base_fields[f_id] = f
     
     return _BallotForm

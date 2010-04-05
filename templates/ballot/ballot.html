@@ -1,4 +1,5 @@
 {% extends "ballot/base-ballot.html" %}
+{% load issue_extras %}
 
 {% block content %}
 
@@ -169,12 +170,29 @@
 
 
 <section class="fees">
-    <h1>Special Fees</h1>
-    {% for f in ballotform %}
-        {% if f.field.is_special_fee %}
-            {{ f.label }} {{ f }} {{ f.errors }}
-        {% endif %}
-    {% endfor %}
+    <h1>Special Fee requests</h1>
+    <table class="specialfees">
+        <thead>
+            <tr><th></th><th>Total</th><th>Vote</th></tr>
+        </thead>
+        <tbody>
+            {% for f in ballotform %}
+                {% if f.field.is_special_fee %}
+                    {% with f.field.issue as issue %}
+                    <tr>
+                        <th>{{ f.label }}</th>
+                        <td class="figure">
+                            {% if issue.budget %}<a target="_blank" href="{{ issue.budget.url }}">{% endif %}
+                                {{ issue.total_request_amount|currency }}
+                            {% if issue.budget %}</a>{% endif %}
+                        </td>
+                        <td>{{ f }} {{ f.errors }}</td>
+                    </tr>
+                    {% endwith %}
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
 </section>
     
 <br>
