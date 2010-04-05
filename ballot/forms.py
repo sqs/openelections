@@ -2,129 +2,209 @@ import random
 from django import forms
 from django.forms.formsets import formset_factory, BaseFormSet
 from django.utils.safestring import mark_safe
-from openelections import constants as oe_constants
-from openelections.ballot.models import Vote
-from openelections.issues.models import Issue, SenateCandidate
+from openelections import constants as c
+from openelections.ballot.models import Ballot
+from openelections.issues.models import Issue, SenateCandidate, GSCCandidate, ExecutiveSlate, Electorate, SpecialFeeRequest, ClassPresidentSlate
 
-class BallotFormSet(BaseFormSet):
-    max_num = 0
-    extra = 0
-    
-    def __init__(self, electorate, *args, **kwargs):
-        self.electorate = electorate
-        super(BallotFormSet, self).__init__(*args, **kwargs)
-        self.make_forms()
-        
-    def make_forms(self):
-        forms = [
-            ('form_gsc_district', (oe_constants.ISSUE_GSC, GSCDistrictCandidatesForm)),
-            ('form_gsc_atlarge', (oe_constants.ISSUE_GSC, GSCAtLargeCandidatesForm)),
-            ('form_us', (oe_constants.ISSUE_US, SenateCandidatesForm)),
-            ('form_exec', (oe_constants.ISSUE_EXEC, SlatesIRVForm)),
-            ('form_classpres', (oe_constants.ISSUE_CLASSPRES, SlatesIRVForm)),
-            ('form_specfees', (oe_constants.ISSUE_SPECFEE, SpecialFeesForm)),
-        ]
-        
-        for kind, title in oe_constants.SMSA_OFFICES:
-            form_name = 'form_' + kind
-            forms.append((form_name, (kind, SMSACandidatesForm)))
-        
-        for form_name, (kind, form_class) in forms:
-            setattr(self, form_name, form_class(kind=kind, electorate=self.electorate, queryset=Issue.objects.filter(kind=kind).all()))
-            self.forms.append(getattr(self, form_name))
-        
-class IssueForm(forms.Form):
-    def __init__(self, *attrs, **kwargs):
-        self.kind = kwargs.pop('kind')
-        self.queryset = kwargs.pop('queryset')
-        self.electorate = kwargs.pop('electorate')
-        super(IssueForm, self).__init__(*attrs, **kwargs)
-        self.make_fields()
-    
-    def section_title(self):
-        return "(No section title)"
-    
-    def help_text(self):
-        return "(No help text)"
-    
-class CandidatesForm(IssueForm):
-    def make_fields(self):
-        for s in self.queryset:
-            field_id = 'vote_%d' % s.pk
-            field = forms.BooleanField(label=s.title, required=False)
-            self.fields[field_id] = field
+def html_id(issue):
+    return 'issue_%d' % issue.pk
+Issue.html_id = html_id
 
-class SenateCandidatesForm(CandidatesForm):
+def objs_to_pks(objs):
+    return ','.join([str(o.pk) for o in objs])
+    
+def pks_to_objs(pks):
+    return [Issue.objects.get(pk=pk) for pk in map(int, pks.split(','))]
+
+def ballot_form_factory(ballot):
+    class _BallotForm(forms.ModelForm):
+        class Meta:
+            model = Ballot
+            #fields = ('votes_exec', )
+            exclude = ('voter_id', 'electorates', )
+            #exclude = ('voter_id', 'electorates', 'votes_senate', 'votes_gsc_district', 'votes_gsc_atlarge', 
+            #           'votes_specfee_yes', 'votes_specfee_no', 'votes_classpres')
+        
+        def __init__(self, *args, **kwargs):
+            if not kwargs['instance']:
+                raise Exception("no instance for BallotForm")
+            super(_BallotForm, self).__init__(*args, **kwargs)
+        
+        def clean(self):
+            self.cleaned_data = self.clean_special_fee_votes()
+            return self.cleaned_data
+        
+        def clean_special_fee_votes(self):
+            yes_votes = []
+            no_votes = []
+            
+            for k,v in self.cleaned_data.items():
+                if k.startswith('vote_specfee'):
+                    pk = int(k[len('vote_specfee')+1:])
+                    sf = SpecialFeeRequest.objects.get(pk=pk)
+                    v = int(v)
+                    if v == c.VOTE_YES:
+                        yes_votes.append(sf)
+                    elif v == c.VOTE_NO:
+                        no_votes.append(sf)
+            
+            self.cleaned_data['votes_specfee_yes'] = yes_votes
+            self.cleaned_data['votes_specfee_no'] = no_votes
+            
+            return self.cleaned_data
+        
+        def save(self, commit=True):            
+            print "cd: %s" % self.cleaned_data
+            self.instance.votes_specfee_yes = self.cleaned_data['votes_specfee_yes']
+            self.instance.votes_specfee_no = self.cleaned_data['votes_specfee_no']
+            super(_BallotForm, self).save(commit)
+
+    _BallotForm.base_fields['votes_exec'] = ExecSlatesIRVField(queryset=ExecutiveSlate.objects.filter(kind=c.ISSUE_EXEC).all(), required=False)
+    
+    all_specfees_qs = SpecialFeeRequest.objects.filter(kind=c.ISSUE_SPECFEE).all()
+    _BallotForm.base_fields['votes_specfee_yes'] = forms.ModelMultipleChoiceField(queryset=all_specfees_qs, required=False)
+    _BallotForm.base_fields['votes_specfee_no'] = forms.ModelMultipleChoiceField(queryset=all_specfees_qs, required=False)
+
+    if ballot.is_undergrad():
+        senate_qs = SenateCandidate.objects.filter(kind=c.ISSUE_US).all()
+        _BallotForm.base_fields['votes_senate'] = SenateCandidatesField(queryset=senate_qs, required=False)
+        
+        classpres_qs = ClassPresidentSlate.objects.filter(kind=c.ISSUE_CLASSPRES, electorates__in=ballot.electorate_objs).all()
+        _BallotForm.base_fields['votes_classpres'] = ClassPresSlatesIRVField(queryset=classpres_qs, required=False)        
+    else:
+        gsc_district_elecs = ballot.electorate_objs.filter(slug__in=Electorate.GSC_DISTRICTS).all()
+        gsc_district_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC, electorates__in=gsc_district_elecs).all()
+        _BallotForm.base_fields['votes_gsc_district'] = GSCDistrictCandidatesField(queryset=gsc_district_qs, required=False)
+        
+        gsc_atlarge_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC).all()
+        _BallotForm.base_fields['votes_gsc_atlarge'] = GSCAtLargeCandidatesField(queryset=gsc_atlarge_qs, required=False)
+    
+    specfee_qs = SpecialFeeRequest.objects.filter(kind=c.ISSUE_SPECFEE, electorates__in=ballot.electorate_objs).order_by('pk').all()
+    _BallotForm.fields_specfees = []
+    for sf in specfee_qs:
+        initial = None
+        if sf in ballot.votes_specfee_yes.all():
+            initial = c.VOTE_YES
+        elif sf in ballot.votes_specfee_no.all():
+            initial = c.VOTE_NO
+        else:
+            initial = c.VOTE_AB
+        print initial
+        f_id = 'vote_specfee_%d' % sf.pk
+        f = forms.ChoiceField(choices=c.VOTES_YNA, label=sf.title, widget=forms.RadioSelect, required=False, initial=initial)
+        f.is_special_fee = True
+        _BallotForm.base_fields[f_id] = f
+    
+    return _BallotForm
+
+
+class CandidatesField(forms.ModelMultipleChoiceField):
+    widget = forms.CheckboxSelectMultiple
+
+class SenateCandidatesField(CandidatesField):
+    widget = forms.CheckboxSelectMultiple
+    
     def section_title(self):
         return "ASSU Undergraduate Senate"
     
-    def help_text(self):
+    def description(self):
         return "Choose up to 15."
+
+def irv_n_choices(n):
+    return [(0, '------')] + [(i,i) for i in range(1, n+1)]
+
+class SelectIRVOrder(forms.Select):
+    def __init__(self, n, *args, **kwargs):
+        self.instance = kwargs.pop('instance')
+        super(SelectIRVOrder, self).__init__(choices=irv_n_choices(n), *args, **kwargs)
         
-class GSCCandidatesForm(CandidatesForm):
+    def render(self, name, value, attrs=None):
+        return ('<label for="%s">%s: </label>' % (None, self.instance.title)) +  super(SelectIRVOrder, self).render(name, value, attrs=attrs)
+
+class SlateIRVField(forms.ChoiceField):
+    def __init__(self, n, *args, **kwargs):
+        super(SlateIRVField, self).__init__(choices=irv_n_choices(n), *args, **kwargs)
+        
+class SlatesIRVWidget(forms.MultiWidget):
+    def __init__(self, n, *args, **kwargs):
+        self.queryset = kwargs.pop('queryset')
+        self.n = n
+        widgets = [SelectIRVOrder(n, *args, instance=s, **kwargs) for s in self.queryset]
+        super(SlatesIRVWidget, self).__init__(widgets, *args, **kwargs)
+    
+    def decompress(self, value):
+        if value:
+            return value.split(',')
+        return [None] * self.n
+
+    def format_output(self, rendered_widgets):
+        return '<ul><li>' + '</li><li>'.join(rendered_widgets) + '</li></ul>'
+
+class SlatesIRVField(forms.MultiValueField):
+    def __init__(self, *args, **kwargs):
+        #print kwargs
+        self.queryset = kwargs.pop('queryset')
+        n = len(self.queryset)
+        fields = [SlateIRVField(n, label='asdf333', required=False) for s in self.queryset]
+        super(SlatesIRVField, self).__init__(fields, widget=SlatesIRVWidget(n, queryset=self.queryset), *args, **kwargs)
+    
+    def compress(self, data_list):
+        if data_list:
+            return ','.join(data_list)
+        return None
+
+         
+class GSCCandidatesField(CandidatesField):
     pass
     
-class GSCDistrictCandidatesForm(GSCCandidatesForm):
+class GSCDistrictCandidatesField(GSCCandidatesField):
     def section_title(self):
         return "GSC %s District" % self.electorate.name
     
-    def is_engineering(self):
-        return self.electorate.name == 'School of Engineering'
+    def gsc_district(self):
+        self.electorates.filter(slug__in=Electorate.GSC_DISTRICTS)
     
-    def help_text(self):
+    def is_engineering(self):
+        return self.gsc_district().slug == 'gsc-eng'
+    
+    def description(self):
         if self.is_engineering():
             return "Choose up to 2."
         else:
             return "Choose 1."
         
-class GSCAtLargeCandidatesForm(GSCCandidatesForm):
+class GSCAtLargeCandidatesField(GSCCandidatesField):
     def section_title(self):
         return "GSC At-Large"
     
-    def help_text(self):
+    def description(self):
         return "At-large votes are tallied independently of GSC district votes.  You can vote for the same candidate(s) for both at-large and in your district, if you want."
             
-class SMSACandidatesForm(CandidatesForm):
+class SMSACandidatesField(CandidatesField):
     def section_title(self):
         if not self.queryset: return "Empty (%s)" % self.kind
         return self.queryset[0].get_typed().kind_name()
     
     def help_text(self):
         return None
-        
-class SlatesIRVForm(IssueForm):
+
+
+         
+class ExecSlatesIRVField(SlatesIRVField):
     def section_title(self):
-        return "%s" % self.kind
+        return "ASSU Executive"
     
-    def help_text(self):
-        return None
+    def description(self):
+        return "Rank the slates in order of your preference, with 1 being your first choice."    
 
-    def make_fields(self):
-        self.num_slates = len(self.queryset)
-        choices = [(i,i) for i in range(1,self.num_slates+1)]
-        choices.insert(0, (0, '----'))
-        
-        for s in self.queryset:
-            field_id = 'vote_%d' % s.pk
-            field = forms.ChoiceField(label=s.title, required=False, choices=choices)
-            self.fields[field_id] = field
-
-class SpecialFeesForm(IssueForm):
+class ClassPresSlatesIRVField(SlatesIRVField):
     def section_title(self):
-        return "Special Fees"
+        return self.queryset[0].get_typed().kind_name()
     
-    def help_text(self):
-        return None
-    
-    def make_fields(self):
-        for s in self.queryset:
-            field_id = 'vote_%d' % s.pk
-            field = forms.ChoiceField(label=s.title, required=False, choices=oe_constants.VOTES_YNA, widget=forms.RadioSelect)
-            self.fields[field_id] = field
+    def description(self):
+        return "Rank the slates in order of your preference, with 1 being your first choice."    
 
-
-
-class CandidatesField(forms.ModelMultipleChoiceField):
+#class __CandidatesField(forms.ModelMultipleChoiceField):
     # def label_from_instance(self, obj):
     #     s = ['<ul class="issues">']
     #     for cand in self.queryset:
@@ -139,43 +219,8 @@ class CandidatesField(forms.ModelMultipleChoiceField):
     #                 <input type="checkbox" name="%(html_name)s" id="%(html_id)s" value="%(issue_pk)d">
     #                 <label for="%(html_id)s">%(label)s</label>
     #               </li>''' % attrs
-        
-    def __unicode__(self):
-        return self.label_from_instance(None)
 
-class SenateCandidateField(forms.BooleanField):
-    def __unicode__(self):
-        return self.label_from_instance(None)
-        
-class SlatesIRVField(forms.ModelMultipleChoiceField):
-    pass
 
-class ClassPresidentsField(SlatesIRVField):
-    pass
-
-class ExecField(SlatesIRVField):
-    pass
-
-class ExecMultiWidget(forms.MultiWidget):
-    def __init__(self, attrs=None):
-        widgets = (forms.CharField(),)
-        super(ExecMultiWidget, self).__init__(widgets=widgets, attrs=attrs)
-    
-    def decompress(self, value):
-        return value
-
-class ExecMultiField(forms.MultiValueField):
-    widget = ExecMultiWidget
-    
-    def __init__(self, **kwargs):
-        fields = (forms.CharField(), forms.CharField(), forms.CharField(),)
-        del kwargs['queryset']
-        super(ExecMultiField, self).__init__(fields=fields, **kwargs)
-    
-    def compress(self, data_list):
-        return data_list
-        #return ','.join(data_list)
-    
 # 
 # class CandidatesGSCField(CandidatesField):
 #     pass
@@ -207,75 +252,4 @@ class ExecMultiField(forms.MultiValueField):
 #     def __unicode__(self):
 #         return self.label_from_instance(None)
 #     
-# class SlatesExecField(SlatesIRVField):
-#     pass
-#     
-# class SlatesClassPresField(SlatesIRVField):
-#     pass
-#     
-# class SpecialFeeRequestField(forms.ChoiceField):
-#     choices = oe_constants.VOTES_YNA
-#     specialfeerequest = None
-#     
-#     def __unicode__(self):
-#         return super(SpecialFeeRequestField, self).__unicode__()
-# 
-#
 
-def ballot_form_factory(_electorate):
-    if not _electorate:
-        raise Exception
-    
-    class _BallotForm(forms.Form):
-        electorate = _electorate
-        voter_id = forms.CharField()
-        
-        def __init__(self, *args, **kwargs):
-            super(_BallotForm, self).__init__(*args, **kwargs)
-            self.make_fields()
-        
-        def make_fields(self):
-            self.votes_us = []
-            self.votes_classpres = []
-            self.votes_exec = []
-            
-            senators = Issue.objects.filter(kind='US').all()
-            for s in senators:
-                field_id = 'vote_us_%d' % s.pk
-                field = SenateCandidateField(required=False, label='hello')
-                self.fields[field_id] = field
-                self.votes_us.append(field)
-        
-        # votes_us = SenateCandidatesField(widget=forms.CheckboxSelectMultiple, queryset=Issue.objects.filter(kind='US').all(), required=False)
-        # votes_classpres = ClassPresidentsField(widget=forms.CheckboxSelectMultiple, queryset=Issue.objects.filter(kind=oe_constants.ISSUE_CLASSPRES).all(), required=False)
-        # 
-        # votes_exec = ExecMultiField(widget=ExecMultiWidget, queryset=Issue.objects.filter(kind=oe_constants.ISSUE_EXEC).all(), required=False)
-        # 
-        def save(self):
-            # TODO: transactions
-            voter_id = self.cleaned_data['voter_id']
-            vote_fields = ('votes_us', 'votes_classpres', 'votes_exec',)
-            for vote_field in vote_fields:
-                for issue in self.cleaned_data[vote_field]:
-                    v = Vote(voter_id=voter_id, issue=issue, electorate=self.electorate)
-                    v.save()
-                
-        def clean(self):
-            return self.cleaned_data
-        
-    
-    #_BallotForm.electorate = electorate
-    
-    #_BallotForm.votes_gsc = CandidatesGSCField(queryset=CandidateGSC.objects.all())
-    #_BallotForm.votes_exec = SlatesExecField(queryset=SlateExec.objects.all()) # verify that this maintains order
-    #_BallotForm.votes_classpres = SlatesClassPresField(queryset=SlateClassPresident.objects.all())
-    
-    # _BallotForm.fields_specfees = []
-    # for fee in SpecialFeeRequest.objects.all():
-    #     field_name = "specfee_%d" % fee.pk
-    #     field = SpecialFeeRequestField()
-    #     field.specialfeerequest = fee
-    #     _BallotForm.base_fields[field_name] = field
-    #     _BallotForm.fields_specfees.append(field)
-    
-    return _BallotForm

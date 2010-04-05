@@ -1,14 +1,24 @@
 from django.db import models
-from openelections.issues.models import Issue, Electorate
+from openelections.issues.models import *
 
-class Vote(models.Model):
+class Ballot(models.Model):
     voter_id = models.CharField(max_length=64)
-    electorate = models.ForeignKey(Electorate)
-    issue = models.ForeignKey(Issue, related_name='votes', blank=True)
-    preference_rank = models.SmallIntegerField(default=1)
-    write_in = models.CharField(max_length=100, blank=True)
-
-    def __unicode__(self):
-        return "Vote#%d (voter=%s, electorate=%s, issue=%s, pref=%d, write_in=%s)" % \
-               (self.pk, self.voter_id, self.electorate.name, self.issue.title, 
-                self.preference_rank, self.write_in)
+    electorates = models.CharField(max_length=128)
+    
+    votes_senate = models.ManyToManyField(SenateCandidate, related_name='votes', blank=True)
+    votes_exec = models.ManyToManyField(ExecutiveSlate, related_name='votes', blank=True)
+    votes_classpres = models.ManyToManyField(ClassPresidentSlate, related_name='votes', blank=True)
+    votes_gsc_district = models.ManyToManyField(GSCCandidate, related_name='votes_district', blank=True)
+    votes_gsc_atlarge = models.ManyToManyField(GSCCandidate, related_name='votes_atlarge', blank=True)
+    votes_specfee_yes = models.ManyToManyField(SpecialFeeRequest, related_name='votes_yes', blank=True)
+    votes_specfee_no = models.ManyToManyField(SpecialFeeRequest, related_name='votes_no', blank=True)
+    
+    # updated_at
+    
+    def electorate_objs(self):
+        slugs = self.electorates.split(',')
+        return Electorate.objects.filter(slug__in=slugs).all()
+        
+    def is_undergrad(self):
+        return 'undergrad' in self.electorates
+        

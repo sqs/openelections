@@ -1,6 +1,5 @@
 from django import forms
 from openelections.constants import ISSUE_TYPES
-from openelections.ballot.models import Vote
 from openelections.issues.models import Electorate, Issue, SpecialFeeRequest, Slate, ExecutiveSlate, ClassPresidentSlate, Candidate, SenateCandidate, GSCCandidate, SMSACandidate
 
 class IssueForm(forms.ModelForm):

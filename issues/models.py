@@ -91,7 +91,7 @@ class Issue(models.Model):
             return Electorate.queryset_with_slugs(names)
         else:
             return None
-            
+    
     def candidate_electorates(self):
         if not hasattr(self, 'candidate_electorate_names'):
             return None
