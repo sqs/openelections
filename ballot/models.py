@@ -18,12 +18,18 @@ class Ballot(models.Model):
     votes_specfee_no = models.ManyToManyField(SpecialFeeRequest, related_name='votes_no', blank=True)
     
     N_EXEC_VOTES = 6
-    vote_exec1 = models.CharField(max_length=75, blank=True)
-    vote_exec2 = models.CharField(max_length=75, blank=True)
-    vote_exec3 = models.CharField(max_length=75, blank=True)
-    vote_exec4 = models.CharField(max_length=75, blank=True)
-    vote_exec5 = models.CharField(max_length=75, blank=True)
-    vote_exec6 = models.CharField(max_length=75, blank=True)
+    vote_exec1 = models.ForeignKey(ExecutiveSlate, blank=True, null=True, related_name='votes_exec1')
+    vote_exec2 = models.ForeignKey(ExecutiveSlate, blank=True, null=True, related_name='votes_exec2')
+    vote_exec3 = models.ForeignKey(ExecutiveSlate, blank=True, null=True, related_name='votes_exec3')
+    vote_exec4 = models.ForeignKey(ExecutiveSlate, blank=True, null=True, related_name='votes_exec4')
+    vote_exec5 = models.ForeignKey(ExecutiveSlate, blank=True, null=True, related_name='votes_exec5')
+    vote_exec6 = models.ForeignKey(ExecutiveSlate, blank=True, null=True, related_name='votes_exec6')
+    vote_exec1_writein = models.CharField(max_length=75, blank=True)
+    vote_exec2_writein = models.CharField(max_length=75, blank=True)
+    vote_exec3_writein = models.CharField(max_length=75, blank=True)
+    vote_exec4_writein = models.CharField(max_length=75, blank=True)
+    vote_exec5_writein = models.CharField(max_length=75, blank=True)
+    vote_exec6_writein = models.CharField(max_length=75, blank=True)
 
     N_CLASSPRES_VOTES = 4
     vote_classpres1 = models.CharField(max_length=75, blank=True)

@@ -72,11 +72,12 @@ def ballot_form_factory(ballot):
     
     electorate_objs = ballot.electorate_objs()        
     
-    exec_qs = ExecutiveSlate.objects.filter(kind=c.ISSUE_EXEC).order_by('pk').all()
+    exec_qs = ExecutiveSlate.objects.filter(kind=c.ISSUE_EXEC).all()
     for i in range(1, Ballot.N_EXEC_VOTES+1):
         f_id = 'vote_exec%d' % i
-        f = forms.ChoiceField(choices=[('', '-------')] + [(e.title, e.title) for e in exec_qs], required=False)
+        f = forms.ModelChoiceField(queryset=exec_qs, required=False)
         _BallotForm.base_fields[f_id] = f
+        _BallotForm.base_fields[f_id+'_writein'] = forms.CharField(required=False)
     
     all_specfees_qs = SpecialFeeRequest.objects.filter(kind=c.ISSUE_SPECFEE).all()
     _BallotForm.base_fields['votes_specfee_yes'] = forms.ModelMultipleChoiceField(queryset=all_specfees_qs, required=False)
