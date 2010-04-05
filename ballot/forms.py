@@ -95,10 +95,11 @@ def ballot_form_factory(ballot):
             del _BallotForm.base_fields[f_id]
     else:
         del _BallotForm.base_fields['votes_senate']
-        del _BallotForm.base_fields['votes_classpres1']
-        del _BallotForm.base_fields['votes_classpres2']
-        del _BallotForm.base_fields['votes_classpres3']
-        del _BallotForm.base_fields['votes_classpres4']
+        print _BallotForm.base_fields.items()
+        del _BallotForm.base_fields['vote_classpres1']
+        del _BallotForm.base_fields['vote_classpres2']
+        del _BallotForm.base_fields['vote_classpres3']
+        del _BallotForm.base_fields['vote_classpres4']
     
     if ballot.is_gsc():
         gsc_district_elecs = ballot.electorate_objs().filter(slug__in=Electorate.GSC_DISTRICTS).all()
@@ -112,7 +113,13 @@ def ballot_form_factory(ballot):
     else:
         del _BallotForm.base_fields['votes_gsc_district']
         del _BallotForm.base_fields['votes_gsc_atlarge']
-
+    
+    if ballot.is_smsa():
+        pass
+    else:
+        for k,v in _BallotForm.base_fields.items():
+            if 'smsa' in k:
+                del _BallotForm.base_fields[k]
     
     specfee_qs = SpecialFeeRequest.objects.filter(kind=c.ISSUE_SPECFEE, electorates__in=ballot.electorate_objs).order_by('pk').all()
     _BallotForm.fields_specfees = []

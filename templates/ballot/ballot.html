@@ -6,6 +6,74 @@
 
 <form id="ballot" method="post" action="{% url ballot.views.vote_all %}">
 
+{% if ballotform.smsa %}
+<section class="candidates">
+
+<h1>SMSA</h1>
+
+{% if ballotform.vote_smsa_execpres %}
+    <h3>Executive President</h3>
+    {{ ballotform.vote_smsa_execpres }}
+{% endif %}
+
+{% if ballotform.vote_smsa_pres %}
+    <h3>President</h3>
+    {{ ballotform.vote_smsa_pres }}
+{% endif %}
+
+{% if ballotform.vote_smsa_vicepres %}
+    <h3>Vice President</h3>
+    {{ ballotform.vote_smsa_vicepres }}
+{% endif %}
+
+{% if ballotform.vote_smsa_sec %}
+    <h3>Secretary</h3>
+    {{ ballotform.vote_smsa_sec }}
+{% endif %}
+
+{% if ballotform.vote_smsa_treas %}
+    <h3>Treasurer</h3>
+    {{ ballotform.vote_smsa_treas }}
+{% endif %}
+
+{% if ballotform.vote_smsa_mentorship %}
+    <h3>Mentorship Chair</h3>
+    {{ ballotform.vote_smsa_mentorship }}
+{% endif %}
+
+{% if ballotform.vote_smsa_psrc %}
+    <h3>Prospective Student Recruitment Chair</h3>
+    {{ ballotform.vote_smsa_psrc }}
+{% endif %}
+
+{% if ballotform.vote_smsa_ossosr %}
+    <h3>OSS/OSR Rep</h3>
+    {{ ballotform.vote_smsa_ossosr }}
+{% endif %}
+
+{% if ballotform.vote_smsa_classrep %}
+    <h3>Class Rep</h3>
+    {{ ballotform.vote_smsa_classrep }}
+{% endif %}
+
+{% if ballotform.vote_smsa_socialchair %}
+    <h3>Social Chair</h3>
+    {{ ballotform.vote_smsa_socialchair }}
+{% endif %}
+
+{% if ballotform.vote_smsa_ccap %}
+    <h3>CCAP Rep</h3>
+    {{ ballotform.vote_smsa_ccap }}
+{% endif %}
+
+{% if ballotform.vote_smsa_pachair %}  
+    <h3>Policy &amp; Advocacy Chair</h3>
+    {{ ballotform.vote_smsa_pachair }}
+{% endif %}
+
+</section>
+{% endif %}
+
 <section class="slates">
     <h1>ASSU Executive</h1>
     <p>Rank your choices for Exec.</p>

@@ -25,6 +25,20 @@ class Ballot(models.Model):
     vote_classpres3 = models.CharField(max_length=75, blank=True)
     vote_classpres4 = models.CharField(max_length=75, blank=True)
     
+    vote_smsa_execpres = models.ForeignKey(SMSACandidate, related_name='votes_execpres', blank=True, null=True)
+    vote_smsa_pres = models.ForeignKey(SMSACandidate, related_name='votes_pres', blank=True, null=True)
+    vote_smsa_vicepres = models.ForeignKey(SMSACandidate, related_name='votes_vicepres', blank=True, null=True)
+    vote_smsa_sec = models.ForeignKey(SMSACandidate, related_name='votes_sec', blank=True, null=True)
+    vote_smsa_treas = models.ForeignKey(SMSACandidate, related_name='votes_treas', blank=True, null=True)
+    vote_smsa_mentorship = models.ForeignKey(SMSACandidate, related_name='votes_mentorship', blank=True, null=True)
+    vote_smsa_psrc = models.ForeignKey(SMSACandidate, related_name='votes_psrc', blank=True, null=True)
+    vote_smsa_ossosr = models.ForeignKey(SMSACandidate, related_name='votes_ossosr', blank=True, null=True)
+    vote_smsa_classrep = models.ForeignKey(SMSAClassRepCandidate, related_name='votes', blank=True, null=True)
+    vote_smsa_socialchair = models.ForeignKey(SMSASocialChairCandidate, related_name='votes', blank=True, null=True)
+    vote_smsa_ccap = models.ForeignKey(SMSACCAPRepCandidate, related_name='votes', blank=True, null=True)
+    vote_smsa_pachair = models.ForeignKey(SMSAPolicyAndAdvocacyChairCandidate, related_name='votes', blank=True, null=True)
+    
+    
     # updated_at
     
     def electorate_objs(self):
@@ -36,6 +50,9 @@ class Ballot(models.Model):
         
     def is_gsc(self):
         return 'gsc' in self.electorates
+    
+    def is_smsa(self):
+        return 'smsa' in self.electorates
     
     def __unicode__(self):
         return "Ballot: voter %s [%s]" % (self.voter_id, self.electorates)
