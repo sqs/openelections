@@ -21,4 +21,6 @@ class Ballot(models.Model):
         
     def is_undergrad(self):
         return 'undergrad' in self.electorates
-        
+    
+    def __unicode__(self):
+        return "Ballot: voter %s [%s]" % (self.voter_id, self.electorates)
