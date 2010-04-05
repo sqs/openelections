@@ -34,7 +34,10 @@ class IssueAdmin(admin.ModelAdmin):
         ('Petition', {'fields': ('petition_validated', 'petition_signatures_count')}),
         ('Special Fee group', {'fields': ('total_request_amount', 'total_past_request_amount', 
                                           'budget_summary', 'petition_budget_summary',
-                                          'budget', 'past_budget', 'account_statement')}),
+                                          'budget', 'past_budget', 'account_statement',
+                                          'advisory_vote_gsc', 'advisory_vote_senate',
+                                          'statement_gsc', 'amount_per_undergrad_annual',
+                                          'amount_per_grad_annual')}),
     ]
     prepopulated_fields = {'slug': ('title',)}
     save_on_top = True

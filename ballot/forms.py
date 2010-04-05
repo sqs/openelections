@@ -158,7 +158,7 @@ def ballot_form_factory(ballot):
         else:
             initial = c.VOTE_AB
         f_id = 'vote_specfee_%d' % sf.pk
-        f = forms.ChoiceField(choices=c.VOTES_YNA, label=sf.title, required=False, initial=initial)
+        f = forms.ChoiceField(choices=c.VOTES_YNA, label=sf.title, required=False, initial=initial, widget=forms.RadioSelect)
         f.is_special_fee = True
         f.issue = sf
         _BallotForm.base_fields[f_id] = f
@@ -174,6 +174,8 @@ class SenateCandidatesField(CandidatesField):
         return instance.ballot_name()
 
 class SlateChoiceField(forms.ModelChoiceField):
+    #widget = forms.RadioSelect
+    
     def label_from_instance(self, instance):
         return instance.ballot_name()
 

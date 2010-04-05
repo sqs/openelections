@@ -171,23 +171,42 @@
 
 <section class="fees">
     <h1>Special Fee requests</h1>
-    <table class="specialfees">
+    <table class="specialfees" cellspacing="0">
         <thead>
-            <tr><th></th><th>Total</th><th>Per student</th><th>Vote</th></tr>
+            <tr><th></th><th>Vote</th><th>Total</th><th>Per student</th></tr>
         </thead>
         <tbody>
             {% for f in ballotform %}
                 {% if f.field.is_special_fee %}
                     {% with f.field.issue as issue %}
                     <tr>
-                        <th>{{ f.label }}</th>
+                        <th class="title">
+                            {{ f.label }}
+                            <span class="info">
+                                {% if issue.advisory_vote_gsc %}
+                                    <br>GSC advisory vote: {{ issue.advisory_vote_gsc }}
+                                {% endif %}
+                                
+                                {% if issue.advisory_vote_senate %}
+                                    <br>Senate advisory vote: {{ issue.advisory_vote_senate }}
+                                {% endif %}
+                            </span>
+                        </th>
+                        <td class="vote">{{ f }} {{ f.errors }}</td>
                         <td class="figure">
                             {% if issue.budget %}<a target="_blank" href="{{ issue.budget.url }}">{% endif %}
                                 {{ issue.total_request_amount|currency }}
                             {% if issue.budget %}</a>{% endif %}
                         </td>
-                        <td>$N/A</td>
-                        <td>{{ f }} {{ f.errors }}</td>
+                        <td class="info">
+                            {% if issue.amount_per_undergrad_annual %}
+                                {{ issue.amount_per_undergrad_annual|currency }}/undergrad/year<br>
+                            {% endif %}
+                            
+                            {% if issue.amount_per_grad_annual %}
+                                {{ issue.amount_per_grad_annual|currency }}/grad/year
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endwith %}
                 {% endif %}

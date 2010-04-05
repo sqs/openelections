@@ -32,7 +32,7 @@ def vote_all(request):
         else:
             #return HttpResponse("vote error: %r" % postdata)
             return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'electorate_names': ballot.electorates})
-    return HttpResponseRedirect('/ballot/?ok')
+    return HttpResponseRedirect('/ballot/')
 
 @webauth_required
 def vote_one(request, issue_id):

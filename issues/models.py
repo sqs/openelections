@@ -255,7 +255,8 @@ class ExecutiveSlate(Slate):
                % (self.title, self.name1, self.name2)
                
     def ballot_name(self):
-        return "%s: %s (Pres) & %s (VP)" % (self.title, self.name1, self.name2)
+        return self.title
+        #return "%s: %s (Pres) & %s (VP)" % (self.title, self.name1, self.name2)
 
 class ClassPresidentSlate(Slate):
     class Meta:
@@ -292,7 +293,8 @@ class ClassPresidentSlate(Slate):
                % (self.title, self.class_year().name, self.names_str())
     
     def ballot_name(self):
-        return "%s: %s" % (self.title, self.names_str())
+        return self.title
+        #return "%s: %s" % (self.title, self.names_str())
 
 class SenateCandidate(Candidate):
     class Meta:
