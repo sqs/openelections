@@ -4,7 +4,7 @@ from django.forms.formsets import formset_factory, BaseFormSet
 from django.utils.safestring import mark_safe
 from openelections import constants as c
 from openelections.ballot.models import Ballot
-from openelections.issues.models import Issue, SenateCandidate, GSCCandidate, ExecutiveSlate, Electorate, SpecialFeeRequest, ClassPresidentSlate
+from openelections.issues.models import Issue, SenateCandidate, GSCCandidate, ExecutiveSlate, Electorate, SpecialFeeRequest, ClassPresidentSlate, kinds_classes
 
 def html_id(issue):
     return 'issue_%d' % issue.pk
@@ -69,7 +69,9 @@ def ballot_form_factory(ballot):
             self.instance.votes_specfee_no = self.cleaned_data['votes_specfee_no']
             
             super(_BallotForm, self).save(commit)
-
+    
+    electorate_objs = ballot.electorate_objs()        
+    
     exec_qs = ExecutiveSlate.objects.filter(kind=c.ISSUE_EXEC).order_by('pk').all()
     for i in range(1, Ballot.N_EXEC_VOTES+1):
         f_id = 'vote_exec%d' % i
@@ -102,7 +104,7 @@ def ballot_form_factory(ballot):
         del _BallotForm.base_fields['vote_classpres4']
     
     if ballot.is_gsc():
-        gsc_district_elecs = ballot.electorate_objs().filter(slug__in=Electorate.GSC_DISTRICTS).all()
+        gsc_district_elecs = electorate_objs.filter(slug__in=Electorate.GSC_DISTRICTS).all()
         gsc_district_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC, electorates__in=gsc_district_elecs).all()
         f = GSCDistrictCandidatesField(queryset=gsc_district_qs, required=False)
         _BallotForm.base_fields['votes_gsc_district'] = f
@@ -115,13 +117,33 @@ def ballot_form_factory(ballot):
         del _BallotForm.base_fields['votes_gsc_atlarge']
     
     if ballot.is_smsa():
-        pass
+        _BallotForm.smsa = True
+        
+        smsa_data = (
+            ('vote_smsa_execpres', 'SMSA-ExecP'),
+            ('vote_smsa_pres', 'SMSA-P'),
+            ('vote_smsa_vicepres', 'SMSA-VP'),
+            ('vote_smsa_sec', 'SMSA-S'),
+            ('vote_smsa_treas', 'SMSA-T'),
+            ('vote_smsa_mentorship', 'SMSA-MC'),
+            ('vote_smsa_psrc', 'SMSA-PSRC'),
+            ('vote_smsa_ossosr', 'SMSA-OSS-OSR'),
+            ('vote_smsa_classrep', 'SMSA-ClassRep'),
+            ('vote_smsa_socialchair', 'SMSA-SocChair'),
+            ('vote_smsa_ccap', 'SMSA-CCAP'),
+            ('vote_smsa_pachair', 'SMSA-PAC'),
+        )
+        
+        # set querysets
+        for f_id, kind in smsa_data:
+            qs = kinds_classes[kind].objects.filter(kind=kind, electorates__in=electorate_objs).all()
+            _BallotForm.base_fields[f_id] = forms.ModelChoiceField(queryset=qs, required=False, widget=forms.RadioSelect, empty_label='None')
     else:
         for k,v in _BallotForm.base_fields.items():
             if 'smsa' in k:
                 del _BallotForm.base_fields[k]
     
-    specfee_qs = SpecialFeeRequest.objects.filter(kind=c.ISSUE_SPECFEE, electorates__in=ballot.electorate_objs).order_by('pk').all()
+    specfee_qs = SpecialFeeRequest.objects.filter(kind=c.ISSUE_SPECFEE, electorates__in=electorate_objs).order_by('pk').all()
     _BallotForm.fields_specfees = []
     for sf in specfee_qs:
         initial = None
@@ -145,12 +167,6 @@ class CandidatesField(forms.ModelMultipleChoiceField):
 
 class SenateCandidatesField(CandidatesField):
     widget = forms.CheckboxSelectMultiple
-    
-    def section_title(self):
-        return "ASSU Undergraduate Senate"
-    
-    def description(self):
-        return "Choose up to 15."
 
 def irv_n_choices(n):
     return [(0, '------')] + [(i,i) for i in range(1, n+1)]
@@ -163,39 +179,6 @@ class SelectIRVOrder(forms.Select):
     def render(self, name, value, attrs=None):
         return ('<label for="%s">%s: </label>' % (None, self.instance.title)) +  super(SelectIRVOrder, self).render(name, value, attrs=attrs)
 
-class SlateIRVField(forms.ChoiceField):
-    def __init__(self, n, *args, **kwargs):
-        super(SlateIRVField, self).__init__(choices=irv_n_choices(n), *args, **kwargs)
-        
-class SlatesIRVWidget(forms.MultiWidget):
-    def __init__(self, n, *args, **kwargs):
-        self.queryset = kwargs.pop('queryset')
-        self.n = n
-        widgets = [SelectIRVOrder(n, *args, instance=s, **kwargs) for s in self.queryset]
-        super(SlatesIRVWidget, self).__init__(widgets, *args, **kwargs)
-    
-    def decompress(self, value):
-        if value:
-            return value.split(',')
-        return [None] * self.n
-
-    def format_output(self, rendered_widgets):
-        return '<ul><li>' + '</li><li>'.join(rendered_widgets) + '</li></ul>'
-
-class SlatesIRVField(forms.MultiValueField):
-    def __init__(self, *args, **kwargs):
-        #print kwargs
-        self.queryset = kwargs.pop('queryset')
-        n = len(self.queryset)
-        fields = [SlateIRVField(n, label='asdf333', required=False) for s in self.queryset]
-        super(SlatesIRVField, self).__init__(fields, widget=SlatesIRVWidget(n, queryset=self.queryset), *args, **kwargs)
-    
-    def compress(self, data_list):
-        if data_list:
-            return ','.join(data_list)
-        return None
-
-         
 class GSCCandidatesField(CandidatesField):
     pass
     
@@ -228,19 +211,19 @@ class SMSACandidatesField(CandidatesField):
 
 
          
-class ExecSlatesIRVField(SlatesIRVField):
-    def section_title(self):
-        return "ASSU Executive"
-    
-    def description(self):
-        return "Rank the slates in order of your preference, with 1 being your first choice."    
-
-class ClassPresSlatesIRVField(SlatesIRVField):
-    def section_title(self):
-        return self.queryset[0].get_typed().kind_name()
-    
-    def description(self):
-        return "Rank the slates in order of your preference, with 1 being your first choice."    
+# class ExecSlatesIRVField(SlatesIRVField):
+#     def section_title(self):
+#         return "ASSU Executive"
+#     
+#     def description(self):
+#         return "Rank the slates in order of your preference, with 1 being your first choice."    
+# 
+# class ClassPresSlatesIRVField(SlatesIRVField):
+#     def section_title(self):
+#         return self.queryset[0].get_typed().kind_name()
+#     
+#     def description(self):
+#         return "Rank the slates in order of your preference, with 1 being your first choice."    
 
 #class __CandidatesField(forms.ModelMultipleChoiceField):
     # def label_from_instance(self, obj):
