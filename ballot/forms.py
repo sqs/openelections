@@ -31,8 +31,16 @@ def ballot_form_factory(ballot):
             super(_BallotForm, self).__init__(*args, **kwargs)
         
         def clean(self):
+            #self.cleaned_data = self.clean_exec_votes()
+            #self.cleaned_data = self.clean_classpres_votes()
             self.cleaned_data = self.clean_special_fee_votes()
             return self.cleaned_data
+        
+        def clean_exec_votes(self):
+            pass
+            
+        def clean_classpres_votes(self):
+            pass
         
         def clean_special_fee_votes(self):
             yes_votes = []
@@ -55,11 +63,18 @@ def ballot_form_factory(ballot):
         
         def save(self, commit=True):            
             print "cd: %s" % self.cleaned_data
+            
+            # special fees
             self.instance.votes_specfee_yes = self.cleaned_data['votes_specfee_yes']
             self.instance.votes_specfee_no = self.cleaned_data['votes_specfee_no']
+            
             super(_BallotForm, self).save(commit)
 
-    _BallotForm.base_fields['votes_exec'] = ExecSlatesIRVField(queryset=ExecutiveSlate.objects.filter(kind=c.ISSUE_EXEC).all(), required=False)
+    exec_qs = ExecutiveSlate.objects.filter(kind=c.ISSUE_EXEC).order_by('pk').all()
+    for i in range(1, Ballot.N_EXEC_VOTES+1):
+        f_id = 'vote_exec%d' % i
+        f = forms.ChoiceField(choices=[('', '-------')] + [(e.title, e.title) for e in exec_qs], required=False)
+        _BallotForm.base_fields[f_id] = f
     
     all_specfees_qs = SpecialFeeRequest.objects.filter(kind=c.ISSUE_SPECFEE).all()
     _BallotForm.base_fields['votes_specfee_yes'] = forms.ModelMultipleChoiceField(queryset=all_specfees_qs, required=False)
@@ -70,14 +85,26 @@ def ballot_form_factory(ballot):
         _BallotForm.base_fields['votes_senate'] = SenateCandidatesField(queryset=senate_qs, required=False)
         
         classpres_qs = ClassPresidentSlate.objects.filter(kind=c.ISSUE_CLASSPRES, electorates__in=ballot.electorate_objs).all()
-        _BallotForm.base_fields['votes_classpres'] = ClassPresSlatesIRVField(queryset=classpres_qs, required=False)        
+        n_classpres = min(len(classpres_qs), Ballot.N_CLASSPRES_VOTES)
+        for i in range(1, n_classpres+1):
+            f_id = 'vote_classpres%d' % i
+            f = forms.ChoiceField(choices=[('', '-------')] + [(s.title, s.title) for s in classpres_qs], required=False)
+            _BallotForm.base_fields[f_id] = f
+        for j in range(n_classpres+1, Ballot.N_CLASSPRES_VOTES+1):
+            f_id = 'vote_classpres%d' % j
+            del _BallotForm.base_fields[f_id]
     else:
-        gsc_district_elecs = ballot.electorate_objs.filter(slug__in=Electorate.GSC_DISTRICTS).all()
+        gsc_district_elecs = ballot.electorate_objs().filter(slug__in=Electorate.GSC_DISTRICTS).all()
         gsc_district_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC, electorates__in=gsc_district_elecs).all()
-        _BallotForm.base_fields['votes_gsc_district'] = GSCDistrictCandidatesField(queryset=gsc_district_qs, required=False)
+        f = GSCDistrictCandidatesField(queryset=gsc_district_qs, required=False)
+        _BallotForm.base_fields['votes_gsc_district'] = f
+        f.district_names = ', '.join(map(lambda o: o.name, gsc_district_elecs))
         
         gsc_atlarge_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC).all()
         _BallotForm.base_fields['votes_gsc_atlarge'] = GSCAtLargeCandidatesField(queryset=gsc_atlarge_qs, required=False)
+        
+        del _BallotForm.base_fields['votes_senate']
+        del _BallotForm.base_fields['votes_classpres']
     
     specfee_qs = SpecialFeeRequest.objects.filter(kind=c.ISSUE_SPECFEE, electorates__in=ballot.electorate_objs).order_by('pk').all()
     _BallotForm.fields_specfees = []
@@ -174,12 +201,8 @@ class GSCDistrictCandidatesField(GSCCandidatesField):
             return "Choose 1."
         
 class GSCAtLargeCandidatesField(GSCCandidatesField):
-    def section_title(self):
-        return "GSC At-Large"
-    
-    def description(self):
-        return "At-large votes are tallied independently of GSC district votes.  You can vote for the same candidate(s) for both at-large and in your district, if you want."
-            
+    pass
+
 class SMSACandidatesField(CandidatesField):
     def section_title(self):
         if not self.queryset: return "Empty (%s)" % self.kind

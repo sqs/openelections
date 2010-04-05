@@ -7,8 +7,22 @@
 <form id="ballot" method="post" action="{% url ballot.views.vote_all %}">
 
 <section class="slates">
-    <h1>Exec</h1>
-    {{ ballotform.votes_exec }}
+    <h1>ASSU Executive</h1>
+    <p>Rank your choices for Exec.</p>
+    <table>
+        <thead>
+            <tr><td/><td/><th>OR Write-in</th></tr>
+        </thead>
+        <tbody>
+            <tr><th>1st choice</th><td>{{ ballotform.vote_exec1 }}</td><td>{{ ballotform.vote_exec1.errors }}</td></tr>
+            <tr><th>2nd choice</th><td>{{ ballotform.vote_exec2 }}</td><td>{{ ballotform.vote_exec2.errors }}</td></tr>
+            <tr><th>3rd choice</th><td>{{ ballotform.vote_exec3 }}</td><td>{{ ballotform.vote_exec3.errors }}</td></tr>
+            <tr><th>4th choice</th><td>{{ ballotform.vote_exec4 }}</td><td>{{ ballotform.vote_exec4.errors }}</td></tr>
+            <tr><th>5th choice</th><td>{{ ballotform.vote_exec5 }}</td><td>{{ ballotform.vote_exec5.errors }}</td></tr>
+            <tr><th>6th choice</th><td>{{ ballotform.vote_exec6 }}</td><td>{{ ballotform.vote_exec6.errors }}</td></tr>
+        </tbody>
+    </table>
+    <hr>
 </section>
 
 {% if ballotform.votes_senate %}
@@ -17,21 +31,55 @@
         <p>Choose 15.</p>
         {{ ballotform.votes_senate }}
     </section>
+    <hr>
 {% endif %}
 
-{% if ballotform.votes_gsc %}
+{% if ballotform.votes_gsc_district %}
     <section class="candidates">
-        <h1>Grad Student Council</h1>
-        {{ ballotform.votes_gsc }}
+        <h1>Grad Student Council District ({{ ballotform.votes_gsc_district.field.district_names }})</h1>
+        {{ ballotform.votes_gsc_district }}
     </section>
+    <hr>
 {% endif %}
 
-{% if ballotform.votes_classpres %}
-    <section class="slates">
-        <h1>Class President</h1>
-        {{ ballotform.votes_classpres }}
-    </section>
+{% if ballotform.votes_gsc_atlarge %}
+<section class="candidates">
+    <h1>Grad Student Council At-Large</h1>
+    <p>
+        At-large votes are tallied independently of GSC district votes.  
+        You can vote for the same candidate(s) for both at-large and in 
+        your district, if you want.
+    </p>
+    {{ ballotform.votes_gsc_atlarge }}
+</section>
+<hr>
 {% endif %}
+
+{% if ballotform.vote_classpres1 %}
+<section class="slates">
+    <h1>Undergraduate Class President</h1>
+    <p>Rank your choices for Class President.</p>
+    <table>
+        <thead>
+            <tr><td/><td/><th>OR Write-in</th></tr>
+        </thead>
+        <tbody>
+            <tr><th>1st choice</th><td>{{ ballotform.vote_classpres1 }}</td></tr>
+            {% if ballotform.vote_classpres2 %}
+                <tr><th>2nd choice</th><td>{{ ballotform.vote_classpres2 }}</td></tr>
+            {% endif %}
+            {% if ballotform.vote_classpres3 %}
+                <tr><th>3rd choice</th><td>{{ ballotform.vote_classpres3 }}</td></tr>
+            {% endif %}
+            {% if ballotform.vote_classpres4 %}
+                <tr><th>4th choice</th><td>{{ ballotform.vote_classpres4 }}</td></tr>
+            {% endif %}
+        </tbody>
+    </table>
+    <hr>
+</section>
+{% endif %}
+
 
 <section class="fees">
     <h1>Special Fees</h1>

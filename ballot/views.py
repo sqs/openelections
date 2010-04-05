@@ -8,7 +8,7 @@ from openelections.webauth.stanford_webauth import webauth_required
 
 
 
-SAMPLE_VOTER_ID = 'abcd1234'
+SAMPLE_VOTER_ID = 'frosh1'
 
 @webauth_required
 def index(request, voter_id=SAMPLE_VOTER_ID):
