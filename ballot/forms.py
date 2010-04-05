@@ -50,6 +50,7 @@ def ballot_form_factory(ballot):
                 if k.startswith('vote_specfee'):
                     pk = int(k[len('vote_specfee')+1:])
                     sf = SpecialFeeRequest.objects.get(pk=pk)
+                    if not v: continue
                     v = int(v)
                     if v == c.VOTE_YES:
                         yes_votes.append(sf)
@@ -62,7 +63,7 @@ def ballot_form_factory(ballot):
             return self.cleaned_data
         
         def save(self, commit=True):            
-            print "cd: %s" % self.cleaned_data
+            #print "cd: %s" % self.cleaned_data
             
             # special fees
             self.instance.votes_specfee_yes = self.cleaned_data['votes_specfee_yes']
@@ -101,7 +102,6 @@ def ballot_form_factory(ballot):
             del _BallotForm.base_fields[f_id+'_writein']
     else:
         del _BallotForm.base_fields['votes_senate']
-        print _BallotForm.base_fields.items()
         del _BallotForm.base_fields['vote_classpres1']
         del _BallotForm.base_fields['vote_classpres2']
         del _BallotForm.base_fields['vote_classpres3']
@@ -157,7 +157,6 @@ def ballot_form_factory(ballot):
             initial = c.VOTE_NO
         else:
             initial = c.VOTE_AB
-        print initial
         f_id = 'vote_specfee_%d' % sf.pk
         f = forms.ChoiceField(choices=c.VOTES_YNA, label=sf.title, required=False, initial=initial)
         f.is_special_fee = True

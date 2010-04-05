@@ -1,4 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
+from django.conf import settings
 from django.shortcuts import render_to_response, get_object_or_404
 from openelections import constants as oe_constants
 from openelections.issues.models import Electorate, Issue
@@ -6,21 +7,24 @@ from openelections.ballot.forms import ballot_form_factory
 from openelections.ballot.models import Ballot
 from openelections.webauth.stanford_webauth import webauth_required
 
-SAMPLE_VOTER_ID = 'dr1'
+def get_voter_id(request):
+    if settings.DEBUG and 'debug_voter_id' in request.GET:
+        return request.GET['debug_voter_id']
+    else:
+        return request.session.get('webauth_sunetid')
 
 @webauth_required
-def index(request, voter_id=SAMPLE_VOTER_ID):
-    ballot = get_object_or_404(Ballot, voter_id=voter_id)
+def index(request):
+    ballot = get_object_or_404(Ballot, voter_id=get_voter_id(request))
     ballotform = ballot_form_factory(ballot)(instance=ballot)
     return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'electorate_names': ballot.electorates})
 
 @webauth_required
-def vote_all(request, voter_id=SAMPLE_VOTER_ID):
+def vote_all(request):
     # TODO: XSS
     form = None
     if request.method == 'POST':
-        voter_id = SAMPLE_VOTER_ID# request.session['webauth_sunetid'] TODO: replace
-        ballot = get_object_or_404(Ballot, voter_id=voter_id)
+        ballot = get_object_or_404(Ballot, voter_id=get_voter_id(request))
         ballotform = ballot_form_factory(ballot)(request.POST, instance=ballot)
         if ballotform.is_valid():
             ballotform.save()
