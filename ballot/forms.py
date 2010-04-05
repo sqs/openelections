@@ -20,7 +20,7 @@ def ballot_form_factory(ballot):
     class _BallotForm(forms.ModelForm):
         class Meta:
             model = Ballot
-            #fields = ('votes_exec', )
+            #fields = ('votes_exec1',)
             exclude = ('voter_id', 'electorates', )
             #exclude = ('voter_id', 'electorates', 'votes_senate', 'votes_gsc_district', 'votes_gsc_atlarge', 
             #           'votes_specfee_yes', 'votes_specfee_no', 'votes_classpres')
@@ -94,6 +94,13 @@ def ballot_form_factory(ballot):
             f_id = 'vote_classpres%d' % j
             del _BallotForm.base_fields[f_id]
     else:
+        del _BallotForm.base_fields['votes_senate']
+        del _BallotForm.base_fields['votes_classpres1']
+        del _BallotForm.base_fields['votes_classpres2']
+        del _BallotForm.base_fields['votes_classpres3']
+        del _BallotForm.base_fields['votes_classpres4']
+    
+    if ballot.is_gsc():
         gsc_district_elecs = ballot.electorate_objs().filter(slug__in=Electorate.GSC_DISTRICTS).all()
         gsc_district_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC, electorates__in=gsc_district_elecs).all()
         f = GSCDistrictCandidatesField(queryset=gsc_district_qs, required=False)
@@ -102,9 +109,10 @@ def ballot_form_factory(ballot):
         
         gsc_atlarge_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC).all()
         _BallotForm.base_fields['votes_gsc_atlarge'] = GSCAtLargeCandidatesField(queryset=gsc_atlarge_qs, required=False)
-        
-        del _BallotForm.base_fields['votes_senate']
-        del _BallotForm.base_fields['votes_classpres']
+    else:
+        del _BallotForm.base_fields['votes_gsc_district']
+        del _BallotForm.base_fields['votes_gsc_atlarge']
+
     
     specfee_qs = SpecialFeeRequest.objects.filter(kind=c.ISSUE_SPECFEE, electorates__in=ballot.electorate_objs).order_by('pk').all()
     _BallotForm.fields_specfees = []
