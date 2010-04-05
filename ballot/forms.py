@@ -92,11 +92,13 @@ def ballot_form_factory(ballot):
         n_classpres = min(len(classpres_qs), Ballot.N_CLASSPRES_VOTES)
         for i in range(1, n_classpres+1):
             f_id = 'vote_classpres%d' % i
-            f = forms.ChoiceField(choices=[('', '-------')] + [(s.title, s.title) for s in classpres_qs], required=False)
+            f = forms.ModelChoiceField(queryset=classpres_qs, required=False)
             _BallotForm.base_fields[f_id] = f
+            _BallotForm.base_fields[f_id+'_writein'] = forms.CharField(required=False)
         for j in range(n_classpres+1, Ballot.N_CLASSPRES_VOTES+1):
             f_id = 'vote_classpres%d' % j
             del _BallotForm.base_fields[f_id]
+            del _BallotForm.base_fields[f_id+'_writein']
     else:
         del _BallotForm.base_fields['votes_senate']
         print _BallotForm.base_fields.items()

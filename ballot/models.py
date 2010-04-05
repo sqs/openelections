@@ -32,10 +32,14 @@ class Ballot(models.Model):
     vote_exec6_writein = models.CharField(max_length=75, blank=True)
 
     N_CLASSPRES_VOTES = 4
-    vote_classpres1 = models.CharField(max_length=75, blank=True)
-    vote_classpres2 = models.CharField(max_length=75, blank=True)
-    vote_classpres3 = models.CharField(max_length=75, blank=True)
-    vote_classpres4 = models.CharField(max_length=75, blank=True)
+    vote_classpres1 = models.ForeignKey(ClassPresidentSlate, blank=True, null=True, related_name='votes_classpres1')
+    vote_classpres2 = models.ForeignKey(ClassPresidentSlate, blank=True, null=True, related_name='votes_classpres2')
+    vote_classpres3 = models.ForeignKey(ClassPresidentSlate, blank=True, null=True, related_name='votes_classpres3')
+    vote_classpres4 = models.ForeignKey(ClassPresidentSlate, blank=True, null=True, related_name='votes_classpres4')
+    vote_classpres1_writein = models.CharField(max_length=75, blank=True)
+    vote_classpres2_writein = models.CharField(max_length=75, blank=True)
+    vote_classpres3_writein = models.CharField(max_length=75, blank=True)
+    vote_classpres4_writein = models.CharField(max_length=75, blank=True)
     
     vote_smsa_execpres = models.ForeignKey(SMSACandidate, related_name='votes_execpres', blank=True, null=True)
     vote_smsa_pres = models.ForeignKey(SMSACandidate, related_name='votes_pres', blank=True, null=True)

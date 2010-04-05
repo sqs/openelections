@@ -133,18 +133,33 @@
     <p>Rank your choices for Class President.</p>
     <table>
         <thead>
-            <tr><td/><td/><th>OR Write-in</th></tr>
+            <tr><td/><th>Choose slate</th><th>OR Write-in</th></tr>
         </thead>
         <tbody>
-            <tr><th>1st choice</th><td>{{ ballotform.vote_classpres1 }}</td></tr>
+            <tr><th>1st choice</th><td>{{ ballotform.vote_classpres1 }}</td><td>{{ ballotform.vote_classpres1_writein }}</td><td>{{ ballotform.vote_classpres1.errors }}</td></tr>
             {% if ballotform.vote_classpres2 %}
-                <tr><th>2nd choice</th><td>{{ ballotform.vote_classpres2 }}</td></tr>
+                <tr>
+                    <th>2nd choice</th>
+                    <td>{{ ballotform.vote_classpres2 }}</td>
+                    <td>{{ ballotform.vote_classpres2_writein }}</td>
+                    <td>{{ ballotform.vote_classpres2.errors }}</td>
+                </tr>
             {% endif %}
             {% if ballotform.vote_classpres3 %}
-                <tr><th>3rd choice</th><td>{{ ballotform.vote_classpres3 }}</td></tr>
+                <tr>
+                    <th>3rd choice</th>
+                    <td>{{ ballotform.vote_classpres3 }}</td>
+                    <td>{{ ballotform.vote_classpres3_writein }}</td>
+                    <td>{{ ballotform.vote_classpres3.errors }}</td>
+                </tr>
             {% endif %}
             {% if ballotform.vote_classpres4 %}
-                <tr><th>4th choice</th><td>{{ ballotform.vote_classpres4 }}</td></tr>
+                <tr>
+                    <th>4th choice</th>
+                    <td>{{ ballotform.vote_classpres4 }}</td>
+                    <td>{{ ballotform.vote_classpres4_writein }}</td>
+                    <td>{{ ballotform.vote_classpres4.errors }}</td>
+                </tr>
             {% endif %}
         </tbody>
     </table>
