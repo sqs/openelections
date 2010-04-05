@@ -75,7 +75,7 @@ def ballot_form_factory(ballot):
     exec_qs = ExecutiveSlate.objects.filter(kind=c.ISSUE_EXEC).all()
     for i in range(1, Ballot.N_EXEC_VOTES+1):
         f_id = 'vote_exec%d' % i
-        f = forms.ModelChoiceField(queryset=exec_qs, required=False)
+        f = SlateChoiceField(queryset=exec_qs, required=False)
         _BallotForm.base_fields[f_id] = f
         _BallotForm.base_fields[f_id+'_writein'] = forms.CharField(required=False)
     
@@ -92,7 +92,7 @@ def ballot_form_factory(ballot):
         n_classpres = min(len(classpres_qs), Ballot.N_CLASSPRES_VOTES)
         for i in range(1, n_classpres+1):
             f_id = 'vote_classpres%d' % i
-            f = forms.ModelChoiceField(queryset=classpres_qs, required=False)
+            f = SlateChoiceField(queryset=classpres_qs, required=False)
             _BallotForm.base_fields[f_id] = f
             _BallotForm.base_fields[f_id+'_writein'] = forms.CharField(required=False)
         for j in range(n_classpres+1, Ballot.N_CLASSPRES_VOTES+1):
@@ -171,7 +171,12 @@ class CandidatesField(forms.ModelMultipleChoiceField):
     widget = forms.CheckboxSelectMultiple
 
 class SenateCandidatesField(CandidatesField):
-    widget = forms.CheckboxSelectMultiple
+    def label_from_instance(self, instance):
+        return instance.ballot_name()
+
+class SlateChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, instance):
+        return instance.ballot_name()
 
 def irv_n_choices(n):
     return [(0, '------')] + [(i,i) for i in range(1, n+1)]

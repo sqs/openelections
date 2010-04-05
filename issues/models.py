@@ -122,6 +122,9 @@ class Issue(models.Model):
     def noun(self):
         raise NotImplementedError
     
+    def ballot_name(self):
+        return self.title
+    
     def kind_name(self):
         return "Generic issue"
     
@@ -245,6 +248,9 @@ class ExecutiveSlate(Slate):
     def name_and_office(self):
         return "%s, a slate for ASSU Executive with %s for President and %s for Vice President" \
                % (self.title, self.name1, self.name2)
+               
+    def ballot_name(self):
+        return "%s: %s (Pres) & %s (VP)" % (self.title, self.name1, self.name2)
 
 class ClassPresidentSlate(Slate):
     class Meta:
@@ -269,13 +275,19 @@ class ClassPresidentSlate(Slate):
     def elected_name(self):
         return "Class President"
     
-    def name_and_office(self):
+    def names_str(self):
         # join names with ", and" before last one
         names = [self.name1, self.name2, self.name3, self.name4, self.name5]
         names = [n for n in names if n]
         names_str = ', '.join(names[:-1]) + ', and ' + names[-1]
+        return names_str
+    
+    def name_and_office(self):
         return "%s, a slate for ASSU %s Class President with %s" \
-               % (self.title, self.class_year().name, names_str)
+               % (self.title, self.class_year().name, self.names_str())
+    
+    def ballot_name(self):
+        return "%s: %s" % (self.title, self.names_str())
 
 class SenateCandidate(Candidate):
     class Meta:
