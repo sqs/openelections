@@ -77,7 +77,7 @@
 
 <section class="slates">
     <h1>ASSU Executive</h1>
-    <p>Rank your choices for Exec.</p>
+    <p>Rank your choices for Executive. Uses <a target="_blank" href="http://en.wikipedia.org/wiki/Instant-runoff_voting">instant-runoff voting</a>.</p>
     <table>
         <thead>
             <tr><td/><th>Choose slate</th><th>OR Write-in</th></tr>
@@ -131,7 +131,7 @@
 {% if ballotform.vote_classpres1 %}
 <section class="slates">
     <h1>Undergraduate Class President</h1>
-    <p>Rank your choices for Class President.</p>
+    <p>Rank your choices for Class President. Uses <a target="_blank" href="http://en.wikipedia.org/wiki/Instant-runoff_voting">instant-runoff voting</a>.</p>
     <table>
         <thead>
             <tr><td/><th>Choose slate</th><th>OR Write-in</th></tr>
@@ -173,7 +173,7 @@
     <h1>Special Fee requests</h1>
     <table class="specialfees">
         <thead>
-            <tr><th></th><th>Total</th><th>Vote</th></tr>
+            <tr><th></th><th>Total</th><th>Per student</th><th>Vote</th></tr>
         </thead>
         <tbody>
             {% for f in ballotform %}
@@ -186,6 +186,7 @@
                                 {{ issue.total_request_amount|currency }}
                             {% if issue.budget %}</a>{% endif %}
                         </td>
+                        <td>$N/A</td>
                         <td>{{ f }} {{ f.errors }}</td>
                     </tr>
                     {% endwith %}
