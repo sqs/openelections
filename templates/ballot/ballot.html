@@ -96,8 +96,12 @@
 {% if ballotform.votes_senate %}
     <section class="candidates">
         <h1>Undergrad Senate</h1>
-        <p>Choose 15.</p>
+        <p>Vote for up to 15 Senate candidates.</p>
         {{ ballotform.votes_senate }}
+        
+        <h3>Write-in Senate votes</h3>
+        <p>List the full names of other students you want to vote for. You can only vote for 15 Senators max, including write-ins.</p>
+        {{ ballotform.votes_senate_writein }}
     </section>
     <hr>
 {% endif %}

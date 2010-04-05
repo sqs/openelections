@@ -85,6 +85,7 @@ def ballot_form_factory(ballot):
     if ballot.is_undergrad():
         senate_qs = SenateCandidate.objects.filter(kind=c.ISSUE_US).all()
         _BallotForm.base_fields['votes_senate'] = SenateCandidatesField(queryset=senate_qs, required=False)
+        _BallotForm.base_fields['votes_senate_writein'] = forms.CharField(required=False, widget=forms.Textarea(attrs=dict(rows=2, cols=40)))
         
         classpres_qs = ClassPresidentSlate.objects.filter(kind=c.ISSUE_CLASSPRES, electorates__in=ballot.electorate_objs).all()
         n_classpres = min(len(classpres_qs), Ballot.N_CLASSPRES_VOTES)

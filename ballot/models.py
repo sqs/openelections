@@ -6,8 +6,14 @@ class Ballot(models.Model):
     electorates = models.CharField(max_length=128)
     
     votes_senate = models.ManyToManyField(SenateCandidate, related_name='votes', blank=True)
+    votes_senate_writein = models.CharField(max_length=500, blank=True)
+    
     votes_gsc_district = models.ManyToManyField(GSCCandidate, related_name='votes_district', blank=True)
+    votes_gsc_district_writein = models.CharField(max_length=500, blank=True)
+    
     votes_gsc_atlarge = models.ManyToManyField(GSCCandidate, related_name='votes_atlarge', blank=True)
+    votes_gsc_atlarge_writein = models.CharField(max_length=500, blank=True)
+    
     votes_specfee_yes = models.ManyToManyField(SpecialFeeRequest, related_name='votes_yes', blank=True)
     votes_specfee_no = models.ManyToManyField(SpecialFeeRequest, related_name='votes_no', blank=True)
     

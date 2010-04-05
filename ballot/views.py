@@ -6,8 +6,6 @@ from openelections.ballot.forms import ballot_form_factory
 from openelections.ballot.models import Ballot
 from openelections.webauth.stanford_webauth import webauth_required
 
-
-
 SAMPLE_VOTER_ID = 'dr1'
 
 @webauth_required
@@ -31,7 +29,6 @@ def vote_all(request, voter_id=SAMPLE_VOTER_ID):
             #return HttpResponse("vote error: %r" % postdata)
             return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'electorate_names': ballot.electorates})
     return HttpResponseRedirect('/ballot/?ok')
-
 
 @webauth_required
 def vote_one(request, issue_id):
