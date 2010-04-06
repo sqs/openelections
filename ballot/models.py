@@ -1,8 +1,27 @@
 from django.db import models
 from openelections.issues.models import *
+from django.conf import settings
+import hashlib
+
+def make_voter_id(sunetid):
+    m = hashlib.md5()
+    m.update(settings.WEBAUTH_SECRET + 'sunetid_to_voter_id' + sunetid)
+    return m.hexdigest()
 
 class Ballot(models.Model):
-    voter_id = models.CharField(max_length=64)
+    @classmethod
+    def get_or_create_by_sunetid(klass, sunetid):
+        b = klass.get_by_sunetid(sunetid)
+        if not b:
+            b = klass(voter_id=make_voter_id(sunetid))
+        return b
+    
+    @classmethod
+    def get_by_sunetid(klass, sunetid):
+        v = make_voter_id(sunetid)
+        return klass.objects.get(voter_id=v)
+    
+    voter_id = models.CharField(max_length=64, db_index=True)
     electorates = models.CharField(max_length=128)
     
     votes_senate = models.ManyToManyField(SenateCandidate, related_name='votes', blank=True)

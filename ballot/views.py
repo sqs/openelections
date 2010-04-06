@@ -1,17 +1,14 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.conf import settings
 from django.shortcuts import render_to_response, get_object_or_404
 from openelections import constants as oe_constants
 from openelections.issues.models import Electorate, Issue
 from openelections.ballot.forms import ballot_form_factory
-from openelections.ballot.models import Ballot
+from openelections.ballot.models import Ballot, make_voter_id
 from openelections.webauth.stanford_webauth import webauth_required
 
 def get_voter_id(request):
-    if settings.DEBUG and 'debug_voter_id' in request.GET:
-        return request.GET['debug_voter_id']
-    else:
-        return request.session.get('webauth_sunetid')
+    return make_voter_id(request.session.get('webauth_sunetid'))
 
 @webauth_required
 def index(request):
