@@ -115,12 +115,12 @@
             <tr><td/><th>Choose slate</th><th>OR Write-in</th></tr>
         </thead>
         <tbody>
-            <tr><th>1st choice</th><td>{{ ballotform.vote_exec1 }}</td><td>{{ ballotform.vote_exec1_writein }}</td><td>{{ ballotform.vote_exec1.errors }}</td></tr>
-            <tr><th>2nd choice</th><td>{{ ballotform.vote_exec2 }}</td><td>{{ ballotform.vote_exec2_writein }}</td><td>{{ ballotform.vote_exec2.errors }}</td></tr>
-            <tr><th>3rd choice</th><td>{{ ballotform.vote_exec3 }}</td><td>{{ ballotform.vote_exec3_writein }}</td><td>{{ ballotform.vote_exec3.errors }}</td></tr>
-            <tr><th>4th choice</th><td>{{ ballotform.vote_exec4 }}</td><td>{{ ballotform.vote_exec4_writein }}</td><td>{{ ballotform.vote_exec4.errors }}</td></tr>
-            <tr><th>5th choice</th><td>{{ ballotform.vote_exec5 }}</td><td>{{ ballotform.vote_exec5_writein }}</td><td>{{ ballotform.vote_exec5.errors }}</td></tr>
-            <tr><th>6th choice</th><td>{{ ballotform.vote_exec6 }}</td><td>{{ ballotform.vote_exec6_writein }}</td><td>{{ ballotform.vote_exec6.errors }}</td></tr>
+            <tr><th>1st choice</th><td>{{ ballotform.vote_exec1 }}</td><td>{{ ballotform.vote_exec1_writein }} {{ ballotform.vote_exec1.errors }}</td></tr>
+            <tr><th>2nd choice</th><td>{{ ballotform.vote_exec2 }}</td><td>{{ ballotform.vote_exec2_writein }} {{ ballotform.vote_exec2.errors }}</td></tr>
+            <tr><th>3rd choice</th><td>{{ ballotform.vote_exec3 }}</td><td>{{ ballotform.vote_exec3_writein }} {{ ballotform.vote_exec3.errors }}</td></tr>
+            <tr><th>4th choice</th><td>{{ ballotform.vote_exec4 }}</td><td>{{ ballotform.vote_exec4_writein }} {{ ballotform.vote_exec4.errors }}</td></tr>
+            <tr><th>5th choice</th><td>{{ ballotform.vote_exec5 }}</td><td>{{ ballotform.vote_exec5_writein }} {{ ballotform.vote_exec5.errors }}</td></tr>
+            <tr><th>6th choice</th><td>{{ ballotform.vote_exec6 }}</td><td>{{ ballotform.vote_exec6_writein }} {{ ballotform.vote_exec6.errors }}</td></tr>
         </tbody>
     </table>
     <hr>
@@ -143,9 +143,18 @@
 {% if ballot.gsc_district and ballotform.votes_gsc_district %}
     <section class="candidates">
         <h2>Grad Student Council District ({{ ballot.gsc_district.name }})</h2>
-        <p>{{ ballotform.votes_gsc_district.label }}</p>
+        <p><strong>{{ ballotform.votes_gsc_district.label }}</strong></p>
         {{ ballotform.votes_gsc_district }}
         {{ ballotform.votes_gsc_district.errors }}
+        
+        {% ifequal ballot.gsc_district.slug "gsc-eng" %}
+            <h3>Write-in GSC district votes</h3>
+            <p>List the full names of other students you want to vote for. You can only vote for 2 GSC reps max, including write-ins.</p>
+        {% else %}
+            <h3>Write-in GSC district vote</h3>
+            <p>List the full name of the student you want to vote for. You can vote for a write-in or a candidate listed above, but not both, since you only have 1 vote.</p>
+        {% endifequal %}
+        {{ ballotform.votes_gsc_district_writein }}
     </section>
     <hr>
 {% endif %}
@@ -154,12 +163,16 @@
 <section class="candidates">
     <h2>Grad Student Council At-Large</h2>
     <p>
-        At-large votes are tallied independently of GSC district votes.  
+        <strong>Choose up to 5.</strong> At-large votes are tallied independently of GSC district votes.  
         You can vote for the same candidate(s) for both at-large and in 
         your district, if you want.
     </p>
     {{ ballotform.votes_gsc_atlarge }}
     {{ ballotform.votes_gsc_atlarge.errors }}
+    
+    <h3>Write-in GSC at-large votes</h3>
+    <p>List the full names of other students you want to vote for. You can only vote for 5 at-large GSC reps max, including write-ins.</p>
+    {{ ballotform.votes_gsc_atlarge_writein }}
 </section>
 <hr>
 {% endif %}
@@ -207,6 +220,13 @@
 
 <section class="fees">
     <h2>Special Fee requests</h2>
+    
+    <p>
+        Your vote on a Special Fee request indicates whether you believe all students should pay a Special Fee each quarter to fund the
+        group's events and activities described in their proposed budget.
+        <a href="http://elections.stanford.edu/special-fees/" target="_blank">Learn more about Special Fees.</a>
+    <p/>
+        
     <table class="specialfees" cellspacing="0">
         <thead>
             <tr><th></th><th>Vote</th><th>Total</th><th>Per student</th></tr>
@@ -230,7 +250,7 @@
                         </th>
                         <td class="vote">{{ f }} {{ f.errors }}</td>
                         <td class="figure">
-                            {% if issue.budget %}<a target="_blank" href="{{ issue.budget.url }}">{% endif %}
+                            {% if issue.budget %}<a target="_blank" href="http://voterguide.stanford.edu/{{ issue.budget.url|cut:"http://corn24.stanford.edu:32145/" }}">{% endif %}
                                 {{ issue.total_request_amount|currency }}
                             {% if issue.budget %}</a>{% endif %}
                         </td>

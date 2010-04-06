@@ -46,7 +46,7 @@ class BallotElectorateForm(forms.ModelForm):
     undergrad_class_year = ElectorateChoiceField(
         queryset=Electorate.queryset_with_slugs(Electorate.UNDERGRAD_CLASS_YEARS),
         label='Undergraduate class year',
-        help_text='If unsure, choose the class year of which you currently (this year) socially identify as a member.',
+        help_text='If unsure, choose the class year that you currently (this year) socially identify as a member of.',
         empty_label='N/A', required=False)
     
     gsc_district = ElectorateChoiceField(
@@ -155,12 +155,16 @@ def ballot_form_factory(ballot):
         gsc_district_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC, electorates=ballot.gsc_district).order_by('?').all()
         f = GSCDistrictCandidatesField(queryset=gsc_district_qs, required=False, ballot=ballot)
         _BallotForm.base_fields['votes_gsc_district'] = f
+        _BallotForm.base_fields['votes_gsc_district_writein'] = forms.CharField(required=False, widget=forms.Textarea(attrs=dict(rows=1, cols=40)))
         
         gsc_atlarge_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC).order_by('?').all()
         _BallotForm.base_fields['votes_gsc_atlarge'] = GSCAtLargeCandidatesField(queryset=gsc_atlarge_qs, required=False)
+        _BallotForm.base_fields['votes_gsc_atlarge_writein'] = forms.CharField(required=False, widget=forms.Textarea(attrs=dict(rows=2, cols=40)))
     else:
         del _BallotForm.base_fields['votes_gsc_district']
+        del _BallotForm.base_fields['votes_gsc_district_writein']
         del _BallotForm.base_fields['votes_gsc_atlarge']
+        del _BallotForm.base_fields['votes_gsc_atlarge_writein']
     
     if ballot.is_smsa():
         _BallotForm.smsa = True
@@ -239,7 +243,7 @@ class GSCDistrictCandidatesField(GSCCandidatesField):
             kwargs['widget'] = forms.CheckboxSelectMultiple
         else:
             kwargs['label'] = 'Choose 1 candidate.'
-            kwargs['widget'] = forms.RadioSelect
+            kwargs['widget'] = forms.CheckboxSelectMultiple
         super(GSCDistrictCandidatesField, self).__init__(*args, **kwargs)
     
     def section_title(self):

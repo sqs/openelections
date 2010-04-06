@@ -280,7 +280,7 @@ class ClassPresidentSlate(Slate):
     
     def kind_name(self):
         if self.pk:
-            return "%s Class President slate" % self.class_year()
+            return "%s Class President slate" % self.class_year().name
         else:
             # if we haven't saved this, we don't know what year -- so be general
             return "Class President slate"
@@ -402,7 +402,7 @@ class SMSAClassRepCandidate(SMSACandidate):
         
     def elected_name(self):
         if self.pk:
-            return "%s Class Rep" % self.class_year()
+            return "%s Class Rep" % self.class_year().name
         else:
             return "Class Rep"
         
@@ -424,7 +424,7 @@ class SMSASocialChairCandidate(SMSACandidate):
     
     def elected_name(self):
         if self.pk:
-            return "SMSA Social Chair (%s)" % no_smsa(self.population())
+            return "SMSA Social Chair (%s)" % no_smsa(self.population().name)
         else:
             return "SMSA Social Chair"
         
@@ -446,7 +446,7 @@ class SMSACCAPRepCandidate(SMSACandidate):
     
     def elected_name(self):
         if self.pk:
-            return "SMSA CCAP Rep (%s)" % no_smsa(self.population())
+            return "SMSA CCAP Rep (%s)" % no_smsa(self.population().name)
         else:
             return "SMSA CCAP Rep"
 
@@ -468,7 +468,7 @@ class SMSAPolicyAndAdvocacyChairCandidate(SMSACandidate):
     
     def elected_name(self):
         if self.pk:
-            return "SMSA Policy and Advocacy Chair (%s)" % no_smsa(self.population())
+            return "SMSA Policy and Advocacy Chair (%s)" % no_smsa(self.population().name)
         else:
             return "SMSA Policy and Advocacy Chair"
         

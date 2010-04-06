@@ -73,7 +73,6 @@ class AuthenticatedVisitorTest(OETestCase):
         res = self.client.get('/petitions/sts')
         self.assertTemplateUsed(res, 'petitions/detail.html')
         self.assertContains(res, 'Undergrad</label')
-        self.assertContains(res, 'Coterm</label')
         self.assertNotContains(res, 'Grad</label>')
     
     def test_detail_joint_fee_has_grad_enrollment_status_option(self):
@@ -81,7 +80,6 @@ class AuthenticatedVisitorTest(OETestCase):
         res = self.client.get('/petitions/stanford-joint-society')
         self.assertTemplateUsed(res, 'petitions/detail.html')
         self.assertContains(res, 'Undergrad</label')
-        self.assertContains(res, 'Coterm</label')
         self.assertContains(res, 'Grad</label>')
     
     def test_sign_with_method_get_redirects_to_detail(self):

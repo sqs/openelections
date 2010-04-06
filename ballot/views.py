@@ -16,7 +16,8 @@ def get_voter_id(request):
 @transaction.commit_on_success
 @webauth_required
 def index(request):
-    ballot = get_object_or_404(Ballot, voter_id=get_voter_id(request))
+    sunetid = request.session.get('webauth_sunetid')
+    ballot, c = Ballot.get_or_create_by_sunetid(sunetid)
     
     if ballot.needs_ballot_choice():
         return HttpResponseRedirect('/ballot/choose')

@@ -31,8 +31,6 @@ smsa1pc = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class
 smsa2pc = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-3', smsa_population='smsa-preclinical')
 smsa4c = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-5plus', smsa_population='smsa-clinical')
 
-
-
 def make_ballot(sunetid, assu_populations=None, undergrad_class_year=None, gsc_district=None, smsa_class_year=None, smsa_population=None):
     b, created = Ballot.get_or_create_by_sunetid(sunetid)
     
@@ -222,6 +220,11 @@ class BallotChoiceTest(OEBallotTestCase):
         
     def test_smsa_no_population(self):
         self.webauthLoginAndMakeBallot('abc4', dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-3'))
+        res = self.client.get('/ballot/')
+        self.assertRedirects(res, '/ballot/choose')
+            
+    def test_new_user(self):
+        self.webauthLogin('newuser')
         res = self.client.get('/ballot/')
         self.assertRedirects(res, '/ballot/choose')
 
