@@ -100,7 +100,33 @@ class BallotTest(OETwillTestCase):
         twill.find('Jang')
         twill.find('Walzebuck')
         twill.find('Saeid')
+
+class BallotChoiceTest(OEBallotTestCase):
+    def test_ug_no_class_year(self):
+        self.webauthLoginAndMakeBallot('abc1', dict(assu_populations=['undergrad']))
+        res = self.client.get('/ballot/')
+        self.assertRedirects(res, '/ballot/choose')
+
+    def test_ug_ok(self):
+        self.webauthLoginAndMakeBallot('xyz1', dict(assu_populations=['undergrad'], undergrad_class_year='undergrad-1'))
+        res = self.client.get('/ballot/')
+        self.assertTemplateUsed(res, 'ballot/ballot.html')
+    
+    def test_gsc_no_district(self):
+        self.webauthLoginAndMakeBallot('abc2', dict(assu_populations=['graduate']))
+        res = self.client.get('/ballot/')
+        self.assertRedirects(res, '/ballot/choose')
         
+    def test_smsa_no_class_year(self):
+        self.webauthLoginAndMakeBallot('abc3', dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_population='smsa-clinical'))
+        res = self.client.get('/ballot/')
+        self.assertRedirects(res, '/ballot/choose')
+        
+    def test_smsa_no_population(self):
+        self.webauthLoginAndMakeBallot('abc4', dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-3'))
+        res = self.client.get('/ballot/')
+        self.assertRedirects(res, '/ballot/choose')
+
 class RealSMSABallotTest(OEBallotTestCase):
     def test_shows_smsa_schoolwide_candidates(self):
         self.webauthLoginAndMakeBallot('smsa1', smsa1)

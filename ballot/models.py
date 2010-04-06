@@ -73,6 +73,17 @@ class Ballot(models.Model):
     vote_smsa_ccap = models.ForeignKey(SMSACCAPRepCandidate, related_name='votes', blank=True, null=True)
     vote_smsa_pachair = models.ForeignKey(SMSAPolicyAndAdvocacyChairCandidate, related_name='votes', blank=True, null=True)
     
+    def needs_ballot_choice(self):
+        if self.is_gsc():
+            if not self.gsc_district:
+                return True
+            if self.is_smsa() and (not self.smsa_population) or (not self.smsa_class_year):
+                return True
+        elif self.is_undergrad():
+            if not self.undergrad_class_year:
+                return True
+        return False
+    
     def electorate_slugs(self):
         return map(lambda e: e and e.slug or '', list(self.assu_populations.all()) + [self.undergrad_class_year, self.gsc_district, self.smsa_class_year, self.smsa_population])
     
@@ -83,7 +94,8 @@ class Ballot(models.Model):
         return bool(self.assu_populations.filter(slug='graduate').all())
     
     def is_smsa(self):
-        return self.smsa_population or self.smsa_class_year
+        is_gsc_med = (self.gsc_district and self.gsc_district.slug == 'gsc-med')
+        return is_gsc_med or self.smsa_population or self.smsa_class_year
     
     def __unicode__(self):
         return "Ballot: voter %s [%s]" % (self.voter_id, ','.join(self.electorate_slugs()))

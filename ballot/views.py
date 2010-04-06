@@ -16,6 +16,10 @@ def get_voter_id(request):
 @webauth_required
 def index(request):
     ballot = get_object_or_404(Ballot, voter_id=get_voter_id(request))
+    
+    if ballot.needs_ballot_choice():
+        return HttpResponseRedirect('/ballot/choose')
+    
     ballotform = ballot_form_factory(ballot)(instance=ballot)
     return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot},
                               context_instance=RequestContext(request))
