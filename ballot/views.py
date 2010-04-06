@@ -8,6 +8,7 @@ from openelections.issues.models import Electorate, Issue
 from openelections.ballot.forms import ballot_form_factory, BallotElectorateForm
 from openelections.ballot.models import Ballot, make_voter_id
 from openelections.webauth.stanford_webauth import webauth_required
+from openelections.webauth.views import do_logout
 
 def get_voter_id(request):
     return make_voter_id(request.session.get('webauth_sunetid'))
@@ -55,9 +56,5 @@ def vote_all(request):
             print ballotform.errors
             return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot},
                                       context_instance=RequestContext(request))
-    return HttpResponseRedirect('/ballot/')
-
-@webauth_required
-def vote_one(request, issue_id):
-    postdata = request.POST
-    return HttpResponse("%r" % postdata)
+    do_logout(request)
+    return render_to_response('ballot/done.html', {'ballot': ballot}, context_instance=RequestContext(request))

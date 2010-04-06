@@ -13,7 +13,10 @@ def elec(slug):
     return Electorate.objects.get(slug=slug)
 
 ugfrosh = dict(undergrad_class_year='undergrad-1', assu_populations=['undergrad'])
+ugsoph = dict(undergrad_class_year='undergrad-2', assu_populations=['undergrad'])
+ugjunior = dict(undergrad_class_year='undergrad-3', assu_populations=['undergrad'])
 ugsenior = dict(undergrad_class_year='undergrad-4', assu_populations=['undergrad'])
+ugfifth = dict(undergrad_class_year='undergrad-5plus', assu_populations=['undergrad'])
 smsa1 = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-1', smsa_population='smsa-preclinical')
 
 def make_ballot(sunetid, assu_populations=None, undergrad_class_year=None, gsc_district=None, smsa_class_year=None, smsa_population=None):
@@ -83,6 +86,31 @@ class UndergradBallotDisplayTest(OEBallotTestCase):
         self.assertContains(res, 'Peacock and Bakke')
         self.assertContains(res, 'The No-Rain Campaign')
         self.assertContains(res, 'Cardona and Wharton')
+    
+    def test_ugfrosh(self):
+        self.webauthLoginAndMakeBallot('ugfrosh', ugfrosh)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, 'undergraduate freshman')
+    
+    def test_ugsoph(self):
+        self.webauthLoginAndMakeBallot('ugsoph', ugsoph)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, 'undergraduate sophomore')
+    
+    def test_ugjunior(self):
+        self.webauthLoginAndMakeBallot('ugjunior', ugjunior)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, 'undergraduate junior')
+        
+    def test_ugsenior(self):
+        self.webauthLoginAndMakeBallot('ugsenior', ugsenior)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, 'undergraduate senior')
+        
+    def test_ugfifth(self):
+        self.webauthLoginAndMakeBallot('ugfifth', ugfifth)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, 'undergraduate fifth year and above')
         
 class BallotTest(OETwillTestCase):
     def testLoad(self):

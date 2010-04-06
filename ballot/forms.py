@@ -117,23 +117,23 @@ def ballot_form_factory(ballot):
             super(_BallotForm, self).save(commit)
     
     
-    exec_qs = ExecutiveSlate.objects.filter(kind=c.ISSUE_EXEC).all()
+    exec_qs = ExecutiveSlate.objects.filter(kind=c.ISSUE_EXEC).order_by('pk').all()
     for i in range(1, Ballot.N_EXEC_VOTES+1):
         f_id = 'vote_exec%d' % i
         f = SlateChoiceField(queryset=exec_qs, required=False)
         _BallotForm.base_fields[f_id] = f
         _BallotForm.base_fields[f_id+'_writein'] = forms.CharField(required=False)
     
-    all_specfees_qs = SpecialFeeRequest.objects.filter(kind=c.ISSUE_SPECFEE).all()
+    all_specfees_qs = SpecialFeeRequest.objects.filter(kind=c.ISSUE_SPECFEE).order_by('pk').all()
     _BallotForm.base_fields['votes_specfee_yes'] = forms.ModelMultipleChoiceField(queryset=all_specfees_qs, required=False)
     _BallotForm.base_fields['votes_specfee_no'] = forms.ModelMultipleChoiceField(queryset=all_specfees_qs, required=False)
 
     if ballot.is_undergrad():
-        senate_qs = SenateCandidate.objects.filter(kind=c.ISSUE_US).all()
+        senate_qs = SenateCandidate.objects.filter(kind=c.ISSUE_US).order_by('?').all()
         _BallotForm.base_fields['votes_senate'] = SenateCandidatesField(queryset=senate_qs, required=False)
         _BallotForm.base_fields['votes_senate_writein'] = forms.CharField(required=False, widget=forms.Textarea(attrs=dict(rows=2, cols=40)))
         
-        classpres_qs = ClassPresidentSlate.objects.filter(kind=c.ISSUE_CLASSPRES, electorates=ballot.undergrad_class_year).all()
+        classpres_qs = ClassPresidentSlate.objects.filter(kind=c.ISSUE_CLASSPRES, electorates=ballot.undergrad_class_year).order_by('pk').all()
         n_classpres = min(len(classpres_qs), Ballot.N_CLASSPRES_VOTES)
         for i in range(1, n_classpres+1):
             f_id = 'vote_classpres%d' % i
@@ -152,11 +152,11 @@ def ballot_form_factory(ballot):
         del _BallotForm.base_fields['vote_classpres4']
     
     if ballot.is_gsc():
-        gsc_district_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC, electorates=ballot.gsc_district).all()
+        gsc_district_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC, electorates=ballot.gsc_district).order_by('?').all()
         f = GSCDistrictCandidatesField(queryset=gsc_district_qs, required=False, ballot=ballot)
         _BallotForm.base_fields['votes_gsc_district'] = f
         
-        gsc_atlarge_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC).all()
+        gsc_atlarge_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC).order_by('?').all()
         _BallotForm.base_fields['votes_gsc_atlarge'] = GSCAtLargeCandidatesField(queryset=gsc_atlarge_qs, required=False)
     else:
         del _BallotForm.base_fields['votes_gsc_district']

@@ -1,0 +1,12 @@
+{% extends "ballot/base-ballot.html" %}
+
+{% block content %}
+
+<h1>Your vote has been recorded.</h1>
+
+<p>
+    You may return to <a href="http://ballot.stanford.edu">ballot.stanford.edu</a> to change your votes until 11:59pm on Friday.
+    A confirmation email has been sent to you at {{ sunetid }}@stanford.edu.
+</p>
+
+{% endblock %}

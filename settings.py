@@ -84,3 +84,5 @@ INSTALLED_APPS = (
     'openelections.ballot',
     'openelections.webauth',
 )
+
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True

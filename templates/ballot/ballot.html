@@ -3,12 +3,40 @@
 
 {% block content %}
 
+<h1 style="font-size:3.0em">Ballot - SAMPLE</h1>
+
+<p>
+    All fields are optional.
+    After voting, you may return to <a href="http://ballot.stanford.edu">ballot.stanford.edu</a> to change your votes until 11:59pm on Friday.
+    Online votes supercede any paper ballots you cast. 
+    Email <a href="mailto:elections@elections.stanford.edu?subject=Ballot%20question:%20{{ sunetid }}">elections@elections.stanford.edu</a> 
+    if you need help.
+</p>
+
+<p>If you are not <strong>{{ sunetid }}</strong>, close your browser to log out and then return to 
+    <a href="http://ballot.stanford.edu">ballot.stanford.edu</a>.</p>
+
+<p>
+    According to our records, you are 
+    {% if ballot.is_undergrad %}
+        {% if ballot.is_gsc %}
+            currently registered as <strong>both an undergraduate ({{ ballot.undergrad_class_year.name|lower }}) and a grad student</strong>.
+        {% else %}
+            an <strong>undergraduate {{ ballot.undergrad_class_year.name|lower }}</strong>. 
+        {% endif %}
+    {% else %}
+        
+    {% endif %}
+</p>
+
+<hr>
+
 <form id="ballot" method="post" action="{% url ballot.views.vote_all %}">
 
 {% if ballotform.smsa %}
 <section class="candidates">
 
-<h1>SMSA</h1>
+<h2>SMSA</h2>
 
 {% if ballotform.vote_smsa_execpres %}
     <h3>Executive President</h3>
@@ -70,11 +98,12 @@
     {{ ballotform.vote_smsa_pachair }} {{ ballotform.vote_smsa_pachair.errors }}
 {% endif %}
 
+<hr>
 </section>
 {% endif %}
 
 <section class="slates">
-    <h1>ASSU Executive</h1>
+    <h2>ASSU Executive</h2>
     <p>Rank your choices for Executive. Uses <a target="_blank" href="http://en.wikipedia.org/wiki/Instant-runoff_voting">instant-runoff voting</a>.</p>
     <table>
         <thead>
@@ -94,7 +123,7 @@
 
 {% if ballotform.votes_senate %}
     <section class="candidates">
-        <h1>Undergrad Senate</h1>
+        <h2>Undergrad Senate</h2>
         <p>Vote for up to 15 Senate candidates.</p>
         {{ ballotform.votes_senate }}
         {{ ballotform.votes_senate.errors }}
@@ -108,7 +137,7 @@
 
 {% if ballot.gsc_district and ballotform.votes_gsc_district %}
     <section class="candidates">
-        <h1>Grad Student Council District ({{ ballot.gsc_district.name }})</h1>
+        <h2>Grad Student Council District ({{ ballot.gsc_district.name }})</h2>
         <p>{{ ballotform.votes_gsc_district.label }}</p>
         {{ ballotform.votes_gsc_district }}
         {{ ballotform.votes_gsc_district.errors }}
@@ -118,7 +147,7 @@
 
 {% if ballotform.votes_gsc_atlarge %}
 <section class="candidates">
-    <h1>Grad Student Council At-Large</h1>
+    <h2>Grad Student Council At-Large</h2>
     <p>
         At-large votes are tallied independently of GSC district votes.  
         You can vote for the same candidate(s) for both at-large and in 
@@ -132,7 +161,7 @@
 
 {% if ballotform.vote_classpres1 %}
 <section class="slates">
-    <h1>Undergraduate Class President</h1>
+    <h2>Undergraduate Class President</h2>
     <p>Rank your choices for Class President. Uses <a target="_blank" href="http://en.wikipedia.org/wiki/Instant-runoff_voting">instant-runoff voting</a>.</p>
     <table>
         <thead>
@@ -172,7 +201,7 @@
 
 
 <section class="fees">
-    <h1>Special Fee requests</h1>
+    <h2>Special Fee requests</h2>
     <table class="specialfees" cellspacing="0">
         <thead>
             <tr><th></th><th>Vote</th><th>Total</th><th>Per student</th></tr>
@@ -228,5 +257,4 @@
 
 <br/>
 
-<p>Ballot: {{ sunetid }}:{{ electorate_names }}</p>
 {% endblock %}
