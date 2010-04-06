@@ -17,6 +17,8 @@ class Ballot(models.Model):
     voter_id = models.CharField(max_length=64, db_index=True)
     electorates = models.CharField(max_length=128)
     
+    date_updated = models.DateTimeField(auto_now=True)
+    
     votes_senate = models.ManyToManyField(SenateCandidate, related_name='votes', blank=True)
     votes_senate_writein = models.CharField(max_length=500, blank=True)
     
