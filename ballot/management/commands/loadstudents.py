@@ -56,6 +56,7 @@ class Command(LabelCommand):
             
             groups = map(str.strip, row['Class Level '].split(','))
             for g in groups:
+                if not g: continue
                 elec = elecmap[g]
                 b.electorates += ',' + elec
                 
