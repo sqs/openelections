@@ -27,7 +27,8 @@
     {% endif %}
     
     {% if ballot.is_grad %}
-        a <strong>grad student in the {{ ballot.gsc_district.name }}</strong>.
+        a <strong>
+        {% if ballot.is_smsa %}{{ ballot.smsa_class_year.name|cut:"SMSA "|lower }}, {{ ballot.smsa_population.name|cut:"SMSA "|lower }} med{% else %}grad{% endif %} student in the {{ ballot.gsc_district.name }}</strong>.
     {% endif %}
 </p>
 

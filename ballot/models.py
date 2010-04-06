@@ -94,7 +94,8 @@ class Ballot(models.Model):
         return bool(self.assu_populations.filter(slug='graduate').all())
     
     def is_smsa(self):
-        return bool(self.gsc_district) and self.gsc_district.slug == 'gsc-med'
+        return (self.gsc_district and self.gsc_district.slug == 'gsc-med') or \
+               self.smsa_population or self.smsa_class_year
     
     def __unicode__(self):
         return "Ballot: voter %s [%s]" % (self.voter_id, ','.join(self.electorate_slugs()))

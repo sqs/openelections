@@ -28,7 +28,9 @@ gsc_hs_socsci = dict(assu_populations=['graduate'], gsc_district='gsc-hs-socsci'
 gsc_law = dict(assu_populations=['graduate'], gsc_district='gsc-law')
 gsc_med = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-1', smsa_population='smsa-preclinical')
 
-smsa1 = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-1', smsa_population='smsa-preclinical')
+smsa1pc = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-1', smsa_population='smsa-preclinical')
+smsa2pc = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-2', smsa_population='smsa-preclinical')
+smsa4c = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-4', smsa_population='smsa-clinical')
 
 
 
@@ -169,7 +171,22 @@ class UndergradBallotDisplayTest(OEBallotTestCase):
     def test_gsc_med(self):
         self.webauthLoginAndMakeBallot('gsc_med', gsc_med)
         res = self.client.get('/ballot/')
-        self.assertContains(res, 'grad student in the School of Medicine')
+        self.assertContains(res, 'med student in the School of Medicine')
+    
+    def test_smsa1pc(self):
+        self.webauthLoginAndMakeBallot('smsa1pc', smsa1pc)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, '1st year, pre-clinical med student in the School of Medicine')
+        
+    def test_smsa2pc(self):
+        self.webauthLoginAndMakeBallot('smsa2pc', smsa2pc)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, '2nd year, pre-clinical med student in the School of Medicine')
+        
+    def test_smsa4c(self):
+        self.webauthLoginAndMakeBallot('smsa4c', smsa4c)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, '4th year, clinical med student in the School of Medicine')
         
 class BallotTest(OETwillTestCase):
     def testLoad(self):
@@ -216,7 +233,7 @@ class BallotChoiceTest(OEBallotTestCase):
 
 class RealSMSABallotTest(OEBallotTestCase):
     def test_shows_smsa_schoolwide_candidates(self):
-        self.webauthLoginAndMakeBallot('smsa1', smsa1)
+        self.webauthLoginAndMakeBallot('smsa1pc', smsa1pc)
         res = self.client.get('/ballot/')
         self.assertContains(res, 'Agnieszka')
         self.assertContains(res, 'Chloe')
