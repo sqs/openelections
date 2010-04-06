@@ -8,9 +8,9 @@ def no_smsa(s):
     return str(s).replace('SMSA ', '')
 
 class Electorate(models.Model):
-    name = models.CharField(max_length=64)
-    slug = models.SlugField(max_length=64)
-    voter_name_opt = models.CharField(max_length=64, blank=True)
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100)
+    voter_name_opt = models.CharField(max_length=100, blank=True)
     
     @property
     def voter_name(self):
