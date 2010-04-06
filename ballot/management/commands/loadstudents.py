@@ -1,21 +1,23 @@
 import re, csv, os
 from django.core.management.base import LabelCommand
 from openelections.ballot.models import Ballot
+from openelections.ballot.tests import elec
 
-default_electorates = 'assu'
-elecmap = {
-    'H&S': 'gsc-hs',
-    'Medicine': 'gsc-med,smsa',
+gsc_districts = {
+    #'H&S': 'gsc-hs',
+    'Medicine': 'gsc-med',
     'Engineer': 'gsc-eng',
     'EarthSci': 'gsc-earthsci',
     'Law': 'gsc-law',
     'Education': 'gsc-edu',
     'GSB': 'gsc-gsb',
-    '1- Undergraduate Student': 'undergrad',
-    '2 - Coterm': 'coterm',
-    '3 - Graduate Student': 'graduate',
-    'frosh admit': '',
-    'transfer admit': '',
+}
+assu_pops = {
+    '1- Undergraduate Student': ['undergrad'],
+    '2 - Coterm': ['undergrad','graduate'],
+    '3 - Graduate Student': ['graduate'],
+}
+class_years = {
     '5 - Fifth year or more Senior': 'undergrad-5plus',
     '4 - Senior Class Affiliation': 'undergrad-5plus',
     '3 - Junior Class Affiliation': 'undergrad-4',
@@ -23,10 +25,8 @@ elecmap = {
     '1 - Freshman Class Affiliation': 'undergrad-2',
 }
 
-def get_ballot(sunetid, erase_elec=False):
+def get_ballot(sunetid):
     b, created = Ballot.get_or_create_by_sunetid(sunetid)
-    if erase_elec or not b.electorates:
-        b.electorates = default_electorates
     return b
 
 class Command(LabelCommand):
@@ -40,28 +40,35 @@ class Command(LabelCommand):
         smsa_path = os.path.join(label, 'smsa.csv')
         smsa = csv.DictReader(open(smsa_path))
         
+    
         for row in undergrad:
             sunetid = row['SUNet ID']
-            b = get_ballot(sunetid, erase_elec=True)
+            b = get_ballot(sunetid)
             groups = map(str.strip, row['Class Level '].split(','))
             for g in groups:
-                elec = elecmap[g]
-                b.electorates += ',' + elec
-            print "%s\t%s" % (sunetid, b.electorates)
+                if g in assu_pops:
+                    b.assu_populations = map(elec, assu_pops[g])
+                if g in class_years:
+                    b.undergrad_class_year = elec(class_years[g])
+            print "%s\t%s" % (sunetid, b)
             b.save()
-        
+
+        did_set_gsc_districts_for_sunet_ids = set()
         for row in grad:
             sunetid = row['SUNet ID']
             b = get_ballot(sunetid)
-            
-            groups = map(str.strip, row['Class Level '].split(','))
+
+            groups = map(str.strip, row['Class Level '].split(',')) + map(str.strip, row['School'].split(','))
             for g in groups:
-                if not g: continue
-                elec = elecmap[g]
-                b.electorates += ',' + elec
-                
-            school = row['School']
-            b.electorates += ',' + elecmap[school]
-            
-            print "%s:\t%s" % (voter_id, b.electorates)
+                if g in assu_pops:
+                    b.assu_populations = map(elec, assu_pops[g])
+                if g in gsc_districts:
+                    # if multiple GSC districts, erase all and force them to choose
+                    if sunetid in did_set_gsc_districts_for_sunet_ids:
+                        b.gsc_district = None
+                    else:
+                        b.gsc_district = elec(gsc_districts[g])
+                        did_set_gsc_districts_for_sunet_ids.add(sunetid)
+
+            print "%s\t%s" % (sunetid, b)
             b.save()
