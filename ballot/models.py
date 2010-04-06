@@ -15,7 +15,12 @@ class Ballot(models.Model):
         return klass.objects.get_or_create(voter_id=v)
     
     voter_id = models.CharField(max_length=64, db_index=True)
-    electorates = models.CharField(max_length=128)
+    
+    assu_populations = models.ManyToManyField(Electorate, related_name='ballot_assu_pops')
+    undergrad_class_year = models.ForeignKey(Electorate, related_name='ballot_undergrad_class_year', blank=True, null=True)
+    gsc_district = models.ForeignKey(Electorate, related_name='ballot_gsc_district', blank=True, null=True)
+    smsa_class_year = models.ForeignKey(Electorate, related_name='ballot_smsa_class_year', blank=True, null=True)
+    smsa_population = models.ForeignKey(Electorate, related_name='ballot_smsa_pop', blank=True, null=True)
     
     date_updated = models.DateTimeField(auto_now=True)
     
@@ -68,23 +73,17 @@ class Ballot(models.Model):
     vote_smsa_ccap = models.ForeignKey(SMSACCAPRepCandidate, related_name='votes', blank=True, null=True)
     vote_smsa_pachair = models.ForeignKey(SMSAPolicyAndAdvocacyChairCandidate, related_name='votes', blank=True, null=True)
     
-    
-    # updated_at
-    
-    def electorate_objs(self):
-        return Electorate.objects.filter(slug__in=self.electorates_list()).all()
-    
-    def electorates_list(self):
-        return self.electorates.split(',')
+    def electorate_slugs(self):
+        return map(lambda e: e and e.slug or '', list(self.assu_populations.all()) + [self.undergrad_class_year, self.gsc_district, self.smsa_class_year, self.smsa_population])
     
     def is_undergrad(self):
-        return 'undergrad' in self.electorates_list()
+        return bool(self.assu_populations.filter(slug='undergrad').all())
         
     def is_gsc(self):
-        return 'gsc' in self.electorates_list()
+        return bool(self.assu_populations.filter(slug='graduate').all())
     
     def is_smsa(self):
-        return 'smsa' in self.electorates_list()
+        return self.smsa_population or self.smsa_class_year
     
     def __unicode__(self):
-        return "Ballot: voter %s [%s]" % (self.voter_id, self.electorates)
+        return "Ballot: voter %s [%s]" % (self.voter_id, ','.join(self.electorate_slugs()))

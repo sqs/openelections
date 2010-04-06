@@ -1,0 +1,30 @@
+{% extends "ballot/base-ballot.html" %}
+
+{% block content %}
+
+<h1>Choose ballot</h1>
+
+<form id="choose_ballot" method="post" action="{% url ballot.views.choose_ballot %}">
+
+<dl>
+{% for field in form %}
+    {% if field.is_hidden %}
+        {{ field }}
+    {% else %}
+        <dt>{{ field.label_tag }}</dt>
+        <dd {% if field.errors %}class="error_field" {% endif %}>{{ field }}</dd>
+        {% if field.help_text %}<dd class="help_text">{{ field.help_text }}</dd>{% endif %}
+        {% if field.errors %}<dd class="errors">{{ field.errors }}</dd>{% endif %}
+    {% endif %}
+{% endfor %}
+</dl>
+
+<section class="submit">
+    <input type="submit" value="Save settings and display ballot">
+</section>
+
+
+
+</form>
+
+{% endblock %}

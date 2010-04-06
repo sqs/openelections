@@ -12,18 +12,20 @@ class Electorate(models.Model):
     slug = models.SlugField(max_length=64)
     
     UNDERGRAD_CLASS_YEARS = ('undergrad-1', 'undergrad-2', 'undergrad-3', 'undergrad-4', 'undergrad-5plus')
-    ASSU_POPULATIONS_ALL = ('undergrad', 'coterm', 'grad')
+    ASSU_POPULATIONS = ('undergrad', 'graduate')
     SMSA_CLASS_YEARS = ('smsa-2', 'smsa-3', 'smsa-4', 'smsa-5plus')
     SMSA_POPULATIONS = ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')
     SMSA_CCAP_POPULATIONS = SMSA_POPULATIONS + ('smsa-mdplus',)
-    GSC_DISTRICTS = ('gsc-gsb', 'gsc-earthsci', 'gsc-edu', 'gsc-eng', 'gsc-hs-hum', 'gsc-hs-natsci', 'gsc-hs-socsci', 'gsc-law', 'gsc-med', 'gsc-atlarge')
+    SMSA_ALL_POPULATIONS = SMSA_CCAP_POPULATIONS
+    GSC_DISTRICTS_NO_ATLARGE = ('gsc-gsb', 'gsc-earthsci', 'gsc-edu', 'gsc-eng', 'gsc-hs-hum', 'gsc-hs-natsci', 'gsc-hs-socsci', 'gsc-law', 'gsc-med',)
+    GSC_DISTRICTS = GSC_DISTRICTS_NO_ATLARGE + ('gsc-atlarge',)
     
     @classmethod
     def queryset_with_slugs(klass, slugs):
         return klass.objects.filter(slug__in=slugs)
     
     def __unicode__(self):
-        return self.name
+        return self.slug
 
 class Issue(models.Model):        
     title = models.CharField(max_length=200)

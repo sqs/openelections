@@ -16,14 +16,59 @@ def objs_to_pks(objs):
 def pks_to_objs(pks):
     return [Issue.objects.get(pk=pk) for pk in map(int, pks.split(','))]
 
+class BallotElectorateForm(forms.ModelForm):
+    class Meta:
+        model = Ballot
+        fields = ['assu_populations', 'undergrad_class_year', 'gsc_district', 'smsa_class_year', 'smsa_population']
+
+    class ElectorateChoiceField(forms.ModelChoiceField):
+        widget = forms.RadioSelect
+        
+        def label_from_instance(self, instance):
+            return instance.name
+
+    class ElectorateMultipleChoiceField(forms.ModelMultipleChoiceField):
+        widget = forms.CheckboxSelectMultiple
+        
+        def label_from_instance(self, instance):
+            return instance.name
+
+    def __init__(self, *args, **kwargs):
+        if not kwargs['instance']:
+            raise Exception("no instance for BallotElectorateForm")
+        super(BallotElectorateForm, self).__init__(*args, **kwargs)
+
+    assu_populations = ElectorateMultipleChoiceField(
+        queryset=Electorate.queryset_with_slugs(Electorate.ASSU_POPULATIONS), 
+        label='ASSU populations', help_text="Choose both if you are a coterm and currently registered as both an undergrad and a grad.",
+        required=True)
+        
+    undergrad_class_year = ElectorateChoiceField(
+        queryset=Electorate.queryset_with_slugs(Electorate.UNDERGRAD_CLASS_YEARS),
+        label='Undergraduate class year',
+        help_text='If unsure, choose the class year of which you currently (this year) socially identify as a member.',
+        empty_label='N/A', required=False)
+    
+    gsc_district = ElectorateChoiceField(
+        queryset=Electorate.queryset_with_slugs(Electorate.GSC_DISTRICTS_NO_ATLARGE),
+        label='GSC district', help_text='If you are in multiple GSC districts, choose the one in which you want to select your local GSC rep.',
+        empty_label='N/A', required=False)
+    
+    smsa_class_year = ElectorateChoiceField(
+        queryset=Electorate.queryset_with_slugs(Electorate.SMSA_CLASS_YEARS),
+        label='School of Medicine class year',
+        empty_label='N/A', required=False)
+                                             
+    smsa_population = ElectorateChoiceField(
+        queryset=Electorate.queryset_with_slugs(Electorate.SMSA_ALL_POPULATIONS),
+        label='School of Medicine population',
+        empty_label='N/A', required=False)
+
 def ballot_form_factory(ballot):
     class _BallotForm(forms.ModelForm):
         class Meta:
             model = Ballot
-            #fields = ('votes_exec1',)
-            exclude = ('voter_id', 'electorates', )
-            #exclude = ('voter_id', 'electorates', 'votes_senate', 'votes_gsc_district', 'votes_gsc_atlarge', 
-            #           'votes_specfee_yes', 'votes_specfee_no', 'votes_classpres')
+            exclude = ['voter_id', 'assu_populations', 'undergrad_class_year', 'gsc_district', 'smsa_class_year', 'smsa_population']
         
         def __init__(self, *args, **kwargs):
             if not kwargs['instance']:
@@ -71,7 +116,6 @@ def ballot_form_factory(ballot):
             
             super(_BallotForm, self).save(commit)
     
-    electorate_objs = ballot.electorate_objs()        
     
     exec_qs = ExecutiveSlate.objects.filter(kind=c.ISSUE_EXEC).all()
     for i in range(1, Ballot.N_EXEC_VOTES+1):
@@ -89,7 +133,7 @@ def ballot_form_factory(ballot):
         _BallotForm.base_fields['votes_senate'] = SenateCandidatesField(queryset=senate_qs, required=False)
         _BallotForm.base_fields['votes_senate_writein'] = forms.CharField(required=False, widget=forms.Textarea(attrs=dict(rows=2, cols=40)))
         
-        classpres_qs = ClassPresidentSlate.objects.filter(kind=c.ISSUE_CLASSPRES, electorates__in=ballot.electorate_objs).all()
+        classpres_qs = ClassPresidentSlate.objects.filter(kind=c.ISSUE_CLASSPRES, electorates=ballot.undergrad_class_year).all()
         n_classpres = min(len(classpres_qs), Ballot.N_CLASSPRES_VOTES)
         for i in range(1, n_classpres+1):
             f_id = 'vote_classpres%d' % i
@@ -108,11 +152,9 @@ def ballot_form_factory(ballot):
         del _BallotForm.base_fields['vote_classpres4']
     
     if ballot.is_gsc():
-        gsc_district_elecs = electorate_objs.filter(slug__in=Electorate.GSC_DISTRICTS).all()
-        gsc_district_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC, electorates__in=gsc_district_elecs).all()
-        f = GSCDistrictCandidatesField(queryset=gsc_district_qs, required=False)
+        gsc_district_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC, electorates=ballot.gsc_district).all()
+        f = GSCDistrictCandidatesField(queryset=gsc_district_qs, required=False, ballot=ballot)
         _BallotForm.base_fields['votes_gsc_district'] = f
-        f.district_names = ', '.join(map(lambda o: o.name, gsc_district_elecs))
         
         gsc_atlarge_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC).all()
         _BallotForm.base_fields['votes_gsc_atlarge'] = GSCAtLargeCandidatesField(queryset=gsc_atlarge_qs, required=False)
@@ -139,15 +181,16 @@ def ballot_form_factory(ballot):
         )
         
         # set querysets
+        smsa_electorates = [Electorate.objects.get(slug='smsa'), ballot.smsa_class_year, ballot.smsa_population]
         for f_id, kind in smsa_data:
-            qs = kinds_classes[kind].objects.filter(kind=kind, electorates__in=electorate_objs).all()
+            qs = kinds_classes[kind].objects.filter(kind=kind, electorates__in=smsa_electorates).all()
             _BallotForm.base_fields[f_id] = forms.ModelChoiceField(queryset=qs, required=False, widget=forms.RadioSelect, empty_label='None')
     else:
         for k,v in _BallotForm.base_fields.items():
             if 'smsa' in k:
                 del _BallotForm.base_fields[k]
     
-    specfee_qs = SpecialFeeRequest.objects.filter(kind=c.ISSUE_SPECFEE, electorates__in=electorate_objs).order_by('pk').all()
+    specfee_qs = SpecialFeeRequest.objects.filter(kind=c.ISSUE_SPECFEE, electorates__in=ballot.assu_populations.all()).order_by('pk').all()
     _BallotForm.fields_specfees = []
     for sf in specfee_qs:
         initial = None
@@ -168,6 +211,13 @@ def ballot_form_factory(ballot):
 
 class CandidatesField(forms.ModelMultipleChoiceField):
     widget = forms.CheckboxSelectMultiple
+    
+    def __init__(self, *args, **kwargs):
+        self.ballot = kwargs.pop('ballot', None)
+        super(CandidatesField, self).__init__(*args, **kwargs)
+        
+    def label_from_instance(self, instance):
+        return instance.ballot_name()
 
 class SenateCandidatesField(CandidatesField):
     def label_from_instance(self, instance):
@@ -178,22 +228,20 @@ class SlateChoiceField(forms.ModelChoiceField):
     
     def label_from_instance(self, instance):
         return instance.ballot_name()
-
-def irv_n_choices(n):
-    return [(0, '------')] + [(i,i) for i in range(1, n+1)]
-
-class SelectIRVOrder(forms.Select):
-    def __init__(self, n, *args, **kwargs):
-        self.instance = kwargs.pop('instance')
-        super(SelectIRVOrder, self).__init__(choices=irv_n_choices(n), *args, **kwargs)
         
-    def render(self, name, value, attrs=None):
-        return ('<label for="%s">%s: </label>' % (None, self.instance.title)) +  super(SelectIRVOrder, self).render(name, value, attrs=attrs)
-
 class GSCCandidatesField(CandidatesField):
     pass
     
 class GSCDistrictCandidatesField(GSCCandidatesField):
+    def __init__(self, *args, **kwargs):
+        if kwargs['ballot'].gsc_district.slug == 'gsc-eng':
+            kwargs['label'] = 'Choose up to 2 candidates.'
+            kwargs['widget'] = forms.CheckboxSelectMultiple
+        else:
+            kwargs['label'] = 'Choose 1 candidate.'
+            kwargs['widget'] = forms.RadioSelect
+        super(GSCDistrictCandidatesField, self).__init__(*args, **kwargs)
+    
     def section_title(self):
         return "GSC %s District" % self.electorate.name
     
@@ -203,14 +251,15 @@ class GSCDistrictCandidatesField(GSCCandidatesField):
     def is_engineering(self):
         return self.gsc_district().slug == 'gsc-eng'
     
-    def description(self):
+    def label(self):
         if self.is_engineering():
             return "Choose up to 2."
         else:
             return "Choose 1."
         
 class GSCAtLargeCandidatesField(GSCCandidatesField):
-    pass
+    def label_from_instance(self, instance):
+        return "%s (%s)" % (instance.ballot_name(), instance.get_typed().district().name)
 
 class SMSACandidatesField(CandidatesField):
     def section_title(self):

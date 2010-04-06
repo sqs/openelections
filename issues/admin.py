@@ -41,8 +41,8 @@ class IssueAdmin(admin.ModelAdmin):
     ]
     prepopulated_fields = {'slug': ('title',)}
     save_on_top = True
-    list_display = ('title', 'kind', issue_members, 'received_declaration', 'signed_voterguide_agreement', 'admin_notes', 'petition_validated', issue_num_signatures)
-    list_editable = ('received_declaration', 'signed_voterguide_agreement', 'admin_notes')
+    list_display = ('title', 'kind', issue_members, 'admin_notes')
+    #list_editable = ('electorates',)
     list_filter = ('kind',)
     list_per_page = 200
 

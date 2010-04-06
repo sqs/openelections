@@ -3,8 +3,6 @@
 
 {% block content %}
 
-<p>{{ postdata }}</p>
-
 <form id="ballot" method="post" action="{% url ballot.views.vote_all %}">
 
 {% if ballotform.smsa %}
@@ -99,6 +97,7 @@
         <h1>Undergrad Senate</h1>
         <p>Vote for up to 15 Senate candidates.</p>
         {{ ballotform.votes_senate }}
+        {{ ballotform.votes_senate.errors }}
         
         <h3>Write-in Senate votes</h3>
         <p>List the full names of other students you want to vote for. You can only vote for 15 Senators max, including write-ins.</p>
@@ -107,10 +106,12 @@
     <hr>
 {% endif %}
 
-{% if ballotform.votes_gsc_district %}
+{% if ballot.gsc_district and ballotform.votes_gsc_district %}
     <section class="candidates">
-        <h1>Grad Student Council District ({{ ballotform.votes_gsc_district.field.district_names }})</h1>
+        <h1>Grad Student Council District ({{ ballot.gsc_district.name }})</h1>
+        <p>{{ ballotform.votes_gsc_district.label }}</p>
         {{ ballotform.votes_gsc_district }}
+        {{ ballotform.votes_gsc_district.errors }}
     </section>
     <hr>
 {% endif %}
@@ -124,6 +125,7 @@
         your district, if you want.
     </p>
     {{ ballotform.votes_gsc_atlarge }}
+    {{ ballotform.votes_gsc_atlarge.errors }}
 </section>
 <hr>
 {% endif %}
@@ -226,5 +228,5 @@
 
 <br/>
 
-<p>Ballot: {{ electorate_names }}</p>
+<p>Ballot: {{ sunetid }}:{{ electorate_names }}</p>
 {% endblock %}

@@ -13,7 +13,7 @@ elecmap = {
     'GSB': 'gsc-gsb',
     '1- Undergraduate Student': 'undergrad',
     '2 - Coterm': 'coterm',
-    '3 - Graduate Student': 'grad',
+    '3 - Graduate Student': 'graduate',
     'frosh admit': '',
     'transfer admit': '',
     '5 - Fifth year or more Senior': 'undergrad-5plus',
