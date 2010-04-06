@@ -20,16 +20,18 @@
     According to our records, you are 
     {% if ballot.is_undergrad %}
         {% if ballot.is_grad %}
-            currently registered as <strong>both an undergraduate {{ ballot.undergrad_class_year.name|lower }}</strong> and
+            currently registered as <strong>both an undergraduate {{ ballot.undergrad_class_year.voter_name|lower }}</strong> and
         {% else %}
-            an <strong>undergraduate {{ ballot.undergrad_class_year.name|lower }}</strong>. 
+            an <strong>undergraduate {{ ballot.undergrad_class_year.voter_name|lower }}</strong>. 
         {% endif %}
     {% endif %}
     
     {% if ballot.is_grad %}
         a <strong>
-        {% if ballot.is_smsa %}{{ ballot.smsa_class_year.name|cut:"SMSA "|lower }}, {{ ballot.smsa_population.name|cut:"SMSA "|lower }} med{% else %}grad{% endif %} student in the {{ ballot.gsc_district.name }}</strong>.
+        {% if ballot.is_smsa %}{{ ballot.smsa_class_year.voter_name|cut:"SMSA "|lower }}, {{ ballot.smsa_population.voter_name|cut:"SMSA "|lower }} med{% else %}grad{% endif %} student in the {{ ballot.gsc_district.name }}</strong>.
     {% endif %}
+    
+    You may <a href="/ballot/choose">choose a different ballot</a> if this is incorrect.
 </p>
 
 <hr>
@@ -82,22 +84,22 @@
 {% endif %}
 
 {% if ballotform.vote_smsa_classrep %}
-    <h3>Class Rep</h3>
+    <h3>{{ ballot.smsa_class_year.name|cut:"SMSA " }} Class Rep</h3>
     {{ ballotform.vote_smsa_classrep }} {{ ballotform.vote_smsa_classrep.errors }}
 {% endif %}
 
 {% if ballotform.vote_smsa_socialchair %}
-    <h3>Social Chair</h3>
+    <h3>{{ ballot.smsa_population.name|cut:"SMSA " }} Social Chair</h3>
     {{ ballotform.vote_smsa_socialchair }} {{ ballotform.vote_smsa_socialchair.errors }}
 {% endif %}
 
 {% if ballotform.vote_smsa_ccap %}
-    <h3>CCAP Rep</h3>
+    <h3>{{ ballot.smsa_population.name|cut:"SMSA " }} CCAP Rep</h3>
     {{ ballotform.vote_smsa_ccap }} {{ ballotform.vote_smsa_ccap.errors }}
 {% endif %}
 
 {% if ballotform.vote_smsa_pachair %}  
-    <h3>Policy &amp; Advocacy Chair</h3>
+    <h3>{{ ballot.smsa_population.name|cut:"SMSA " }} Policy &amp; Advocacy Chair</h3>
     {{ ballotform.vote_smsa_pachair }} {{ ballotform.vote_smsa_pachair.errors }}
 {% endif %}
 

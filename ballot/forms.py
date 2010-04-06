@@ -25,13 +25,13 @@ class BallotElectorateForm(forms.ModelForm):
         widget = forms.RadioSelect
         
         def label_from_instance(self, instance):
-            return instance.name
+            return instance.voter_name
 
     class ElectorateMultipleChoiceField(forms.ModelMultipleChoiceField):
         widget = forms.CheckboxSelectMultiple
         
         def label_from_instance(self, instance):
-            return instance.name
+            return instance.voter_name
 
     def __init__(self, *args, **kwargs):
         if not kwargs['instance']:
@@ -184,7 +184,7 @@ def ballot_form_factory(ballot):
         smsa_electorates = [Electorate.objects.get(slug='smsa'), ballot.smsa_class_year, ballot.smsa_population]
         for f_id, kind in smsa_data:
             qs = kinds_classes[kind].objects.filter(kind=kind, electorates__in=smsa_electorates).all()
-            _BallotForm.base_fields[f_id] = forms.ModelChoiceField(queryset=qs, required=False, widget=forms.RadioSelect, empty_label='None')
+            _BallotForm.base_fields[f_id] = SMSACandidatesChoiceField(queryset=qs, required=False)
     else:
         for k,v in _BallotForm.base_fields.items():
             if 'smsa' in k:
@@ -261,13 +261,14 @@ class GSCAtLargeCandidatesField(GSCCandidatesField):
     def label_from_instance(self, instance):
         return "%s (%s)" % (instance.ballot_name(), instance.get_typed().district().name)
 
-class SMSACandidatesField(CandidatesField):
-    def section_title(self):
-        if not self.queryset: return "Empty (%s)" % self.kind
-        return self.queryset[0].get_typed().kind_name()
+class SMSACandidatesChoiceField(forms.ModelChoiceField):
+    widget = forms.RadioSelect
     
-    def help_text(self):
-        return None
+    def __init__(self, *args, **kwargs):
+        super(SMSACandidatesChoiceField, self).__init__(*args, empty_label='(none)', **kwargs)
+    
+    def label_from_instance(self, instance):
+        return instance.ballot_name()
 
 
          

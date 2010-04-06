@@ -4,8 +4,8 @@ from django.contrib import admin
 class ElectorateAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display_links = ('pk', )
-    list_display = ('pk', 'name', 'slug')
-    list_editable = ('name', 'slug',)
+    list_display = ('pk', 'name', 'slug', 'voter_name_opt',)
+    list_editable = ('name', 'slug', 'voter_name_opt',)
     ordering = ('slug',)
 
 admin.site.register(Electorate, ElectorateAdmin)

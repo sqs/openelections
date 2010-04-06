@@ -12,11 +12,10 @@ def elec(slug):
     if slug is None: return None
     return Electorate.objects.get(slug=slug)
 
-ugfrosh = dict(undergrad_class_year='undergrad-1', assu_populations=['undergrad'])
-ugsoph = dict(undergrad_class_year='undergrad-2', assu_populations=['undergrad'])
-ugjunior = dict(undergrad_class_year='undergrad-3', assu_populations=['undergrad'])
-ugsenior = dict(undergrad_class_year='undergrad-4', assu_populations=['undergrad'])
-ugfifth = dict(undergrad_class_year='undergrad-5plus', assu_populations=['undergrad'])
+ugfrosh = dict(undergrad_class_year='undergrad-2', assu_populations=['undergrad'])
+ugsoph = dict(undergrad_class_year='undergrad-3', assu_populations=['undergrad'])
+ugjunior = dict(undergrad_class_year='undergrad-4', assu_populations=['undergrad'])
+ugsenior = dict(undergrad_class_year='undergrad-5plus', assu_populations=['undergrad'])
 
 gsc_earthsci = dict(assu_populations=['graduate'], gsc_district='gsc-earthsci')
 gsc_edu = dict(assu_populations=['graduate'], gsc_district='gsc-edu')
@@ -26,11 +25,11 @@ gsc_hs_hum = dict(assu_populations=['graduate'], gsc_district='gsc-hs-hum')
 gsc_hs_natsci = dict(assu_populations=['graduate'], gsc_district='gsc-hs-natsci')
 gsc_hs_socsci = dict(assu_populations=['graduate'], gsc_district='gsc-hs-socsci')
 gsc_law = dict(assu_populations=['graduate'], gsc_district='gsc-law')
-gsc_med = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-1', smsa_population='smsa-preclinical')
+gsc_med = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-2', smsa_population='smsa-preclinical')
 
-smsa1pc = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-1', smsa_population='smsa-preclinical')
-smsa2pc = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-2', smsa_population='smsa-preclinical')
-smsa4c = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-4', smsa_population='smsa-clinical')
+smsa1pc = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-2', smsa_population='smsa-preclinical')
+smsa2pc = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-3', smsa_population='smsa-preclinical')
+smsa4c = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-5plus', smsa_population='smsa-clinical')
 
 
 
@@ -121,12 +120,7 @@ class UndergradBallotDisplayTest(OEBallotTestCase):
         self.webauthLoginAndMakeBallot('ugsenior', ugsenior)
         res = self.client.get('/ballot/')
         self.assertContains(res, 'undergraduate senior')
-        
-    def test_ugfifth(self):
-        self.webauthLoginAndMakeBallot('ugfifth', ugfifth)
-        res = self.client.get('/ballot/')
-        self.assertContains(res, 'undergraduate fifth year and above')
-    
+
     # GSC
     def test_gsc_earthsci(self):
         self.webauthLoginAndMakeBallot('gsc_earthsci', gsc_earthsci)
@@ -186,7 +180,7 @@ class UndergradBallotDisplayTest(OEBallotTestCase):
     def test_smsa4c(self):
         self.webauthLoginAndMakeBallot('smsa4c', smsa4c)
         res = self.client.get('/ballot/')
-        self.assertContains(res, '4th year, clinical med student in the School of Medicine')
+        self.assertContains(res, '4th year and above, clinical med student in the School of Medicine')
         
 class BallotTest(OETwillTestCase):
     def testLoad(self):
@@ -212,7 +206,7 @@ class BallotChoiceTest(OEBallotTestCase):
         self.assertRedirects(res, '/ballot/choose')
 
     def test_ug_ok(self):
-        self.webauthLoginAndMakeBallot('xyz1', dict(assu_populations=['undergrad'], undergrad_class_year='undergrad-1'))
+        self.webauthLoginAndMakeBallot('xyz1', dict(assu_populations=['undergrad'], undergrad_class_year='undergrad-2'))
         res = self.client.get('/ballot/')
         self.assertTemplateUsed(res, 'ballot/ballot.html')
     

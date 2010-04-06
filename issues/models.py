@@ -10,8 +10,13 @@ def no_smsa(s):
 class Electorate(models.Model):
     name = models.CharField(max_length=64)
     slug = models.SlugField(max_length=64)
+    voter_name_opt = models.CharField(max_length=64, blank=True)
     
-    UNDERGRAD_CLASS_YEARS = ('undergrad-1', 'undergrad-2', 'undergrad-3', 'undergrad-4', 'undergrad-5plus')
+    @property
+    def voter_name(self):
+        return self.voter_name_opt or self.name
+    
+    UNDERGRAD_CLASS_YEARS = ('undergrad-2', 'undergrad-3', 'undergrad-4', 'undergrad-5plus')
     ASSU_POPULATIONS = ('undergrad', 'graduate')
     SMSA_CLASS_YEARS = ('smsa-2', 'smsa-3', 'smsa-4', 'smsa-5plus')
     SMSA_POPULATIONS = ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')

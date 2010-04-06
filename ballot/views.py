@@ -56,5 +56,6 @@ def vote_all(request):
             print ballotform.errors
             return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot},
                                       context_instance=RequestContext(request))
+    sunetid = request.session.get('webauth_sunetid')
     do_logout(request)
-    return render_to_response('ballot/done.html', {'ballot': ballot}, context_instance=RequestContext(request))
+    return render_to_response('ballot/done.html', {'ballot': ballot, 'sunetid': sunetid})
