@@ -28,7 +28,7 @@
     
     {% if ballot.is_grad %}
         a <strong>
-        {% if ballot.is_smsa %}{{ ballot.smsa_class_year.voter_name|cut:"SMSA "|lower }}, {{ ballot.smsa_population.voter_name|cut:"SMSA "|lower }} med{% else %}grad{% endif %} student in the {{ ballot.gsc_district.name }}</strong>.
+        {% if ballot.is_smsa %}{{ ballot.smsa_class_year.voter_name|cut:"SMSA " }}, {{ ballot.smsa_population.voter_name|cut:"SMSA " }} med{% else %}grad{% endif %} student in the {{ ballot.gsc_district.name }}</strong>.
     {% endif %}
     
     You may <a href="/ballot/choose">choose a different ballot</a> if this is incorrect.
