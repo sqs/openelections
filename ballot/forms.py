@@ -151,7 +151,7 @@ def ballot_form_factory(ballot):
         del _BallotForm.base_fields['vote_classpres3']
         del _BallotForm.base_fields['vote_classpres4']
     
-    if ballot.is_gsc():
+    if ballot.is_grad():
         gsc_district_qs = GSCCandidate.objects.filter(kind=c.ISSUE_GSC, electorates=ballot.gsc_district).order_by('?').all()
         f = GSCDistrictCandidatesField(queryset=gsc_district_qs, required=False, ballot=ballot)
         _BallotForm.base_fields['votes_gsc_district'] = f

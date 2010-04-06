@@ -19,13 +19,15 @@
 <p>
     According to our records, you are 
     {% if ballot.is_undergrad %}
-        {% if ballot.is_gsc %}
-            currently registered as <strong>both an undergraduate ({{ ballot.undergrad_class_year.name|lower }}) and a grad student</strong>.
+        {% if ballot.is_grad %}
+            currently registered as <strong>both an undergraduate {{ ballot.undergrad_class_year.name|lower }}</strong> and
         {% else %}
             an <strong>undergraduate {{ ballot.undergrad_class_year.name|lower }}</strong>. 
         {% endif %}
-    {% else %}
-        
+    {% endif %}
+    
+    {% if ballot.is_grad %}
+        a <strong>grad student in the {{ ballot.gsc_district.name }}</strong>.
     {% endif %}
 </p>
 

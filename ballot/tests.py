@@ -17,7 +17,20 @@ ugsoph = dict(undergrad_class_year='undergrad-2', assu_populations=['undergrad']
 ugjunior = dict(undergrad_class_year='undergrad-3', assu_populations=['undergrad'])
 ugsenior = dict(undergrad_class_year='undergrad-4', assu_populations=['undergrad'])
 ugfifth = dict(undergrad_class_year='undergrad-5plus', assu_populations=['undergrad'])
+
+gsc_earthsci = dict(assu_populations=['graduate'], gsc_district='gsc-earthsci')
+gsc_edu = dict(assu_populations=['graduate'], gsc_district='gsc-edu')
+gsc_eng = dict(assu_populations=['graduate'], gsc_district='gsc-eng')
+gsc_gsb = dict(assu_populations=['graduate'], gsc_district='gsc-gsb')
+gsc_hs_hum = dict(assu_populations=['graduate'], gsc_district='gsc-hs-hum')
+gsc_hs_natsci = dict(assu_populations=['graduate'], gsc_district='gsc-hs-natsci')
+gsc_hs_socsci = dict(assu_populations=['graduate'], gsc_district='gsc-hs-socsci')
+gsc_law = dict(assu_populations=['graduate'], gsc_district='gsc-law')
+gsc_med = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-1', smsa_population='smsa-preclinical')
+
 smsa1 = dict(assu_populations=['graduate'], gsc_district='gsc-med', smsa_class_year='smsa-1', smsa_population='smsa-preclinical')
+
+
 
 def make_ballot(sunetid, assu_populations=None, undergrad_class_year=None, gsc_district=None, smsa_class_year=None, smsa_population=None):
     b, created = Ballot.get_or_create_by_sunetid(sunetid)
@@ -111,6 +124,52 @@ class UndergradBallotDisplayTest(OEBallotTestCase):
         self.webauthLoginAndMakeBallot('ugfifth', ugfifth)
         res = self.client.get('/ballot/')
         self.assertContains(res, 'undergraduate fifth year and above')
+    
+    # GSC
+    def test_gsc_earthsci(self):
+        self.webauthLoginAndMakeBallot('gsc_earthsci', gsc_earthsci)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, 'grad student in the School of Earth Sciences')
+        
+    def test_gsc_edu(self):
+        self.webauthLoginAndMakeBallot('gsc_edu', gsc_edu)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, 'grad student in the School of Education')
+    
+    def test_gsc_eng(self):
+        self.webauthLoginAndMakeBallot('gsc_eng', gsc_eng)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, 'grad student in the School of Engineering')    
+    
+    def test_gsc_gsb(self):
+        self.webauthLoginAndMakeBallot('gsc_gsb', gsc_gsb)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, 'grad student in the GSB')
+        
+    def test_gsc_hs_hum(self):
+        self.webauthLoginAndMakeBallot('gsc_hs_hum', gsc_hs_hum)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, 'grad student in the School of Humanities and Sciences, Humanities')
+        
+    def test_gsc_hs_natsci(self):
+        self.webauthLoginAndMakeBallot('gsc_hs_natsci', gsc_hs_natsci)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, 'grad student in the School of Humanities and Sciences, Natural Sciences')
+        
+    def test_gsc_hs_socsci(self):
+        self.webauthLoginAndMakeBallot('gsc_hs_socsci', gsc_hs_socsci)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, 'grad student in the School of Humanities and Sciences, Social Sciences')
+        
+    def test_gsc_law(self):
+        self.webauthLoginAndMakeBallot('gsc_law', gsc_law)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, 'grad student in the School of Law')
+        
+    def test_gsc_med(self):
+        self.webauthLoginAndMakeBallot('gsc_med', gsc_med)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, 'grad student in the School of Medicine')
         
 class BallotTest(OETwillTestCase):
     def testLoad(self):
