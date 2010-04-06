@@ -1,5 +1,6 @@
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.conf import settings
+from django.db import transaction
 from django.shortcuts import render_to_response, get_object_or_404
 from openelections import constants as oe_constants
 from openelections.issues.models import Electorate, Issue
@@ -10,12 +11,14 @@ from openelections.webauth.stanford_webauth import webauth_required
 def get_voter_id(request):
     return make_voter_id(request.session.get('webauth_sunetid'))
 
+@transaction.commit_on_success
 @webauth_required
 def index(request):
     ballot = get_object_or_404(Ballot, voter_id=get_voter_id(request))
     ballotform = ballot_form_factory(ballot)(instance=ballot)
     return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'electorate_names': ballot.electorates})
 
+@transaction.commit_on_success
 @webauth_required
 def vote_all(request):
     # TODO: XSS
@@ -35,9 +38,3 @@ def vote_all(request):
 def vote_one(request, issue_id):
     postdata = request.POST
     return HttpResponse("%r" % postdata)
-
-@webauth_required
-def results(request):
-    issues = Issue.objects.all()
-    return render_to_response('ballot/results.html', {'issues': issues})
-    
