@@ -11,15 +11,8 @@ def make_voter_id(sunetid):
 class Ballot(models.Model):
     @classmethod
     def get_or_create_by_sunetid(klass, sunetid):
-        b = klass.get_by_sunetid(sunetid)
-        if not b:
-            b = klass(voter_id=make_voter_id(sunetid))
-        return b
-    
-    @classmethod
-    def get_by_sunetid(klass, sunetid):
         v = make_voter_id(sunetid)
-        return klass.objects.get(voter_id=v)
+        return klass.objects.get_or_create(voter_id=v)
     
     voter_id = models.CharField(max_length=64, db_index=True)
     electorates = models.CharField(max_length=128)

@@ -47,7 +47,7 @@ class Command(LabelCommand):
             for g in groups:
                 elec = elecmap[g]
                 b.electorates += ',' + elec
-            print "%s:\t%s" % (voter_id, b.electorates)
+            print "%s\t%s" % (sunetid, b.electorates)
             b.save()
         
         for row in grad:
