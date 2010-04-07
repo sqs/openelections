@@ -234,6 +234,38 @@ class BallotCandidatesChoiceTest(OEBallotTestCase):
         res = self.client.post('/ballot/vote', {'votes_senate': votes_senate})
         self.assertTemplateUsed(res, 'ballot/ballot.html')
         self.assertContains(res, 'may only cast 15 votes for Senate')
+        self.assertEquals(0, ballot('ugfrosh').votes_senate.count())
+        
+    def test_only_5_gsc_atlarge(self):
+        self.webauthLoginAndMakeBallot('gsc_med', gsc_med)
+        votes = [s.pk for s in Issue.objects.filter(kind='GSC').all()[:9]]
+        res = self.client.post('/ballot/vote', {'votes_gsc_atlarge': votes})
+        self.assertTemplateUsed(res, 'ballot/ballot.html')
+        self.assertContains(res, 'may only cast 5 at-large votes for GSC')
+        self.assertEquals(0, ballot('gsc_med').votes_gsc_atlarge.count())
+        
+    def test_only_1_gsc_district(self):
+        self.webauthLoginAndMakeBallot('gsc_med', gsc_med)
+        votes = [issue('krystal-st-julien').pk, issue('jessica-tsai').pk]
+        res = self.client.post('/ballot/vote', {'votes_gsc_district': votes})
+        self.assertTemplateUsed(res, 'ballot/ballot.html')
+        self.assertContains(res, 'may only cast 1 vote(s) for GSC School of Medicine District')
+        self.assertEquals(0, ballot('gsc_med').votes_gsc_district.count())
+    
+    def test_gsc_district_eng_2_votes_ok(self):
+        self.webauthLoginAndMakeBallot('gsc_eng', gsc_eng)
+        votes = [issue('y7ding').pk, issue('tao-chu').pk]
+        res = self.client.post('/ballot/vote', {'votes_gsc_district': votes})
+        self.assertTemplateUsed(res, 'ballot/done.html')
+        self.assertEquals(2, ballot('gsc_eng').votes_gsc_district.count())
+    
+    def test_only_2_gsc_district_eng(self):
+        self.webauthLoginAndMakeBallot('gsc_eng', gsc_eng)
+        votes = [issue('y7ding').pk, issue('tao-chu').pk, issue('drew-kennedy').pk]
+        res = self.client.post('/ballot/vote', {'votes_gsc_district': votes})
+        self.assertTemplateUsed(res, 'ballot/ballot.html')
+        self.assertContains(res, 'may only cast 2 vote(s) for GSC School of Engineering District')
+        self.assertEquals(0, ballot('gsc_eng').votes_gsc_district.count())
       
 class BallotTest(OETwillTestCase):
     def test_load(self):

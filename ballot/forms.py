@@ -92,7 +92,22 @@ def ballot_form_factory(ballot):
             max_choices = self.fields['votes_senate'].max_choices
             if len(v) > max_choices:
                 raise forms.ValidationError('You may only cast %d votes for Senate (you chose %d).' % (max_choices, len(v)))
-            return self.cleaned_data
+            return self.cleaned_data['votes_senate']
+            
+        def clean_votes_gsc_district(self):
+            v = self.cleaned_data['votes_gsc_district']
+            max_choices = self.fields['votes_gsc_district'].max_choices
+            if len(v) > max_choices:
+                raise forms.ValidationError('You may only cast %d vote(s) for GSC %s District rep (you chose %d).' % \
+                                            (max_choices, self.instance.gsc_district.name, len(v)))
+            return self.cleaned_data['votes_gsc_district']
+            
+        def clean_votes_gsc_atlarge(self):
+            v = self.cleaned_data['votes_gsc_atlarge']
+            max_choices = self.fields['votes_gsc_atlarge'].max_choices
+            if len(v) > max_choices:
+                raise forms.ValidationError('You may only cast %d at-large votes for GSC reps (you chose %d).' % (max_choices, len(v)))
+            return self.cleaned_data['votes_gsc_atlarge']
         
         def clean_special_fee_votes(self):
             yes_votes = []
@@ -248,9 +263,11 @@ class GSCCandidatesField(CandidatesField):
 class GSCDistrictCandidatesField(GSCCandidatesField):
     def __init__(self, *args, **kwargs):
         if kwargs['ballot'].gsc_district.slug == 'gsc-eng':
+            self.max_choices = 2
             kwargs['label'] = 'Choose up to 2 candidates.'
             kwargs['widget'] = forms.CheckboxSelectMultiple
         else:
+            self.max_choices = 1
             kwargs['label'] = 'Choose 1 candidate.'
             kwargs['widget'] = forms.CheckboxSelectMultiple
         super(GSCDistrictCandidatesField, self).__init__(*args, **kwargs)
@@ -271,6 +288,8 @@ class GSCDistrictCandidatesField(GSCCandidatesField):
             return "Choose 1."
         
 class GSCAtLargeCandidatesField(GSCCandidatesField):
+    max_choices = 5
+    
     def label_from_instance(self, instance):
         return "%s (%s)" % (instance.ballot_name(), instance.get_typed().district().name)
 
