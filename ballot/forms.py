@@ -87,6 +87,13 @@ def ballot_form_factory(ballot):
         def clean_classpres_votes(self):
             pass
         
+        def clean_votes_senate(self):
+            v = self.cleaned_data['votes_senate']
+            max_choices = self.fields['votes_senate'].max_choices
+            if len(v) > max_choices:
+                raise forms.ValidationError('You may only cast %d votes for Senate (you chose %d).' % (max_choices, len(v)))
+            return self.cleaned_data
+        
         def clean_special_fee_votes(self):
             yes_votes = []
             no_votes = []
@@ -224,6 +231,8 @@ class CandidatesField(forms.ModelMultipleChoiceField):
         return instance.ballot_name()
 
 class SenateCandidatesField(CandidatesField):
+    max_choices = 15
+    
     def label_from_instance(self, instance):
         return instance.ballot_name()
 
@@ -273,69 +282,4 @@ class SMSACandidatesChoiceField(forms.ModelChoiceField):
     
     def label_from_instance(self, instance):
         return instance.ballot_name()
-
-
-         
-# class ExecSlatesIRVField(SlatesIRVField):
-#     def section_title(self):
-#         return "ASSU Executive"
-#     
-#     def description(self):
-#         return "Rank the slates in order of your preference, with 1 being your first choice."    
-# 
-# class ClassPresSlatesIRVField(SlatesIRVField):
-#     def section_title(self):
-#         return self.queryset[0].get_typed().kind_name()
-#     
-#     def description(self):
-#         return "Rank the slates in order of your preference, with 1 being your first choice."    
-
-#class __CandidatesField(forms.ModelMultipleChoiceField):
-    # def label_from_instance(self, obj):
-    #     s = ['<ul class="issues">']
-    #     for cand in self.queryset:
-    #         s.append(self.widget_for_candidate(cand))
-    #     s.append('</ul>')
-    #     return mark_safe(''.join(s))
-        
-    # def widget_for_candidate(self, cand):
-    #     attrs = dict(issue_pk=cand.pk, html_id="issue_%d" % cand.pk, 
-    #                  html_name="candidates_us", label=cand.title)
-    #     return '''<li class="issue">
-    #                 <input type="checkbox" name="%(html_name)s" id="%(html_id)s" value="%(issue_pk)d">
-    #                 <label for="%(html_id)s">%(label)s</label>
-    #               </li>''' % attrs
-
-
-# 
-# class CandidatesGSCField(CandidatesField):
-#     pass
-#     
-# class SlatesIRVField(forms.ModelMultipleChoiceField):
-#     def label_from_instance(self, obj):        
-#         self.num_slates = len(self.queryset)
-#         rank_choices = [(i,i) for i in range(1,self.num_slates+1)]
-#         rank_choices.insert(0, (0, '----'))
-#         self.rank_select = forms.Select(choices=rank_choices)
-#         
-#         s = ['<ul class="issues">']
-#         for slate in self.queryset:
-#             s.append(self.widget_for_slate(slate))
-#         s.append('</ul>')
-#         return mark_safe(''.join(s))
-# 
-#         
-#     def widget_for_slate(self, slate):
-#         html_id = "issue_%d" % slate.pk
-#         attrs = dict(html_id=html_id, html_name=html_id,
-#                      label=slate.display_title(),
-#                      select=self.rank_select.render(html_id, None))
-#         return '''<li class="issue">
-#                     <label for="%(html_id)s">%(label)s</label>
-#                     %(select)s
-#                   </li>''' % attrs
-#                   
-#     def __unicode__(self):
-#         return self.label_from_instance(None)
-#     
 

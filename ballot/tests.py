@@ -71,7 +71,7 @@ class OETwillTestCase(OEBallotTestCase):
     def assertContains(self, a, b):
         self.assertTrue(b in a, "%s does not contain %s" % (a, b))
 
-class UndergradBallotDisplayTest(OEBallotTestCase):
+class BallotDisplayTest(OEBallotTestCase):
     def test_has_undergrad_senators(self):
         self.webauthLoginAndMakeBallot('ugfrosh', ugfrosh)
         res = self.client.get('/ballot/')
@@ -180,22 +180,7 @@ class UndergradBallotDisplayTest(OEBallotTestCase):
         res = self.client.get('/ballot/')
         self.assertContains(res, '4th year and above, Clinical med student in the School of Medicine')
         
-class BallotTest(OETwillTestCase):
-    def testLoad(self):
-        make_ballot('ugsenior', **ugsenior)
-        twill.go('/ballot/?%s' % self.webauth_querystring('ugsenior'))
-        twill.code(200)
-        twill.find('Thom and Stephanie')
-        twill.find('Caddylack')
-        twill.find('G-MRDA')
-        twill.find('Peacock and Bakke')
-        twill.find('The No-Rain Campaign')
-        twill.find('Cardona and Wharton')
-        twill.find('Sastry')
-        twill.find('Siegel')
-        twill.find('Jang')
-        twill.find('Walzebuck')
-        twill.find('Saeid')
+
 
 class BallotChoiceTest(OEBallotTestCase):
     def test_ug_no_class_year(self):
@@ -241,4 +226,28 @@ class RealSMSABallotTest(OEBallotTestCase):
         self.assertContains(res, 'Luo')
         self.assertContains(res, 'Kerry')
         self.assertContains(res, 'Roxana')
-        
+
+class BallotCandidatesChoiceTest(OEBallotTestCase):
+    def test_only_15_senators(self):
+        self.webauthLoginAndMakeBallot('ugfrosh', ugfrosh)
+        votes_senate = [s.pk for s in Issue.objects.filter(kind='US').all()[:19]]
+        res = self.client.post('/ballot/vote', {'votes_senate': votes_senate})
+        self.assertTemplateUsed(res, 'ballot/ballot.html')
+        self.assertContains(res, 'may only cast 15 votes for Senate')
+      
+class BallotTest(OETwillTestCase):
+    def test_load(self):
+        make_ballot('ugsenior', **ugsenior)
+        twill.go('/ballot/?%s' % self.webauth_querystring('ugsenior'))
+        twill.code(200)
+        twill.find('Thom and Stephanie')
+        twill.find('Caddylack')
+        twill.find('G-MRDA')
+        twill.find('Peacock and Bakke')
+        twill.find('The No-Rain Campaign')
+        twill.find('Cardona and Wharton')
+        twill.find('Sastry')
+        twill.find('Siegel')
+        twill.find('Jang')
+        twill.find('Walzebuck')
+        twill.find('Saeid')

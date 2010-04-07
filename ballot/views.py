@@ -51,10 +51,7 @@ def vote_all(request):
         ballotform = ballot_form_factory(ballot)(request.POST, instance=ballot)
         if ballotform.is_valid():
             ballotform.save()
-            #return HttpResponse("vote saved: %s" % (ballot))
         else:
-            #return HttpResponse("vote error: %r" % postdata)
-            print ballotform.errors
             return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot},
                                       context_instance=RequestContext(request))
     sunetid = request.session.get('webauth_sunetid')
