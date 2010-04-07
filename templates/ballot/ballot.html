@@ -134,7 +134,7 @@
         {{ ballotform.votes_senate.errors }}
         
         <h3>Write-in Senate votes</h3>
-        <p>List the full names of other students you want to vote for. You can only vote for 15 Senators max, including write-ins.</p>
+        <p>List the first &amp; last names of other students you want to vote for. You can only vote for 15 Senators max, including write-ins.</p>
         {{ ballotform.votes_senate_writein }}
     </section>
     <hr>
@@ -149,10 +149,10 @@
         
         {% ifequal ballot.gsc_district.slug "gsc-eng" %}
             <h3>Write-in GSC district votes</h3>
-            <p>List the full names of other students you want to vote for. You can only vote for 2 GSC reps max, including write-ins.</p>
+            <p>List the first &amp; last names of other students you want to vote for. You can only vote for 2 GSC reps max, including write-ins.</p>
         {% else %}
             <h3>Write-in GSC district vote</h3>
-            <p>List the full name of the student you want to vote for. You can vote for a write-in or a candidate listed above, but not both, since you only have 1 vote.</p>
+            <p>List the first &amp; last name of the student you want to vote for. You can vote for a write-in or a candidate listed above, but not both, since you only have 1 vote.</p>
         {% endifequal %}
         {{ ballotform.votes_gsc_district_writein }}
     </section>
@@ -171,7 +171,7 @@
     {{ ballotform.votes_gsc_atlarge.errors }}
     
     <h3>Write-in GSC at-large votes</h3>
-    <p>List the full names of other students you want to vote for. You can only vote for 5 at-large GSC reps max, including write-ins.</p>
+    <p>List the first &amp; last names of other students you want to vote for. You can only vote for 5 at-large GSC reps max, including write-ins.</p>
     {{ ballotform.votes_gsc_atlarge_writein }}
 </section>
 <hr>
@@ -272,11 +272,18 @@
 </section>
     
 <br>
-<hr>
 
 <section class="submit">
     <input type="submit" value="Submit ballot">
 </section>
+
+<br>
+<hr>
+
+
+<p><small><strong>Write-in votes:</strong> If your total number of votes (for declared candidates plus write-in votes) for a section is more than the number of votes you have,
+    then your write-in votes <em>listed last</em> will be eliminated until your ballot contains the maximum number of votes you're allowed.</small></p>
+    
 
 </form>
 
