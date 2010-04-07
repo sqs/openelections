@@ -1,0 +1,54 @@
+ASSU BALLOT
+SUNet ID: {{ sunetid }}
+Voter ID: {{ ballot.voter_id }}
+ASSU populations: {% for p in ballot.assu_populations.all %}{{ p.name }}{% endfor %}
+Undergrad class year: {{ ballot.undergrad_class_year.name }}
+GSC district: {{ ballot.gsc_district.name }}
+
+---------------------------------------
+ASSU Exec:
+1. {{ ballot.vote_exec1 }} (write-in: {{ ballot.vote_exec1_writein }})
+2. {{ ballot.vote_exec2 }} (write-in: {{ ballot.vote_exec2_writein }})
+3. {{ ballot.vote_exec3 }} (write-in: {{ ballot.vote_exec3_writein }})
+4. {{ ballot.vote_exec4 }} (write-in: {{ ballot.vote_exec4_writein }})
+5. {{ ballot.vote_exec5 }} (write-in: {{ ballot.vote_exec5_writein }})
+6. {{ ballot.vote_exec6 }} (write-in: {{ ballot.vote_exec6_writein }})
+
+---------------------------------------
+ASSU Undergrad Senate:
+{% for s in ballot.votes_senate.all %}- {{ s }}
+{% empty %}(none){% endfor %}
+(write-in: {{ ballot.votes_senate_writein }})
+
+---------------------------------------
+ASSU Undergrad {{ ballot.assu_class_year.name }} Class Presidents:
+1. {{ ballot.vote_classpres1 }} (write-in: {{ ballot.vote_classpres1_writein }})
+2. {{ ballot.vote_classpres2 }} (write-in: {{ ballot.vote_classpres2_writein }})
+3. {{ ballot.vote_classpres3 }} (write-in: {{ ballot.vote_classpres3_writein }})
+4. {{ ballot.vote_classpres4 }} (write-in: {{ ballot.vote_classpres4_writein }})
+
+---------------------------------------
+ASSU Grad Student Council {{ ballot.gsc_district.name }} District:
+{% for s in ballot.votes_gsc_district.all %}- {{ s }}
+{% empty %}(none){% endfor %}
+(write-in: {{ ballot.votes_gsc_district_writein }})
+
+---------------------------------------
+ASSU Grad Student Council At-Large:
+{% for s in ballot.votes_gsc_atlarge.all %}- {{ s }}
+{% empty %}(none){% endfor %}
+(write-in: {{ ballot.votes_gsc_atlarge_writein }})
+
+---------------------------------------
+ASSU Special Fees:
+YES on Special Fee requests:
+{% for s in ballot.votes_specfee_yes.all %}- {{ s.title }}
+{% empty %}(none){% endfor %}
+
+NO on Special Fee requests:
+{% for s in ballot.votes_specfee_no.all %}- {{ s.title }}
+{% empty %}(none){% endfor %}
+
+---------------------------------------
+IP address: {{ request.META.REMOTE_ADDR }}
+Last updated: {{ ballot.date_updated }}

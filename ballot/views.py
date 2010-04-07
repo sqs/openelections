@@ -41,19 +41,24 @@ def choose_ballot(request):
     return render_to_response('ballot/choose.html', {'form': form},
                               context_instance=RequestContext(request))
 
+@webauth_required
+def record(request):
+    ballot = get_object_or_404(Ballot, voter_id=get_voter_id(request))
+    form = BallotElectorateForm(instance=ballot)
+    return render_to_response('ballot/ballot_record.txt', {'ballot': ballot, 'request': request, 'form': form},
+                              mimetype='text/plain', context_instance=RequestContext(request))
+
 @transaction.commit_on_success
 @webauth_required
 def vote_all(request):
     # TODO: XSS
     form = None
+    ballot = get_object_or_404(Ballot, voter_id=get_voter_id(request))
     if request.method == 'POST':
-        ballot = get_object_or_404(Ballot, voter_id=get_voter_id(request))
         ballotform = ballot_form_factory(ballot)(request.POST, instance=ballot)
         if ballotform.is_valid():
             ballotform.save()
         else:
             return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot},
                                       context_instance=RequestContext(request))
-    sunetid = request.session.get('webauth_sunetid')
-    do_logout(request)
-    return render_to_response('ballot/done.html', {'ballot': ballot, 'sunetid': sunetid})
+    return render_to_response('ballot/done.html', {'ballot': ballot, 'request': request,}, context_instance=RequestContext(request))
