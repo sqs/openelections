@@ -168,17 +168,17 @@ class UndergradBallotDisplayTest(OEBallotTestCase):
     def test_smsa1pc(self):
         self.webauthLoginAndMakeBallot('smsa1pc', smsa1pc)
         res = self.client.get('/ballot/')
-        self.assertContains(res, '1st year, pre-clinical med student in the School of Medicine')
+        self.assertContains(res, '1st year, Pre-clinical med student in the School of Medicine')
         
     def test_smsa2pc(self):
         self.webauthLoginAndMakeBallot('smsa2pc', smsa2pc)
         res = self.client.get('/ballot/')
-        self.assertContains(res, '2nd year, pre-clinical med student in the School of Medicine')
+        self.assertContains(res, '2nd year, Pre-clinical med student in the School of Medicine')
         
     def test_smsa4c(self):
         self.webauthLoginAndMakeBallot('smsa4c', smsa4c)
         res = self.client.get('/ballot/')
-        self.assertContains(res, '4th year and above, clinical med student in the School of Medicine')
+        self.assertContains(res, '4th year and above, Clinical med student in the School of Medicine')
         
 class BallotTest(OETwillTestCase):
     def testLoad(self):
