@@ -1,10 +1,12 @@
+import simplejson, markdown
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.conf import settings
 from django.template import RequestContext
 from django.db import transaction
+from django.template.loader import render_to_string
 from django.shortcuts import render_to_response, get_object_or_404
 from openelections import constants as oe_constants
-from openelections.issues.models import Electorate, Issue
+from openelections.issues.models import Electorate, Issue, ExecutiveSlate
 from openelections.ballot.forms import ballot_form_factory, BallotElectorateForm
 from openelections.ballot.models import Ballot, make_voter_id
 from openelections.webauth.stanford_webauth import webauth_required
@@ -13,6 +15,15 @@ from openelections.webauth.views import do_logout
 def get_voter_id(request):
     return make_voter_id(request.session.get('webauth_sunetid'))
 
+def make_issues_json():
+    issues = {}
+    for o in Issue.objects.all():
+        issues[str(o.pk)] = { 'statement': render_to_string('ballot/info.html', {'issue': o.get_typed(), 'detail': True, 'hidepdfs': True}) }
+    return simplejson.dumps(issues)
+    
+def get_exec_slates():
+    return ExecutiveSlate.objects.filter(kind='Exec').order_by('?').all()
+    
 @transaction.commit_on_success
 @webauth_required
 def index(request):
@@ -23,7 +34,7 @@ def index(request):
         return HttpResponseRedirect('/ballot/choose')
     
     ballotform = ballot_form_factory(ballot)(instance=ballot)
-    return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot},
+    return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot, 'issues_json': make_issues_json(), 'exec_slates': get_exec_slates()},
                               context_instance=RequestContext(request))
 
 @transaction.commit_on_success
@@ -59,6 +70,6 @@ def vote_all(request):
         if ballotform.is_valid():
             ballotform.save()
         else:
-            return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot},
+            return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot, 'issues_json': make_issues_json(), 'exec_slates': get_exec_slates()},
                                       context_instance=RequestContext(request))
     return render_to_response('ballot/done.html', {'ballot': ballot, 'request': request,}, context_instance=RequestContext(request))

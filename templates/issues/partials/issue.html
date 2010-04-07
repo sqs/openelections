@@ -1,5 +1,4 @@
 {% load markup %}
-{% load issue_extras %}
 
 <dl>
     {% if issue.statement_is_public %}
@@ -31,7 +30,7 @@
         
         {% if detail %}
             <dt>{{ issue.noun|capfirst }} statement</dt>
-            {% if issue.image and detail %}
+            {% if issue.image and detail and not hidepdfs %}
                 <div style="float:right"><img style="max-width:300px;max-height:400px;margin:0 15px 15px 0" src="{{ issue.image.url }}"></div>
             {% endif %}
             <dd>{{ issue.statement|markdown:"safe" }}</dd>

@@ -3,7 +3,144 @@
 
 {% block content %}
 
-<h1 style="font-size:3.0em">Ballot - SAMPLE</h1>
+<style type="text/css">
+body {
+    font-size:0.9em;
+}
+
+#stmt {
+    position:fixed;
+    right:0;
+    top:0;
+    width:35%;
+    background-color:#F6D9E0;
+}
+
+#stmt_toggle_c, #stmt_body_c, #stmt_body {
+    background-color:#F6D9E0;
+}
+
+#stmt_body_c {
+    padding:0 15px;
+}
+
+#stmt img {
+    float:right;
+}
+
+#stmt_body {
+    overflow:auto;
+    font-size:0.9em;
+    padding:5px 0;
+}
+
+#stmt dd { margin-left:9px; }
+
+#stmt_body h1 { font-size:1.2em; }
+#stmt_body h2 { font-size:1.1em; }
+#stmt_body h3 { font-size:1.0em; }
+
+#stmt_header {
+    padding:5px;
+    margin:0 auto;
+    text-align:center;
+    border-bottom:solid 1px #fff;
+    font-size:0.9em;
+}
+
+#stmt_header p.info {
+    padding:3px;
+    margin:0;
+    font-size:0.8em;
+}
+
+a.stmt_toggle {
+    cursor:pointer;
+}
+
+.writein input {
+    margin:9px 3px;
+    font-size:0.8em;
+    padding:1px;
+}
+
+p {
+    line-height:normal;
+}
+
+table.slate_list {
+    font-size:0.8em;
+}
+table.slate_list tr th:first-child { max-width:250px;}
+table.slate_list tbody th { text-align:right !important; }
+table.slate_list th { background-color: #ebebeb;  }
+
+table.slate_list td, table.slate_list th {
+    border:none !important;
+}
+
+.fillin {
+    background-color:#FFFCCD;
+}
+
+.squeeze {
+    font-size:0.85em;
+}
+</style>
+
+<div id="stmt">
+    <div id="stmt_header">
+        <a id="stmt_toggle_hide" class="stmt_toggle">Hide info</a>
+        <a id="stmt_toggle_show" class="stmt_toggle" style="display:none">Show info</a>
+        <p class="info">
+            Candidate &amp; group statements have not been verified by the ASSU Elections Commission.
+        </p>
+    </div>
+    
+    <div id="stmt_body_c"><div id="stmt_body">
+        
+    </div></div>
+</div>
+
+<script language="javascript">
+var issues = {{ issues_json|safe }};
+
+function getIssueElemPk(e) {
+    e = $(e);
+    if (e.attr('data-pk')){
+        return e.attr('data-pk');
+    } else {
+        return e.children('input').first().attr('value').toString();
+    }
+}
+
+function issueTooltipBody(e) {
+    var pk = getIssueElemPk(e);
+    stmt = issues[pk]["statement"];
+    //console.log(stmt);
+    return stmt;
+}
+
+$(window).load(function() {
+   $('a.stmt_toggle').click(function() { $('#stmt_body_c').toggle() });
+   $('#stmt_toggle_hide').click(function () { $('#stmt_toggle_hide').hide(); $('#stmt_toggle_show').show(); })
+   $('#stmt_toggle_show').click(function () { $('#stmt_toggle_hide').show(); $('#stmt_toggle_show').hide(); })
+   
+   $('label, .has_stmt').bind("mouseenter click",
+       function() {
+           var e = this.target;
+           console.log(this);
+           var stmt = issueTooltipBody(this);
+           console.log(stmt);
+           $('#stmt_body').html(stmt);
+       }
+   );
+   
+   $('#stmt_body').css('height', $(window).height() - $('#stmt_header').outerHeight());
+});
+</script>
+
+<h1 style="font-size:3.0em">Ballot</h1>
 
 <p>
     All fields are optional.
@@ -110,17 +247,38 @@
 <section class="slates">
     <h2>ASSU Executive</h2>
     <p>Rank your choices for Executive. Uses <a target="_blank" href="http://en.wikipedia.org/wiki/Instant-runoff_voting">instant-runoff voting</a>.</p>
-    <table>
+    
+    <p>
+        Mouse over slate names to see statements: 
+    </p>
+    
+        <table class="slate_list">
+            <thead>
+                <tr><td></td><th>President</th><th>Vice President</th></tr>
+            </thead>
+            <tbody>
+            {% for s in exec_slates %}
+                <tr class="has_stmt" data-pk="{{ s.pk }}">
+                    <th {% ifequal s.pk 122 %}class="squeeze"{% endifequal %}>{{ s.ballot_name }}</th>
+                    <td>{{ s.name1 }}</td>
+                    <td>{{ s.name2 }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    <br>
+        
+    <table class="fillin">
         <thead>
-            <tr><td/><th>Choose slate</th><th>OR Write-in</th></tr>
+            <tr><td/><th>Vote for slate</th><th>OR Write-in</th></tr>
         </thead>
         <tbody>
-            <tr><th>1st choice</th><td>{{ ballotform.vote_exec1 }}</td><td>{{ ballotform.vote_exec1_writein }} {{ ballotform.vote_exec1.errors }}</td></tr>
-            <tr><th>2nd choice</th><td>{{ ballotform.vote_exec2 }}</td><td>{{ ballotform.vote_exec2_writein }} {{ ballotform.vote_exec2.errors }}</td></tr>
-            <tr><th>3rd choice</th><td>{{ ballotform.vote_exec3 }}</td><td>{{ ballotform.vote_exec3_writein }} {{ ballotform.vote_exec3.errors }}</td></tr>
-            <tr><th>4th choice</th><td>{{ ballotform.vote_exec4 }}</td><td>{{ ballotform.vote_exec4_writein }} {{ ballotform.vote_exec4.errors }}</td></tr>
-            <tr><th>5th choice</th><td>{{ ballotform.vote_exec5 }}</td><td>{{ ballotform.vote_exec5_writein }} {{ ballotform.vote_exec5.errors }}</td></tr>
-            <tr><th>6th choice</th><td>{{ ballotform.vote_exec6 }}</td><td>{{ ballotform.vote_exec6_writein }} {{ ballotform.vote_exec6.errors }}</td></tr>
+            <tr><th>1st choice</th><td>{{ ballotform.vote_exec1 }}</td><td class="writein">{{ ballotform.vote_exec1_writein }} {{ ballotform.vote_exec1.errors }}</td></tr>
+            <tr><th>2nd choice</th><td>{{ ballotform.vote_exec2 }}</td><td class="writein">{{ ballotform.vote_exec2_writein }} {{ ballotform.vote_exec2.errors }}</td></tr>
+            <tr><th>3rd choice</th><td>{{ ballotform.vote_exec3 }}</td><td class="writein">{{ ballotform.vote_exec3_writein }} {{ ballotform.vote_exec3.errors }}</td></tr>
+            <tr><th>4th choice</th><td>{{ ballotform.vote_exec4 }}</td><td class="writein">{{ ballotform.vote_exec4_writein }} {{ ballotform.vote_exec4.errors }}</td></tr>
+            <tr><th>5th choice</th><td>{{ ballotform.vote_exec5 }}</td><td class="writein">{{ ballotform.vote_exec5_writein }} {{ ballotform.vote_exec5.errors }}</td></tr>
+            <tr><th>6th choice</th><td>{{ ballotform.vote_exec6 }}</td><td class="writein">{{ ballotform.vote_exec6_writein }} {{ ballotform.vote_exec6.errors }}</td></tr>
         </tbody>
     </table>
     <hr>
@@ -130,12 +288,12 @@
     <section class="candidates">
         <h2>Undergrad Senate</h2>
         <p>Vote for up to 15 Senate candidates.</p>
-        {{ ballotform.votes_senate }}
-        {{ ballotform.votes_senate.errors }}
+        <div class="fillin">{{ ballotform.votes_senate }}
+        {{ ballotform.votes_senate.errors }}</div>
         
         <h3>Write-in Senate votes</h3>
-        <p>List the first &amp; last names of other students you want to vote for. You can only vote for 15 Senators max, including write-ins.</p>
-        {{ ballotform.votes_senate_writein }}
+        <p>List the first &amp; last names of other students you want to vote for. You can only vote for 15 Senators max (checkboxes plus write-ins).</p>
+        <div class="fillin">{{ ballotform.votes_senate_writein }}</div>
     </section>
     <hr>
 {% endif %}
@@ -144,8 +302,8 @@
     <section class="candidates">
         <h2>Grad Student Council District ({{ ballot.gsc_district.name }})</h2>
         <p><strong>{{ ballotform.votes_gsc_district.label }}</strong></p>
-        {{ ballotform.votes_gsc_district }}
-        {{ ballotform.votes_gsc_district.errors }}
+        <div class="fillin">{{ ballotform.votes_gsc_district }}
+        {{ ballotform.votes_gsc_district.errors }}</div>
         
         {% ifequal ballot.gsc_district.slug "gsc-eng" %}
             <h3>Write-in GSC district votes</h3>
@@ -154,7 +312,7 @@
             <h3>Write-in GSC district vote</h3>
             <p>List the first &amp; last name of the student you want to vote for. You can vote for a write-in or a candidate listed above, but not both, since you only have 1 vote.</p>
         {% endifequal %}
-        {{ ballotform.votes_gsc_district_writein }}
+        <div class="fillin">{{ ballotform.votes_gsc_district_writein }}</div>
     </section>
     <hr>
 {% endif %}
@@ -167,12 +325,12 @@
         You can vote for the same candidate(s) for both at-large and in 
         your district, if you want.
     </p>
-    {{ ballotform.votes_gsc_atlarge }}
-    {{ ballotform.votes_gsc_atlarge.errors }}
+    <div class="fillin">{{ ballotform.votes_gsc_atlarge }}
+    {{ ballotform.votes_gsc_atlarge.errors }}</div>
     
     <h3>Write-in GSC at-large votes</h3>
     <p>List the first &amp; last names of other students you want to vote for. You can only vote for 5 at-large GSC reps max, including write-ins.</p>
-    {{ ballotform.votes_gsc_atlarge_writein }}
+    <div class="fillin">{{ ballotform.votes_gsc_atlarge_writein }}</div>
 </section>
 <hr>
 {% endif %}
@@ -181,17 +339,17 @@
 <section class="slates">
     <h2>Undergraduate Class President</h2>
     <p>Rank your choices for Class President. Uses <a target="_blank" href="http://en.wikipedia.org/wiki/Instant-runoff_voting">instant-runoff voting</a>.</p>
-    <table>
+    <table class="fillin">
         <thead>
-            <tr><td/><th>Choose slate</th><th>OR Write-in</th></tr>
+            <tr><td/><th>Vote for slate</th><th>OR Write-in</th></tr>
         </thead>
         <tbody>
-            <tr><th>1st choice</th><td>{{ ballotform.vote_classpres1 }}</td><td>{{ ballotform.vote_classpres1_writein }}</td><td>{{ ballotform.vote_classpres1.errors }}</td></tr>
+            <tr><th>1st choice</th><td>{{ ballotform.vote_classpres1 }}</td><td class="writein">{{ ballotform.vote_classpres1_writein }}</td><td>{{ ballotform.vote_classpres1.errors }}</td></tr>
             {% if ballotform.vote_classpres2 %}
                 <tr>
                     <th>2nd choice</th>
                     <td>{{ ballotform.vote_classpres2 }}</td>
-                    <td>{{ ballotform.vote_classpres2_writein }}</td>
+                    <td class="writein">{{ ballotform.vote_classpres2_writein }}</td>
                     <td>{{ ballotform.vote_classpres2.errors }}</td>
                 </tr>
             {% endif %}
@@ -199,7 +357,7 @@
                 <tr>
                     <th>3rd choice</th>
                     <td>{{ ballotform.vote_classpres3 }}</td>
-                    <td>{{ ballotform.vote_classpres3_writein }}</td>
+                    <td class="writein">{{ ballotform.vote_classpres3_writein }}</td>
                     <td>{{ ballotform.vote_classpres3.errors }}</td>
                 </tr>
             {% endif %}
@@ -207,7 +365,7 @@
                 <tr>
                     <th>4th choice</th>
                     <td>{{ ballotform.vote_classpres4 }}</td>
-                    <td>{{ ballotform.vote_classpres4_writein }}</td>
+                    <td class="writein">{{ ballotform.vote_classpres4_writein }}</td>
                     <td>{{ ballotform.vote_classpres4.errors }}</td>
                 </tr>
             {% endif %}
@@ -235,7 +393,7 @@
             {% for f in ballotform %}
                 {% if f.field.is_special_fee %}
                     {% with f.field.issue as issue %}
-                    <tr>
+                    <tr class="has_stmt" data-pk="{{ issue.pk }}">
                         <th class="title">
                             {{ f.label }}
                             <span class="info">
@@ -248,7 +406,7 @@
                                 {% endif %}
                             </span>
                         </th>
-                        <td class="vote">{{ f }} {{ f.errors }}</td>
+                        <td class="vote fillin">{{ f }} {{ f.errors }}</td>
                         <td class="figure">
                             {% if issue.budget %}<a target="_blank" href="http://voterguide.stanford.edu/{{ issue.budget.url|cut:"http://corn24.stanford.edu:32145/" }}">{% endif %}
                                 {{ issue.total_request_amount|currency }}

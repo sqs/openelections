@@ -3,6 +3,11 @@
 
 {% block style_link %}
     <link rel="stylesheet" href="http://elections.stanford.edu/res/screen.css">
+    <link rel="stylesheet" href="http://elections.stanford.edu/res/js/jquery-tooltip/jquery.tooltip.css">
+    <script language="javascript" src="http://elections.stanford.edu/res/js/jquery-1.4.2.min.js"></script>
+    <script language="javascript" src="http://elections.stanford.edu/res/js/dimensions_1.2/jquery.dimensions.js"></script>
+    <script language="javascript" src="http://elections.stanford.edu/res/js/bgiframe_2.1.1/jquery.bgiframe.js"></script>
+    <script language="javascript" src="http://elections.stanford.edu/res/js/jquery-tooltip/jquery.tooltip.js"></script>
 {% endblock %}
 
 
@@ -32,19 +37,6 @@
         padding-right:35%;
     }
 
-    #profile {
-        border-left:solid 1px #813434;
-        position:fixed;
-        top:99px;
-        right:0;
-        width:30%;
-        min-height:500px;
-        padding:25px;
-        background-color:white;
-    }
-        #profile img {
-            float:right;
-        }
 
     
     section ul, section li {
@@ -76,9 +68,9 @@
         width:100%;
     }
     
-    th.title {
-        max-width:250px !important;
-        
+    .specialfees th.title {
+        width:35%;
+        max-width:350px !important;
     }
     
     th.title .info { 

@@ -216,7 +216,7 @@ def ballot_form_factory(ballot):
             if 'smsa' in k:
                 del _BallotForm.base_fields[k]
     
-    specfee_qs = SpecialFeeRequest.objects.filter(kind=c.ISSUE_SPECFEE, electorates__in=ballot.assu_populations.all()).order_by('pk').all()
+    specfee_qs = SpecialFeeRequest.objects.filter(kind=c.ISSUE_SPECFEE, electorates__in=ballot.assu_populations.all()).order_by('title').all()
     _BallotForm.fields_specfees = []
     for sf in specfee_qs:
         initial = None
