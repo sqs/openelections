@@ -4,82 +4,33 @@ import simplejson
 from openelections import constants as oe_constants
 from openelections.issues.text import POSITION_DESCRIPTIONS
 
-ELECTORATES = {
-    'undergrad': 'Undergrad',
-    'grad': 'Grad',
-    'coterm': 'Coterm',
-    'undergrad-freshman': 'Freshman',
-    'undergrad-sophomore': 'Sophomore',
-    'undergrad-junior': 'Junior',
-    'undergrad-senior': 'Senior',
-    
-    # GSC
-    'gsb': 'School of Business',
-    'earthsci': 'School of Earth Sciences',
-    'edu': 'School of Education',
-    'eng': 'School of Engineering',
-    'humsci-hum': 'School of Humanities and Sciences, Humanities',
-    'humsci-natsci': 'School of Humanities and Sciences, Natural Sciences',
-    'humsci-socsci': 'School of Humanities and Sciences, Social Sciences',
-    'law': 'School of Law',
-    'med': 'School of Medicine',
-    'gsc-atlarge': 'At-Large',
-    
-    # SMSA
-    'smsa-2': 'SMSA 2nd Year', 
-    'smsa-3': 'SMSA 3rd Year', 
-    'smsa-4': 'SMSA 4th Year', 
-    'smsa-5plus': 'SMSA 5th-Plus Year',
-    'smsa-preclinical': 'SMSA Pre-clinical',
-    'smsa-clinical': 'SMSA Clinical', 
-    'smsa-mdphd': 'SMSA MD-PhD',
-    'smsa-mdplus': 'SMSA MD+',
-}
-
-UNDERGRAD_CLASS_YEARS = ('undergrad-sophomore', 'undergrad-junior', 'undergrad-senior')
-ASSU_POPULATIONS_ALL = ('undergrad', 'coterm', 'grad')
-SMSA_CLASS_YEARS = ('smsa-2', 'smsa-3', 'smsa-4', 'smsa-5plus')
-SMSA_POPULATIONS = ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')
-SMSA_CCAP_POPULATIONS = SMSA_POPULATIONS + ('smsa-mdplus',)
-GSC_DISTRICTS = ('gsb', 'earthsci', 'edu', 'eng', 'humsci-hum', 'humsci-natsci', 'humsci-socsci', 'law', 'med', 'gsc-atlarge')
-
 def no_smsa(s):
     return str(s).replace('SMSA ', '')
 
 class Electorate(models.Model):
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=100)
+    slug = models.SlugField(max_length=100)
+    voter_name_opt = models.CharField(max_length=100, blank=True)
+    
+    @property
+    def voter_name(self):
+        return self.voter_name_opt or self.name
+    
+    UNDERGRAD_CLASS_YEARS = ('undergrad-2', 'undergrad-3', 'undergrad-4', 'undergrad-5plus')
+    ASSU_POPULATIONS = ('undergrad', 'graduate')
+    SMSA_CLASS_YEARS = ('smsa-2', 'smsa-3', 'smsa-4', 'smsa-5plus')
+    SMSA_POPULATIONS = ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')
+    SMSA_CCAP_POPULATIONS = SMSA_POPULATIONS + ('smsa-mdplus',)
+    SMSA_ALL_POPULATIONS = SMSA_CCAP_POPULATIONS
+    GSC_DISTRICTS_NO_ATLARGE = ('gsc-gsb', 'gsc-earthsci', 'gsc-edu', 'gsc-eng', 'gsc-hs-hum', 'gsc-hs-natsci', 'gsc-hs-socsci', 'gsc-law', 'gsc-med',)
+    GSC_DISTRICTS = GSC_DISTRICTS_NO_ATLARGE + ('gsc-atlarge',)
     
     @classmethod
-    def queryset_with_names(klass, names):
-        full_names = [ELECTORATES[name] for name in names]
-        return klass.objects.filter(name__in=full_names)
-    
-    @classmethod
-    def undergrad_class_years(klass):
-        return klass.queryset_with_names(UNDERGRAD_CLASS_YEARS)
-    
-    @classmethod
-    def assu_populations_all(klass):
-        return klass.queryset_with_names(ASSU_POPULATIONS_ALL)
-    
-    @classmethod
-    def smsa_class_years(klass):
-        return klass.queryset_with_names(SMSA_CLASS_YEARS)
-        
-    @classmethod
-    def smsa_populations(klass):
-        return klass.queryset_with_names(SMSA_POPULATIONS)
-        
-    @classmethod
-    def smsa_ccap_populations(klass):
-        return klass.queryset_with_names(SMSA_CCAP_POPULATIONS)
-        
-    @classmethod
-    def gsc_districts(klass):
-        return klass.queryset_with_names(GSC_DISTRICTS)
+    def queryset_with_slugs(klass, slugs):
+        return klass.objects.filter(slug__in=slugs)
     
     def __unicode__(self):
-        return self.name
+        return self.slug
 
 class Issue(models.Model):        
     title = models.CharField(max_length=200)
@@ -102,7 +53,7 @@ class Issue(models.Model):
     signed_voterguide_agreement = models.BooleanField(default=True)
     
     # restriction to certain populations
-    electorate = models.ManyToManyField(Electorate, related_name='issues') #MultipleChoiceField(max_length=250, choices=oe_constants.ELECTORATES)
+    electorates = models.ManyToManyField(Electorate, related_name='issues') #MultipleChoiceField(max_length=250, choices=oe_constants.ELECTORATES)
 
     name1 = models.CharField(max_length=100)
     sunetid1 = models.CharField(max_length=15)
@@ -124,6 +75,11 @@ class Issue(models.Model):
     past_budget = models.FileField(upload_to='media/specialfees', blank=True)
     account_statement = models.FileField(upload_to='media/specialfees', blank=True)
     total_request_amount = models.DecimalField(default=0, max_digits=8, decimal_places=2)
+    amount_per_undergrad_annual = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    amount_per_grad_annual = models.DecimalField(default=0, max_digits=6, decimal_places=2)
+    advisory_vote_senate = models.CharField(max_length=128, blank=True)
+    advisory_vote_gsc = models.CharField(max_length=128, blank=True)
+    statement_gsc = models.TextField(default='', blank=True)
     total_past_request_amount = models.DecimalField(default=0, max_digits=8, decimal_places=2)
     budget_summary = models.TextField(blank=True)
     petition_budget_summary = models.TextField(blank=True)
@@ -144,16 +100,16 @@ class Issue(models.Model):
     def petition_electorates(self):
         names = self.petition_electorate_names()
         if names:
-            return Electorate.queryset_with_names(names)
+            return Electorate.queryset_with_slugs(names)
         else:
             return None
-            
+    
     def candidate_electorates(self):
         if not hasattr(self, 'candidate_electorate_names'):
             return None
         names = self.candidate_electorate_names()
         if names:
-            return Electorate.queryset_with_names(names)
+            return Electorate.queryset_with_slugs(names)
         else:
             return None
     
@@ -177,6 +133,9 @@ class Issue(models.Model):
     
     def noun(self):
         raise NotImplementedError
+    
+    def ballot_name(self):
+        return self.title
     
     def kind_name(self):
         return "Generic issue"
@@ -252,7 +211,7 @@ class SpecialFeeRequest(FeeRequest):
         proxy = True
     
     def petition_electorates(self):
-        return self.electorate
+        return self.electorates
     
     def kind_name(self):
         return "Special Fee group"
@@ -301,6 +260,10 @@ class ExecutiveSlate(Slate):
     def name_and_office(self):
         return "%s, a slate for ASSU Executive with %s for President and %s for Vice President" \
                % (self.title, self.name1, self.name2)
+               
+    def ballot_name(self):
+        return self.title
+        #return "%s: %s (Pres) & %s (VP)" % (self.title, self.name1, self.name2)
 
 class ClassPresidentSlate(Slate):
     class Meta:
@@ -310,16 +273,14 @@ class ClassPresidentSlate(Slate):
         return ('undergrad', 'coterm')
         
     def class_year(self):
-        class_years = Electorate.undergrad_class_years()
-        class_years = [cy.name for cy in class_years]
-        slate_year = self.electorate.filter(name__in=class_years)
+        slate_year = self.electorates.filter(slug__in=Electorate.UNDERGRAD_CLASS_YEARS)
         if not slate_year:
             raise Exception('no slate year found for class president slate %d' % self.pk)
         return slate_year[0]
     
     def kind_name(self):
         if self.pk:
-            return "%s Class President slate" % self.class_year()
+            return "%s Class President slate" % self.class_year().name
         else:
             # if we haven't saved this, we don't know what year -- so be general
             return "Class President slate"
@@ -327,13 +288,20 @@ class ClassPresidentSlate(Slate):
     def elected_name(self):
         return "Class President"
     
-    def name_and_office(self):
+    def names_str(self):
         # join names with ", and" before last one
         names = [self.name1, self.name2, self.name3, self.name4, self.name5]
         names = [n for n in names if n]
         names_str = ', '.join(names[:-1]) + ', and ' + names[-1]
+        return names_str
+    
+    def name_and_office(self):
         return "%s, a slate for ASSU %s Class President with %s" \
-               % (self.title, self.class_year().name, names_str)
+               % (self.title, self.class_year().name, self.names_str())
+    
+    def ballot_name(self):
+        return self.title
+        #return "%s: %s" % (self.title, self.names_str())
 
 class SenateCandidate(Candidate):
     class Meta:
@@ -359,9 +327,7 @@ class GSCCandidate(Candidate):
         return True
     
     def district(self):
-        district_names = Electorate.gsc_districts()
-        district_names = [d.name for d in district_names]
-        districts = self.electorate.filter(name__in=district_names)
+        districts = self.electorates.filter(slug__in=Electorate.GSC_DISTRICTS)
         if not districts:
             raise Exception('no district found for GSC candidate %d' % self.pk)
         return districts[0]
@@ -426,19 +392,17 @@ class SMSAClassRepCandidate(SMSACandidate):
         return 'SMSA class year'
     
     def candidate_electorate_names(self):
-        return SMSA_CLASS_YEARS
+        return Electorate.SMSA_CLASS_YEARS
     
     def class_year(self):
-        class_years = Electorate.smsa_class_years()
-        class_years = [cy.name for cy in class_years]
-        year = self.electorate.filter(name__in=class_years)
+        year = self.electorates.filter(slug__in=Electorate.SMSA_CLASS_YEARS)
         if not year:
             raise Exception('no year found for smsa class rep %d' % self.pk)
         return year[0]
         
     def elected_name(self):
         if self.pk:
-            return "%s Class Rep" % self.class_year()
+            return "%s Class Rep" % self.class_year().name
         else:
             return "Class Rep"
         
@@ -453,16 +417,14 @@ class SMSASocialChairCandidate(SMSACandidate):
         return ('smsa-preclinical', 'smsa-clinical')
     
     def population(self):
-        pops = Electorate.smsa_populations()
-        pops = [p.name for p in pops]
-        pop = self.electorate.filter(name__in=pops)
+        pop = self.electorates.filter(slug__in=Electorate.SMSA_POPULATIONS)
         if not pop:
             raise Exception('no pop found for smsa social chair %d' % self.pk)
         return pop[0]
     
     def elected_name(self):
         if self.pk:
-            return "SMSA Social Chair (%s)" % no_smsa(self.population())
+            return "SMSA Social Chair (%s)" % no_smsa(self.population().name)
         else:
             return "SMSA Social Chair"
         
@@ -474,19 +436,17 @@ class SMSACCAPRepCandidate(SMSACandidate):
         return 'SMSA population'
     
     def candidate_electorate_names(self):
-        return SMSA_CCAP_POPULATIONS
+        return Electorate.SMSA_CCAP_POPULATIONS
     
     def population(self):
-        pops = Electorate.smsa_ccap_populations()
-        pops = [p.name for p in pops]
-        pop = self.electorate.filter(name__in=pops)
+        pop = self.electorates.filter(slug__in=Electorate.SMSA_CCAP_POPULATIONS)
         if not pop:
             raise Exception('no pop found for smsa ccap rep %d' % self.pk)
         return pop[0]
     
     def elected_name(self):
         if self.pk:
-            return "SMSA CCAP Rep (%s)" % no_smsa(self.population())
+            return "SMSA CCAP Rep (%s)" % no_smsa(self.population().name)
         else:
             return "SMSA CCAP Rep"
 
@@ -501,16 +461,14 @@ class SMSAPolicyAndAdvocacyChairCandidate(SMSACandidate):
         return ('smsa-preclinical', 'smsa-clinical')
         
     def population(self):
-        pops = Electorate.smsa_populations()
-        pops = [p.name for p in pops]
-        pop = self.electorate.filter(name__in=pops)
+        pop = self.electorates.filter(slug__in=Electorate.SMSA_POPULATIONS)
         if not pop:
             raise Exception('no pop found for smsa p and a rep %d' % self.pk)
         return pop[0]
     
     def elected_name(self):
         if self.pk:
-            return "SMSA Policy and Advocacy Chair (%s)" % no_smsa(self.population())
+            return "SMSA Policy and Advocacy Chair (%s)" % no_smsa(self.population().name)
         else:
             return "SMSA Policy and Advocacy Chair"
         

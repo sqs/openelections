@@ -11,11 +11,15 @@ class SignatureForm(forms.ModelForm):
     signed_at = forms.DateField()
     issue = forms.ModelChoiceField(queryset=Issue.objects)
     
+    class ElectorateChoiceField(forms.ModelChoiceField):
+        def label_from_instance(self, instance):
+            return instance.name
+    
     def __init__(self, issue, *args, **kwargs):
         super(SignatureForm, self).__init__(*args, **kwargs)
         electorates = issue.petition_electorates()
         if electorates:
-            self.fields['electorate'] = forms.ModelChoiceField(queryset=electorates,
+            self.fields['electorate'] = SignatureForm.ElectorateChoiceField(queryset=electorates,
                                                      widget=forms.RadioSelect,
                                                      empty_label=None)
         else:

@@ -2,7 +2,9 @@
 <html>
 <head>
     <title>ASSU Elections</title>
-    <link rel="stylesheet" href="http://elections.stanford.edu/res/screen-oe.css">
+    {% block style_link %}
+        <link rel="stylesheet" href="http://elections.stanford.edu/res/screen-oe.css">
+    {% endblock %}
     <style>
         th { min-width: 75px; }
         form ul, form li { list-style-type: none; padding:0 !important; margin:0 !important; }
@@ -14,7 +16,7 @@
         ul ul, ul ul li { list-style-type:circle; }    
 
         th {
-            border-bottom: solid 3px #aaa;
+            border-bottom: solid 2px #000;
         }
         
         .specialfees th { 
@@ -23,7 +25,7 @@
         }
         
         td {
-            border-bottom: solid 1px #bbb;
+            border-bottom: solid 2px #000;
         }
         
         .figure { text-align:right; }
@@ -33,9 +35,9 @@
         .statement_short h1, .statement_short h2, .statement_short h3, .statement_short h4 {
             font-size:1.1em !important;
         }
-            
-        {% block style %}{% endblock %}
     </style>
+       
+    {% block style %}{% endblock %}
     
     <link rel="shortcut icon" href="/media/favicon.ico"/>
 </head>
@@ -89,11 +91,13 @@
 <div class="nav" id="footer">
     <ul>
         <li><a href="http://elections.stanford.edu">2010 Elections Commission Home</a></li>
-        {% if not sunetid %}
-            <li><a href="/issues/manage">Candidate/sponsor login</a></li>
-        {% else %}
-            <li><a href="/auth/logout" onclick="alert('You must also close your browser window to log out of Stanford WebAuth.');return true">Log out ({{ sunetid }})</a></li>
-        {% endif %}
+        {% block footerlogin %}
+            {% if not sunetid %}
+                <li><a href="/issues/manage">Candidate/sponsor login</a></li>
+            {% else %}
+                <li><a href="/auth/logout" onclick="alert('You must also close your browser window to log out of Stanford WebAuth.');return true">Log out ({{ sunetid }})</a></li>
+            {% endif %}
+        {% endblock %}
         <li><a href="http://elections.stanford.edu/contact">Contact</a></li>
         <li><a href="http://assu.stanford.edu/">ASSU</a></li>
     </ul>

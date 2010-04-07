@@ -11,7 +11,7 @@ class IssueTest(OETestCase):
         lsenator = senators[0].get_typed()
         self.assertEquals(issue('leland-senator'), lsenator)
         execs = Issue.filter_by_kinds(['Exec']).all()
-        self.assertEquals(len(execs), 0)
+        self.assertEquals(len(execs), 3)
     
     def test_shuffles(self):
         """We don't actually test that it randomizes the order, obviously, just that it

@@ -1,116 +1,276 @@
-{% extends "base.html" %}
-
-{% block header %}
-<h1 id="site_title"><a href="http://elections.stanford.edu/"><img alt="ASSU Elections Commission" src="http://elections.stanford.edu/res/web-logo1.png"></a></h1>
-
-{% endblock %}
-
-{% block style %}
-<style>
-    section {
-        display:block;
-        clear:both;
-        padding-top:15px;
-    }
-        section:first-child {
-            padding-top:0 !important;
-        }
-        
-    br, hr, h1, h2, h3 { clear:both;}
-    
-    #container {
-        margin:0;
-        max-width:none;
-    }
-    
-    #content {
-        padding-right:35%;
-    }
-
-    #profile {
-        border-left:solid 1px #813434;
-        position:fixed;
-        top:99px;
-        right:0;
-        width:30%;
-        min-height:500px;
-        padding:25px;
-        background-color:white;
-    }
-        #profile img {
-            float:right;
-        }
-
-    
-    section ul, section li {
-        list-style-type:none;
-    }
-    
-    ul.issues {
-        width:718px;
-    }
-    
-    li.issue {
-        width:220px;
-        padding:8px;
-        float:left;
-    }
-        li.issue:hover {
-            background-color:#F8E5E2;
-        }
-        .fees li.issue {
-            width:680px;
-        }
-    
-    label {
-        font-weight:bold;
-        margin-left:5px;
-    }
-</style>
-{% endblock %}
-
+{% extends "ballot/base-ballot.html" %}
+{% load issue_extras %}
 
 {% block content %}
+
+<h1 style="font-size:3.0em">Ballot - SAMPLE</h1>
+
+<p>
+    All fields are optional.
+    After voting, you may return to <a href="http://ballot.stanford.edu">ballot.stanford.edu</a> to change your votes until 11:59pm on Friday.
+    Online votes supercede any paper ballots you cast. 
+    Email <a href="mailto:elections@elections.stanford.edu?subject=Ballot%20question:%20{{ sunetid }}">elections@elections.stanford.edu</a> 
+    if you need help.
+</p>
+
+<p>If you are not <strong>{{ sunetid }}</strong>, close your browser to log out and then return to 
+    <a href="http://ballot.stanford.edu">ballot.stanford.edu</a>.</p>
+
+<p>
+    According to our records, you are 
+    {% if ballot.is_undergrad %}
+        {% if ballot.is_grad %}
+            currently registered as <strong>both an undergraduate {{ ballot.undergrad_class_year.voter_name|lower }}</strong> and
+        {% else %}
+            an <strong>undergraduate {{ ballot.undergrad_class_year.voter_name|lower }}</strong>. 
+        {% endif %}
+    {% endif %}
+    
+    {% if ballot.is_grad %}
+        a <strong>
+        {% if ballot.is_smsa %}{{ ballot.smsa_class_year.voter_name|cut:"SMSA " }}, {{ ballot.smsa_population.voter_name|cut:"SMSA " }} med{% else %}grad{% endif %} student in the {{ ballot.gsc_district.name }}</strong>.
+    {% endif %}
+    
+    You may <a href="/ballot/choose">choose a different ballot</a> if this is incorrect.
+</p>
+
+<hr>
+
 <form id="ballot" method="post" action="{% url ballot.views.vote_all %}">
 
-{% if form.votes_us %}
+{% if ballotform.smsa %}
+<section class="candidates">
+
+<h2>SMSA</h2>
+
+{% if ballotform.vote_smsa_execpres %}
+    <h3>Executive President</h3>
+    {{ ballotform.vote_smsa_execpres }} {{ ballotform.vote_smsa_execpres.errors }}
+{% endif %}
+
+{% if ballotform.vote_smsa_pres %}
+    <h3>President</h3>
+    {{ ballotform.vote_smsa_pres }} {{ ballotform.vote_smsa_pres.errors }}
+{% endif %}
+
+{% if ballotform.vote_smsa_vicepres %}
+    <h3>Vice President</h3>
+    {{ ballotform.vote_smsa_vicepres }} {{ ballotform.vote_smsa_vicepres.errors }}
+{% endif %}
+
+{% if ballotform.vote_smsa_sec %}
+    <h3>Secretary</h3>
+    {{ ballotform.vote_smsa_sec }} {{ ballotform.vote_smsa_sec.errors }}
+{% endif %}
+
+{% if ballotform.vote_smsa_treas %}
+    <h3>Treasurer</h3>
+    {{ ballotform.vote_smsa_treas }} {{ ballotform.vote_smsa_treas.errors }}
+{% endif %}
+
+{% if ballotform.vote_smsa_mentorship %}
+    <h3>Mentorship Chair</h3>
+    {{ ballotform.vote_smsa_mentorship }} {{ ballotform.vote_smsa_mentorship.errors }}
+{% endif %}
+
+{% if ballotform.vote_smsa_psrc %}
+    <h3>Prospective Student Recruitment Chair</h3>
+    {{ ballotform.vote_smsa_psrc }} {{ ballotform.vote_smsa_psrc.errors }}
+{% endif %}
+
+{% if ballotform.vote_smsa_ossosr %}
+    <h3>OSS/OSR Rep</h3>
+    {{ ballotform.vote_smsa_ossosr }} {{ ballotform.vote_smsa_ossosr.errors }}
+{% endif %}
+
+{% if ballotform.vote_smsa_classrep %}
+    <h3>{{ ballot.smsa_class_year.name|cut:"SMSA " }} Class Rep</h3>
+    {{ ballotform.vote_smsa_classrep }} {{ ballotform.vote_smsa_classrep.errors }}
+{% endif %}
+
+{% if ballotform.vote_smsa_socialchair %}
+    <h3>{{ ballot.smsa_population.name|cut:"SMSA " }} Social Chair</h3>
+    {{ ballotform.vote_smsa_socialchair }} {{ ballotform.vote_smsa_socialchair.errors }}
+{% endif %}
+
+{% if ballotform.vote_smsa_ccap %}
+    <h3>{{ ballot.smsa_population.name|cut:"SMSA " }} CCAP Rep</h3>
+    {{ ballotform.vote_smsa_ccap }} {{ ballotform.vote_smsa_ccap.errors }}
+{% endif %}
+
+{% if ballotform.vote_smsa_pachair %}  
+    <h3>{{ ballot.smsa_population.name|cut:"SMSA " }} Policy &amp; Advocacy Chair</h3>
+    {{ ballotform.vote_smsa_pachair }} {{ ballotform.vote_smsa_pachair.errors }}
+{% endif %}
+
+<hr>
+</section>
+{% endif %}
+
+<section class="slates">
+    <h2>ASSU Executive</h2>
+    <p>Rank your choices for Executive. Uses <a target="_blank" href="http://en.wikipedia.org/wiki/Instant-runoff_voting">instant-runoff voting</a>.</p>
+    <table>
+        <thead>
+            <tr><td/><th>Choose slate</th><th>OR Write-in</th></tr>
+        </thead>
+        <tbody>
+            <tr><th>1st choice</th><td>{{ ballotform.vote_exec1 }}</td><td>{{ ballotform.vote_exec1_writein }} {{ ballotform.vote_exec1.errors }}</td></tr>
+            <tr><th>2nd choice</th><td>{{ ballotform.vote_exec2 }}</td><td>{{ ballotform.vote_exec2_writein }} {{ ballotform.vote_exec2.errors }}</td></tr>
+            <tr><th>3rd choice</th><td>{{ ballotform.vote_exec3 }}</td><td>{{ ballotform.vote_exec3_writein }} {{ ballotform.vote_exec3.errors }}</td></tr>
+            <tr><th>4th choice</th><td>{{ ballotform.vote_exec4 }}</td><td>{{ ballotform.vote_exec4_writein }} {{ ballotform.vote_exec4.errors }}</td></tr>
+            <tr><th>5th choice</th><td>{{ ballotform.vote_exec5 }}</td><td>{{ ballotform.vote_exec5_writein }} {{ ballotform.vote_exec5.errors }}</td></tr>
+            <tr><th>6th choice</th><td>{{ ballotform.vote_exec6 }}</td><td>{{ ballotform.vote_exec6_writein }} {{ ballotform.vote_exec6.errors }}</td></tr>
+        </tbody>
+    </table>
+    <hr>
+</section>
+
+{% if ballotform.votes_senate %}
     <section class="candidates">
-        <h1>Undergrad Senate</h1>
-        <p>Choose 15.</p>
-        {{ form.votes_us }}
+        <h2>Undergrad Senate</h2>
+        <p>Vote for up to 15 Senate candidates.</p>
+        {{ ballotform.votes_senate }}
+        {{ ballotform.votes_senate.errors }}
+        
+        <h3>Write-in Senate votes</h3>
+        <p>List the full names of other students you want to vote for. You can only vote for 15 Senators max, including write-ins.</p>
+        {{ ballotform.votes_senate_writein }}
     </section>
+    <hr>
 {% endif %}
 
-{% if form.votes_gsc %}
+{% if ballot.gsc_district and ballotform.votes_gsc_district %}
     <section class="candidates">
-        <h1>Grad Student Council</h1>
-        {{ form.votes_gsc }}
+        <h2>Grad Student Council District ({{ ballot.gsc_district.name }})</h2>
+        <p><strong>{{ ballotform.votes_gsc_district.label }}</strong></p>
+        {{ ballotform.votes_gsc_district }}
+        {{ ballotform.votes_gsc_district.errors }}
+        
+        {% ifequal ballot.gsc_district.slug "gsc-eng" %}
+            <h3>Write-in GSC district votes</h3>
+            <p>List the full names of other students you want to vote for. You can only vote for 2 GSC reps max, including write-ins.</p>
+        {% else %}
+            <h3>Write-in GSC district vote</h3>
+            <p>List the full name of the student you want to vote for. You can vote for a write-in or a candidate listed above, but not both, since you only have 1 vote.</p>
+        {% endifequal %}
+        {{ ballotform.votes_gsc_district_writein }}
     </section>
+    <hr>
 {% endif %}
 
-{% if form.votes_exec %}
-    <section class="slates">
-        <h1>Exec</h1>
-        {{ form.votes_exec }}
-    </section>
+{% if ballotform.votes_gsc_atlarge %}
+<section class="candidates">
+    <h2>Grad Student Council At-Large</h2>
+    <p>
+        <strong>Choose up to 5.</strong> At-large votes are tallied independently of GSC district votes.  
+        You can vote for the same candidate(s) for both at-large and in 
+        your district, if you want.
+    </p>
+    {{ ballotform.votes_gsc_atlarge }}
+    {{ ballotform.votes_gsc_atlarge.errors }}
+    
+    <h3>Write-in GSC at-large votes</h3>
+    <p>List the full names of other students you want to vote for. You can only vote for 5 at-large GSC reps max, including write-ins.</p>
+    {{ ballotform.votes_gsc_atlarge_writein }}
+</section>
+<hr>
 {% endif %}
 
-{% if form.votes_classpres %}
-    <section class="slates">
-        <h1>Class President</h1>
-        {{ form.votes_classpres }}
-    </section>
+{% if ballotform.vote_classpres1 %}
+<section class="slates">
+    <h2>Undergraduate Class President</h2>
+    <p>Rank your choices for Class President. Uses <a target="_blank" href="http://en.wikipedia.org/wiki/Instant-runoff_voting">instant-runoff voting</a>.</p>
+    <table>
+        <thead>
+            <tr><td/><th>Choose slate</th><th>OR Write-in</th></tr>
+        </thead>
+        <tbody>
+            <tr><th>1st choice</th><td>{{ ballotform.vote_classpres1 }}</td><td>{{ ballotform.vote_classpres1_writein }}</td><td>{{ ballotform.vote_classpres1.errors }}</td></tr>
+            {% if ballotform.vote_classpres2 %}
+                <tr>
+                    <th>2nd choice</th>
+                    <td>{{ ballotform.vote_classpres2 }}</td>
+                    <td>{{ ballotform.vote_classpres2_writein }}</td>
+                    <td>{{ ballotform.vote_classpres2.errors }}</td>
+                </tr>
+            {% endif %}
+            {% if ballotform.vote_classpres3 %}
+                <tr>
+                    <th>3rd choice</th>
+                    <td>{{ ballotform.vote_classpres3 }}</td>
+                    <td>{{ ballotform.vote_classpres3_writein }}</td>
+                    <td>{{ ballotform.vote_classpres3.errors }}</td>
+                </tr>
+            {% endif %}
+            {% if ballotform.vote_classpres4 %}
+                <tr>
+                    <th>4th choice</th>
+                    <td>{{ ballotform.vote_classpres4 }}</td>
+                    <td>{{ ballotform.vote_classpres4_writein }}</td>
+                    <td>{{ ballotform.vote_classpres4.errors }}</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    <hr>
+</section>
 {% endif %}
 
-{% if form.fields_specfees %}
-    <section class="fees">
-        <h1>Special Fees</h1>
-        {% for field_specfee in form.fields_specfees %}
-            {{ field_specfee.as_widget }}
-        {% endfor %}
-    </section>
-{% endif %}
 
+<section class="fees">
+    <h2>Special Fee requests</h2>
+    
+    <p>
+        Your vote on a Special Fee request indicates whether you believe all students should pay a Special Fee each quarter to fund the
+        group's events and activities described in their proposed budget.
+        <a href="http://elections.stanford.edu/special-fees/" target="_blank">Learn more about Special Fees.</a>
+    <p/>
+        
+    <table class="specialfees" cellspacing="0">
+        <thead>
+            <tr><th></th><th>Vote</th><th>Total</th><th>Per student</th></tr>
+        </thead>
+        <tbody>
+            {% for f in ballotform %}
+                {% if f.field.is_special_fee %}
+                    {% with f.field.issue as issue %}
+                    <tr>
+                        <th class="title">
+                            {{ f.label }}
+                            <span class="info">
+                                {% if issue.advisory_vote_gsc %}
+                                    <br>GSC advisory vote: {{ issue.advisory_vote_gsc }}
+                                {% endif %}
+                                
+                                {% if issue.advisory_vote_senate %}
+                                    <br>Senate advisory vote: {{ issue.advisory_vote_senate }}
+                                {% endif %}
+                            </span>
+                        </th>
+                        <td class="vote">{{ f }} {{ f.errors }}</td>
+                        <td class="figure">
+                            {% if issue.budget %}<a target="_blank" href="http://voterguide.stanford.edu/{{ issue.budget.url|cut:"http://corn24.stanford.edu:32145/" }}">{% endif %}
+                                {{ issue.total_request_amount|currency }}
+                            {% if issue.budget %}</a>{% endif %}
+                        </td>
+                        <td class="info">
+                            {% if issue.amount_per_undergrad_annual %}
+                                {{ issue.amount_per_undergrad_annual|currency }}/undergrad/year<br>
+                            {% endif %}
+                            
+                            {% if issue.amount_per_grad_annual %}
+                                {{ issue.amount_per_grad_annual|currency }}/grad/year
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endwith %}
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+    
 <br>
 <hr>
 
@@ -121,4 +281,5 @@
 </form>
 
 <br/>
+
 {% endblock %}

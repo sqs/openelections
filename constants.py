@@ -65,8 +65,12 @@ GSC_DISTRICTS = (
 
 # ELECTORATES.extend(GSC_DISTRICTS)
 
+VOTE_AB = 0
+VOTE_NO = 1
+VOTE_YES = 2
+
 VOTES_YNA = (
-    (0, 'Abstain'),
-    (1, 'No'),
-    (2, 'Yes'),
+    (VOTE_AB, 'Abstain'),
+    (VOTE_NO, 'No'),
+    (VOTE_YES, 'Yes'),
 )

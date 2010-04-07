@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+
+{% block style_link %}
+    <link rel="stylesheet" href="http://elections.stanford.edu/res/screen.css">
+{% endblock %}
+
+
+{% block header %}
+<h1 id="site_title"><a href="http://elections.stanford.edu/"><img alt="ASSU Elections Commission" src="http://elections.stanford.edu/res/web-logo1.png"></a></h1>
+{% endblock %}
+
+{% block style %}
+<style>
+    section {
+        display:block;
+        clear:both;
+        padding-top:15px;
+    }
+        section:first-child {
+            padding-top:0 !important;
+        }
+        
+    br, hr, h1, h2, h3 { clear:both;}
+    
+    #container {
+        margin:0;
+        max-width:none;
+    }
+    
+    #content {
+        padding-right:35%;
+    }
+
+    #profile {
+        border-left:solid 1px #813434;
+        position:fixed;
+        top:99px;
+        right:0;
+        width:30%;
+        min-height:500px;
+        padding:25px;
+        background-color:white;
+    }
+        #profile img {
+            float:right;
+        }
+
+    
+    section ul, section li {
+        list-style-type:none;
+    }
+    
+    ul.issues {
+        width:718px;
+    }
+    
+    li.issue {
+        width:220px;
+        padding:8px;
+        float:left;
+    }
+        li.issue:hover {
+            background-color:#F8E5E2;
+        }
+        .fees li.issue {
+            width:680px;
+        }
+    
+    label {
+        font-weight:bold;
+        margin-left:5px;
+    }
+    
+    table.specialfees {
+        width:100%;
+    }
+    
+    th.title {
+        max-width:250px !important;
+        
+    }
+    
+    th.title .info { 
+        font-weight:normal !important;
+    }
+    
+    .specialfees .info {
+        font-size:0.9em;
+    }
+    
+    .vote label {
+        background-color:#eee;
+        border:solid 1px #ccc;
+        padding:2px;
+        margin:4px;
+        display:block;
+    }
+    
+</style>
+{% endblock %}
+
+{% block footerlogin %}
+
+{% endblock %}

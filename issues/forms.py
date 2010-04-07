@@ -1,6 +1,5 @@
 from django import forms
 from openelections.constants import ISSUE_TYPES
-from openelections.ballot.models import Vote
 from openelections.issues.models import Electorate, Issue, SpecialFeeRequest, Slate, ExecutiveSlate, ClassPresidentSlate, Candidate, SenateCandidate, GSCCandidate, SMSACandidate
 
 class IssueForm(forms.ModelForm):
@@ -53,7 +52,7 @@ class NewClassPresidentSlateForm(NewSlateForm):
                                'name4', 'sunetid4', 'name5', 'sunetid5', 'slug')
     
     electorate = forms.ModelChoiceField(label='Class year',
-                                        queryset=Electorate.undergrad_class_years(),
+                                        queryset=Electorate.UNDERGRAD_CLASS_YEARS,
                                         widget=forms.RadioSelect,
                                         empty_label=None,
                                         help_text="Select the class whose presidency you're seeking. For example, if you're running for Sophomore Class President, choose Sophomore.")
@@ -103,7 +102,7 @@ class NewGSCCandidateForm(NewCandidateForm):
     
     electorate = forms.ModelChoiceField(label='GSC district',
                                         help_text='Choose At-Large if you want to run ONLY as an At-Large candidate. All school-specific candidates are also considered as At-Large candidates, unless they choose otherwise.',
-                                        queryset=Electorate.gsc_districts(),
+                                        queryset=Electorate.GSC_DISTRICTS,
                                         widget=forms.RadioSelect,
                                         empty_label=None,)
     
