@@ -150,9 +150,12 @@ class NewSMSACandidateForm(NewCandidateForm):
 class EditIssueForm(IssueForm):
     class Meta:
         model = Issue
-        fields = ('statement', 'image',)
+        fields = ('statement', 'statement_short', 'image',)
     
     statement = forms.CharField(widget=forms.Textarea(attrs={'rows':15, 'cols':70, 'style':'width:98%'}), required=False)
+    statement_short = forms.CharField(widget=forms.Textarea(attrs={'rows':4, 'cols':70, 'style':'width:98%'}),
+                      label='Short statement (100 words)',
+                      help_text='Text only, no formatting, no links. Your short statement and image will be shown alongside the ballot. Voters may click through to see your full statement. Statements exceeding the allowed length will be truncated.', required=False,)
         
     def __init__(self, *args, **kwargs):
         super(EditIssueForm, self).__init__(*args, **kwargs)
@@ -164,7 +167,7 @@ class EditIssueForm(IssueForm):
 class EditSpecialFeeRequestForm(EditIssueForm):
     class Meta:
         model = SpecialFeeRequest
-        fields = ('statement', 'image', 'account_statement')
+        fields = ('statement', 'statement_short', 'image', 'account_statement')
 
 issue_edit_forms = {
     #'CandidateUS': EditCandidateUSForm,
