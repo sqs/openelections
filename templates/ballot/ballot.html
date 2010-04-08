@@ -111,9 +111,8 @@ label {
     </div></div>
 </div>
 
+<script language="javascript" type="text/javascript" src="http://elections.stanford.edu/res/2010-statements.js"></script>
 <script language="javascript">
-var issues = {{ issues_json|safe|cut:"\n" }};
-
 function getIssueElemPk(e) {
     e = $(e);
     if (e.attr('data-pk')){
