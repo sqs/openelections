@@ -56,3 +56,4 @@ ABSTAIN on all Special Fee requests not listed
 IP address: {{ request.META.REMOTE_ADDR }}
 Last updated: {{ ballot.date_updated }}
 =======================================
+

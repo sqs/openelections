@@ -1,4 +1,5 @@
 import simplejson, markdown
+from django.core.mail import send_mail
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.conf import settings
 from django.template import RequestContext
@@ -79,5 +80,13 @@ def vote_all(request):
         else:
             return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot, 'issues_json': make_issues_json(), 'cp_slates': get_cp_slates(ballot), 'csac_members': get_csac_members(),  'exec_slates': get_exec_slates()},
                                       context_instance=RequestContext(request))
+    
+    sunetid = request.session.get('webauth_sunetid')
+    record = render_to_string('ballot/ballot_record.txt', {'ballot': ballot, 'request': request, 'form': form, 'sunetid': sunetid})
+    
+    f = open('/tmp/ballot/%s' % sunetid, 'a')
+    f.write(record)
+    f.close()
+    
     do_logout(request)
     return render_to_response('ballot/done.html', {'ballot': ballot, 'request': request,}, context_instance=RequestContext(request))

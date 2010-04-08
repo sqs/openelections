@@ -112,7 +112,7 @@ label {
 </div>
 
 <script language="javascript">
-var issues = {{ issues_json|safe }};
+var issues = {{ issues_json|safe|cut:"\n" }};
 
 function getIssueElemPk(e) {
     e = $(e);
@@ -125,9 +125,10 @@ function getIssueElemPk(e) {
 
 function issueTooltipBody(e) {
     var pk = getIssueElemPk(e);
+    //alert(pk);
     var issue = issues[pk];
     if (issue) {
-        stmt = issue["statement"];
+        var stmt = issue["statement"];
         return stmt;
     } else {
         return null;
@@ -150,7 +151,6 @@ $(window).load(function() {
     
     $('label, .has_stmt').bind("mouseenter click",
         function() {
-            var e = this.target;
             var stmt = issueTooltipBody(this);
             if (stmt) {
                 $('#stmt_body').html(stmt);
