@@ -37,7 +37,6 @@ def get_cp_slates(ballot):
 def index(request):
     sunetid = request.session.get('webauth_sunetid')
     ballot, c = Ballot.get_or_create_by_sunetid(sunetid)
-    
     if ballot.needs_ballot_choice():
         return HttpResponseRedirect('/ballot/choose')
     
@@ -71,14 +70,6 @@ def record(request):
 @webauth_required
 def vote_all(request):
     # protect against XSS
-    if not settings.DEBUG:
-        h = request.META.get('HTTP_REFERER', 'not')
-        if not (
-                h.startswith('http://sqs-koi.stanford.edu:8000/') or \
-                h.startswith('http://ballot.stanford.edu/') or \
-                h.startswith('http://ballot/') or\
-                h.startswith('http://ec:82/')):
-           return HttpResponseForbidden()
        
     form = None
     ballot = get_object_or_404(Ballot, voter_id=get_voter_id(request))
