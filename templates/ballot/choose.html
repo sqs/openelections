@@ -20,12 +20,18 @@
     {% if field.is_hidden %}
         {{ field }}
     {% else %}
-        <dt>{{ field.label_tag }}</dt>
-        <dd {% if field.errors %}class="error_field" {% endif %}>{{ field }}</dd>
-        {% if field.help_text %}<dd class="help_text">{{ field.help_text }}</dd>{% endif %}
-        {% if field.errors %}<dd class="errors">{{ field.errors }}</dd>{% endif %}
+        {% if not field.field.is_smsa_checkbox %}
+            <dt>{{ field.label_tag }}</dt>
+            <dd {% if field.errors %}class="error_field" {% endif %}>{{ field }}</dd>
+            {% if field.help_text %}<dd class="help_text">{{ field.help_text }}</dd>{% endif %}
+            {% if field.errors %}<dd class="errors">{{ field.errors }}</dd>{% endif %}
+        {% endif %}
     {% endif %}
 {% endfor %}
+
+<dt>School of Medicine/SMSA Miscellaneous</dt>
+<dd>{{ form.smsa_is_mdphd }} {{ form.smsa_is_mdphd.label_tag }} {{ form.smsa_is_mdphd.errors }} <br> 
+    {{ form.smsa_is_mdplus }} {{ form.smsa_is_mdplus.label_tag }}{{ form.smsa_is_mdplus.errors }} </dd>
 </dl>
 
 <section class="submit">

@@ -19,7 +19,7 @@ def pks_to_objs(pks):
 class BallotElectorateForm(forms.ModelForm):
     class Meta:
         model = Ballot
-        fields = ['assu_populations', 'undergrad_class_year', 'gsc_district', 'smsa_class_year', 'smsa_population']
+        fields = ['assu_populations', 'undergrad_class_year', 'gsc_district', 'smsa_class_year', 'smsa_population', 'smsa_is_mdphd', 'smsa_is_mdplus']
 
     class ElectorateChoiceField(forms.ModelChoiceField):
         widget = forms.RadioSelect
@@ -37,6 +37,8 @@ class BallotElectorateForm(forms.ModelForm):
         if not kwargs['instance']:
             raise Exception("no instance for BallotElectorateForm")
         super(BallotElectorateForm, self).__init__(*args, **kwargs)
+        self.fields['smsa_is_mdphd'].is_smsa_checkbox = True
+        self.fields['smsa_is_mdplus'].is_smsa_checkbox = True
     
     assu_populations = ElectorateMultipleChoiceField(
         queryset=Electorate.queryset_with_slugs(Electorate.ASSU_POPULATIONS), 
@@ -60,15 +62,18 @@ class BallotElectorateForm(forms.ModelForm):
         empty_label='(I am not in SMSA--not a School of Med MD candidate)', required=False)
                                              
     smsa_population = ElectorateChoiceField(
-        queryset=Electorate.queryset_with_slugs(Electorate.SMSA_ALL_POPULATIONS),
+        queryset=Electorate.queryset_with_slugs(Electorate.SMSA_POPULATIONS),
         label='School of Medicine MD population (SMSA)',
         empty_label='(I am not in SMSA--not a School of Med MD candidate)', required=False)
+    
+    smsa_is_mdphd = forms.BooleanField(label='MD-PhD', required=False)
+    smsa_is_mdplus = forms.BooleanField(label='MD+', required=False)
 
 def ballot_form_factory(ballot):
     class _BallotForm(forms.ModelForm):
         class Meta:
             model = Ballot
-            exclude = ['voter_id', 'assu_populations', 'undergrad_class_year', 'gsc_district', 'smsa_class_year', 'smsa_population']
+            exclude = ['voter_id', 'assu_populations', 'undergrad_class_year', 'gsc_district', 'smsa_class_year', 'smsa_population', 'smsa_is_mdphd', 'smsa_is_mdplus']
         
         def __init__(self, *args, **kwargs):
             if not kwargs['instance']:

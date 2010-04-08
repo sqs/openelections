@@ -259,6 +259,20 @@ $(window).load(function() {
     <div class="fillin">{{ ballotform.vote_smsa_ccap }} {{ ballotform.vote_smsa_ccap.errors }}</div>
 {% endif %}
 
+{% if ballot.smsa_is_mdphd %}
+<h3>MD-PhD CCAP Rep</h3>
+<div class="fillin"><ul>
+<li><label for="id_vote_smsa_ccap_mdphd"><input checked="checked" type="radio" id="id_vote_smsa_ccap_mdphd" value="171" name="vote_smsa_ccap_mdphd"> Jake Rosenberg</label></li>
+</ul> </div>
+{% endif %}
+
+{% if ballot.smsa_is_mdplus %}
+<h3>MD+ CCAP Rep</h3>
+<div class="fillin"><ul>
+<li><label for="id_vote_smsa_ccap_mdplus"><input checked="checked" type="radio" id="id_vote_smsa_ccap_mdplus" value="218" name="id_vote_smsa_ccap_mdplus"> Rachel Sussman</label></li>
+</ul> </div>
+{% endif %}
+
 {% if ballotform.vote_smsa_pachair %}  
     <h3>{{ ballot.smsa_population.name|cut:"SMSA " }} Policy &amp; Advocacy Chair</h3>
     <div class="fillin">{{ ballotform.vote_smsa_pachair }} {{ ballotform.vote_smsa_pachair.errors }}</div>

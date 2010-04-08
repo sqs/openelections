@@ -21,6 +21,8 @@ class Ballot(models.Model):
     gsc_district = models.ForeignKey(Electorate, related_name='ballot_gsc_district', blank=True, null=True)
     smsa_class_year = models.ForeignKey(Electorate, related_name='ballot_smsa_class_year', blank=True, null=True)
     smsa_population = models.ForeignKey(Electorate, related_name='ballot_smsa_pop', blank=True, null=True)
+    smsa_is_mdphd = models.BooleanField()#models.ForeignKey(Electorate, related_name='ballot_smsa_mdphd', blank=True, null=True)
+    smsa_is_mdplus = models.BooleanField()#models.ForeignKey(Electorate, related_name='ballot_smsa_mdplus', blank=True, null=True)
     
     date_updated = models.DateTimeField(auto_now=True)
     
@@ -69,6 +71,7 @@ class Ballot(models.Model):
     vote_smsa_psrc = models.ForeignKey(SMSACandidate, related_name='votes_psrc', blank=True, null=True)
     vote_smsa_ossosr = models.ForeignKey(SMSACandidate, related_name='votes_ossosr', blank=True, null=True)
     vote_smsa_classrep = models.ForeignKey(SMSAClassRepCandidate, related_name='votes', blank=True, null=True)
+    #vote_smsa_classrep2 = models.ForeignKey(SMSAClassRepCandidate, related_name='votes2', blank=True, null=True)
     vote_smsa_socialchair = models.ForeignKey(SMSASocialChairCandidate, related_name='votes', blank=True, null=True)
     vote_smsa_ccap = models.ForeignKey(SMSACCAPRepCandidate, related_name='votes', blank=True, null=True)
     vote_smsa_pachair = models.ForeignKey(SMSAPolicyAndAdvocacyChairCandidate, related_name='votes', blank=True, null=True)

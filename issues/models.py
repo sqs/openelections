@@ -19,8 +19,8 @@ class Electorate(models.Model):
     UNDERGRAD_CLASS_YEARS = ('undergrad-2', 'undergrad-3', 'undergrad-4', 'undergrad-5plus')
     ASSU_POPULATIONS = ('undergrad', 'graduate')
     SMSA_CLASS_YEARS = ('smsa-2', 'smsa-3', 'smsa-4', 'smsa-5plus')
-    SMSA_POPULATIONS = ('smsa-preclinical', 'smsa-clinical', 'smsa-mdphd')
-    SMSA_CCAP_POPULATIONS = SMSA_POPULATIONS + ('smsa-mdplus',)
+    SMSA_POPULATIONS = ('smsa-preclinical', 'smsa-clinical')
+    SMSA_CCAP_POPULATIONS = SMSA_POPULATIONS + ('smsa-mdphd', 'smsa-mdplus',)
     SMSA_ALL_POPULATIONS = SMSA_CCAP_POPULATIONS
     GSC_DISTRICTS_NO_ATLARGE = ('gsc-gsb', 'gsc-earthsci', 'gsc-edu', 'gsc-eng', 'gsc-hs-hum', 'gsc-hs-natsci', 'gsc-hs-socsci', 'gsc-law', 'gsc-med',)
     GSC_DISTRICTS = GSC_DISTRICTS_NO_ATLARGE + ('gsc-atlarge',)
