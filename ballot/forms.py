@@ -210,7 +210,10 @@ def ballot_form_factory(ballot):
         smsa_electorates = [Electorate.objects.get(slug='smsa'), ballot.smsa_class_year, ballot.smsa_population]
         for f_id, kind in smsa_data:
             qs = kinds_classes[kind].objects.filter(kind=kind, electorates__in=smsa_electorates).all()
-            _BallotForm.base_fields[f_id] = SMSACandidatesChoiceField(queryset=qs, required=False)
+            sel = None
+            if len(qs) == 1: # default to selected if only one candidate
+                setattr(ballot, f_id, qs[0])
+            _BallotForm.base_fields[f_id] = SMSACandidatesChoiceField(queryset=qs, required=False, initial=sel)
     else:
         for k,v in _BallotForm.base_fields.items():
             if 'smsa' in k:
@@ -297,7 +300,7 @@ class SMSACandidatesChoiceField(forms.ModelChoiceField):
     widget = forms.RadioSelect
     
     def __init__(self, *args, **kwargs):
-        super(SMSACandidatesChoiceField, self).__init__(*args, empty_label='(none)', **kwargs)
+        super(SMSACandidatesChoiceField, self).__init__(*args, empty_label=None, **kwargs)
     
     def label_from_instance(self, instance):
         return instance.ballot_name()

@@ -24,6 +24,9 @@ def make_issues_json():
 def get_exec_slates():
     return ExecutiveSlate.objects.filter(kind='Exec').order_by('?').all()
     
+def get_csac_members():
+    return Issue.objects.filter(kind='SMSA-CSAC').order_by('title').all()
+    
 @transaction.commit_on_success
 @webauth_required
 def index(request):
@@ -34,7 +37,7 @@ def index(request):
         return HttpResponseRedirect('/ballot/choose')
     
     ballotform = ballot_form_factory(ballot)(instance=ballot)
-    return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot, 'issues_json': make_issues_json(), 'exec_slates': get_exec_slates()},
+    return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot, 'issues_json': make_issues_json(), 'csac_members': get_csac_members(), 'exec_slates': get_exec_slates()},
                               context_instance=RequestContext(request))
 
 @transaction.commit_on_success
@@ -70,6 +73,6 @@ def vote_all(request):
         if ballotform.is_valid():
             ballotform.save()
         else:
-            return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot, 'issues_json': make_issues_json(), 'exec_slates': get_exec_slates()},
+            return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot, 'issues_json': make_issues_json(),'csac_members': get_csac_members(),  'exec_slates': get_exec_slates()},
                                       context_instance=RequestContext(request))
     return render_to_response('ballot/done.html', {'ballot': ballot, 'request': request,}, context_instance=RequestContext(request))

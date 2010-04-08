@@ -88,7 +88,7 @@ table.slate_list td, table.slate_list th {
 }
 </style>
 
-<div id="stmt">
+<div id="stmt" style="display:none">
     <div id="stmt_header">
         <a id="stmt_toggle_hide" class="stmt_toggle">Hide info</a>
         <a id="stmt_toggle_show" class="stmt_toggle" style="display:none">Show info</a>
@@ -98,7 +98,7 @@ table.slate_list td, table.slate_list th {
     </div>
     
     <div id="stmt_body_c"><div id="stmt_body">
-        
+        <p>adsf</p>
     </div></div>
 </div>
 
@@ -117,38 +117,34 @@ function getIssueElemPk(e) {
 function issueTooltipBody(e) {
     var pk = getIssueElemPk(e);
     stmt = issues[pk]["statement"];
-    //console.log(stmt);
     return stmt;
 }
 
+var iphone = false;
 $(window).load(function() {
-   $('a.stmt_toggle').click(function() { $('#stmt_body_c').toggle() });
-   $('#stmt_toggle_hide').click(function () { $('#stmt_toggle_hide').hide(); $('#stmt_toggle_show').show(); })
-   $('#stmt_toggle_show').click(function () { $('#stmt_toggle_hide').show(); $('#stmt_toggle_show').hide(); })
-   
-   $('label, .has_stmt').bind("mouseenter click",
-       function() {
-           var e = this.target;
-           console.log(this);
-           var stmt = issueTooltipBody(this);
-           console.log(stmt);
-           $('#stmt_body').html(stmt);
-       }
-   );
-   
-   $('#stmt_body').css('height', $(window).height() - $('#stmt_header').outerHeight());
+    if((navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i))) { 
+        iphone = true;
+        $('#content').css('padding-right', '5px').width($(window).width() - 30);
+        return;
+    }
+    
+    $('#stmt').show();
+    $('#content').css('width', 0.64 * $(window).width());
+    $('a.stmt_toggle').click(function() { $('#stmt_body_c').toggle() });
+    $('#stmt_toggle_hide').click(function () { $('#stmt_toggle_hide').hide(); $('#stmt_toggle_show').show(); })
+    $('#stmt_toggle_show').click(function () { $('#stmt_toggle_hide').show(); $('#stmt_toggle_show').hide(); })
+    
+    $('label, .has_stmt').bind("mouseenter click",
+        function() {
+            var e = this.target;
+            var stmt = issueTooltipBody(this);
+            $('#stmt_body').html(stmt);
+        }
+    );
+    
+    $('#stmt_body').css('height', $(window).height() - $('#stmt_header').outerHeight());
 });
 </script>
-
-<h1 style="font-size:3.0em">Ballot</h1>
-
-<p>
-    All fields are optional.
-    After voting, you may return to <a href="http://ballot.stanford.edu">ballot.stanford.edu</a> to change your votes until 11:59pm on Friday.
-    Online votes supercede any paper ballots you cast. 
-    Email <a href="mailto:elections@elections.stanford.edu?subject=Ballot%20question:%20{{ sunetid }}">elections@elections.stanford.edu</a> 
-    if you need help.
-</p>
 
 <p>If you are not <strong>{{ sunetid }}</strong>, close your browser to log out and then return to 
     <a href="http://ballot.stanford.edu">ballot.stanford.edu</a>.</p>
@@ -171,6 +167,14 @@ $(window).load(function() {
     You may <a href="/ballot/choose">choose a different ballot</a> if this is incorrect.
 </p>
 
+<p>
+    All fields are optional.
+    After voting, you may return to <a href="http://ballot.stanford.edu">ballot.stanford.edu</a> to change your votes until 11:59pm on Friday.
+    This online ballot supercedes any paper ballots you cast. 
+    Email <a href="mailto:elections@elections.stanford.edu?subject=Ballot%20question:%20{{ sunetid }}">elections@elections.stanford.edu</a> 
+    if you need help. See <a href="http://voterguide.stanford.edu">voterguide.stanford.edu</a> for more information about items on this ballot.
+</p>
+
 <hr>
 
 <form id="ballot" method="post" action="{% url ballot.views.vote_all %}">
@@ -182,63 +186,71 @@ $(window).load(function() {
 
 {% if ballotform.vote_smsa_execpres %}
     <h3>Executive President</h3>
-    {{ ballotform.vote_smsa_execpres }} {{ ballotform.vote_smsa_execpres.errors }}
+    <div class="fillin">{{ ballotform.vote_smsa_execpres }} {{ ballotform.vote_smsa_execpres.errors }}</div>
 {% endif %}
 
 {% if ballotform.vote_smsa_pres %}
     <h3>President</h3>
-    {{ ballotform.vote_smsa_pres }} {{ ballotform.vote_smsa_pres.errors }}
+    <div class="fillin">{{ ballotform.vote_smsa_pres }} {{ ballotform.vote_smsa_pres.errors }}</div>
 {% endif %}
 
 {% if ballotform.vote_smsa_vicepres %}
     <h3>Vice President</h3>
-    {{ ballotform.vote_smsa_vicepres }} {{ ballotform.vote_smsa_vicepres.errors }}
+    <div class="fillin">{{ ballotform.vote_smsa_vicepres }} {{ ballotform.vote_smsa_vicepres.errors }}</div>
 {% endif %}
 
 {% if ballotform.vote_smsa_sec %}
     <h3>Secretary</h3>
-    {{ ballotform.vote_smsa_sec }} {{ ballotform.vote_smsa_sec.errors }}
+    <div class="fillin">{{ ballotform.vote_smsa_sec }} {{ ballotform.vote_smsa_sec.errors }}</div>
 {% endif %}
 
 {% if ballotform.vote_smsa_treas %}
     <h3>Treasurer</h3>
-    {{ ballotform.vote_smsa_treas }} {{ ballotform.vote_smsa_treas.errors }}
+    <div class="fillin">{{ ballotform.vote_smsa_treas }} {{ ballotform.vote_smsa_treas.errors }}</div>
 {% endif %}
 
 {% if ballotform.vote_smsa_mentorship %}
     <h3>Mentorship Chair</h3>
-    {{ ballotform.vote_smsa_mentorship }} {{ ballotform.vote_smsa_mentorship.errors }}
+    <div class="fillin">{{ ballotform.vote_smsa_mentorship }} {{ ballotform.vote_smsa_mentorship.errors }}</div>
 {% endif %}
 
 {% if ballotform.vote_smsa_psrc %}
     <h3>Prospective Student Recruitment Chair</h3>
-    {{ ballotform.vote_smsa_psrc }} {{ ballotform.vote_smsa_psrc.errors }}
+    <div class="fillin">{{ ballotform.vote_smsa_psrc }} {{ ballotform.vote_smsa_psrc.errors }}</div>
 {% endif %}
 
 {% if ballotform.vote_smsa_ossosr %}
     <h3>OSS/OSR Rep</h3>
-    {{ ballotform.vote_smsa_ossosr }} {{ ballotform.vote_smsa_ossosr.errors }}
+    <div class="fillin">{{ ballotform.vote_smsa_ossosr }} {{ ballotform.vote_smsa_ossosr.errors }}</div>
 {% endif %}
 
 {% if ballotform.vote_smsa_classrep %}
     <h3>{{ ballot.smsa_class_year.name|cut:"SMSA " }} Class Rep</h3>
-    {{ ballotform.vote_smsa_classrep }} {{ ballotform.vote_smsa_classrep.errors }}
+    <div class="fillin">{{ ballotform.vote_smsa_classrep }} {{ ballotform.vote_smsa_classrep.errors }}</div>
 {% endif %}
 
 {% if ballotform.vote_smsa_socialchair %}
     <h3>{{ ballot.smsa_population.name|cut:"SMSA " }} Social Chair</h3>
-    {{ ballotform.vote_smsa_socialchair }} {{ ballotform.vote_smsa_socialchair.errors }}
+    <div class="fillin">{{ ballotform.vote_smsa_socialchair }} {{ ballotform.vote_smsa_socialchair.errors }}</div>
 {% endif %}
 
 {% if ballotform.vote_smsa_ccap %}
     <h3>{{ ballot.smsa_population.name|cut:"SMSA " }} CCAP Rep</h3>
-    {{ ballotform.vote_smsa_ccap }} {{ ballotform.vote_smsa_ccap.errors }}
+    <div class="fillin">{{ ballotform.vote_smsa_ccap }} {{ ballotform.vote_smsa_ccap.errors }}</div>
 {% endif %}
 
 {% if ballotform.vote_smsa_pachair %}  
     <h3>{{ ballot.smsa_population.name|cut:"SMSA " }} Policy &amp; Advocacy Chair</h3>
-    {{ ballotform.vote_smsa_pachair }} {{ ballotform.vote_smsa_pachair.errors }}
+    <div class="fillin">{{ ballotform.vote_smsa_pachair }} {{ ballotform.vote_smsa_pachair.errors }}</div>
 {% endif %}
+
+<h3>Clinical Student Advisory Council members</h3>
+<p>This is not an elected position. The following is a list of people who have signed up for CSAC.</p>
+<ul class="candidates">
+    {% for c in csac_members %}
+    <li>&bull; <strong>{{ c.ballot_name }}</strong></li>
+    {% endfor %}
+</ul>
 
 <hr>
 </section>
@@ -288,8 +300,9 @@ $(window).load(function() {
     <section class="candidates">
         <h2>Undergrad Senate</h2>
         <p>Vote for up to 15 Senate candidates.</p>
-        <div class="fillin">{{ ballotform.votes_senate }}
-        {{ ballotform.votes_senate.errors }}</div>
+        <div class="fillin">{{ ballotform.votes_senate.errors }}
+            {{ ballotform.votes_senate }}
+        </div>
         
         <h3>Write-in Senate votes</h3>
         <p>List the first &amp; last names of other students you want to vote for. You can only vote for 15 Senators max (checkboxes plus write-ins).</p>
@@ -302,8 +315,9 @@ $(window).load(function() {
     <section class="candidates">
         <h2>Grad Student Council District ({{ ballot.gsc_district.name }})</h2>
         <p><strong>{{ ballotform.votes_gsc_district.label }}</strong></p>
-        <div class="fillin">{{ ballotform.votes_gsc_district }}
-        {{ ballotform.votes_gsc_district.errors }}</div>
+        <div class="fillin">{{ ballotform.votes_gsc_district.errors }}
+            {{ ballotform.votes_gsc_district }}
+        </div>
         
         {% ifequal ballot.gsc_district.slug "gsc-eng" %}
             <h3>Write-in GSC district votes</h3>
@@ -325,8 +339,9 @@ $(window).load(function() {
         You can vote for the same candidate(s) for both at-large and in 
         your district, if you want.
     </p>
-    <div class="fillin">{{ ballotform.votes_gsc_atlarge }}
-    {{ ballotform.votes_gsc_atlarge.errors }}</div>
+    <div class="fillin">{{ ballotform.votes_gsc_atlarge.errors }}
+        {{ ballotform.votes_gsc_atlarge }}
+    </div>
     
     <h3>Write-in GSC at-large votes</h3>
     <p>List the first &amp; last names of other students you want to vote for. You can only vote for 5 at-large GSC reps max, including write-ins.</p>

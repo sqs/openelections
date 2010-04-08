@@ -1,7 +1,10 @@
 {% extends "base.html" %}
 
+{% block disclaimer %}
+{% endblock %}
 
 {% block style_link %}
+<meta name = "viewport" content = "width = 380, initial-scale = 1, user-scalable = yes">
     <link rel="stylesheet" href="http://elections.stanford.edu/res/screen.css">
     <link rel="stylesheet" href="http://elections.stanford.edu/res/js/jquery-tooltip/jquery.tooltip.css">
     <script language="javascript" src="http://elections.stanford.edu/res/js/jquery-1.4.2.min.js"></script>
@@ -12,7 +15,7 @@
 
 
 {% block header %}
-<h1 id="site_title"><a href="http://elections.stanford.edu/"><img alt="ASSU Elections Commission" src="http://elections.stanford.edu/res/web-logo1.png"></a></h1>
+<h1 id="site_title"><a href="http://ballot.stanford.edu/"><img alt="ASSU Elections Commission Ballot" width="372" height="130" src="http://elections.stanford.edu/res/ballot-logo1.png"></a></h1>
 {% endblock %}
 
 {% block style %}
@@ -30,27 +33,15 @@
     
     #container {
         margin:0;
-        max-width:none;
-    }
-    
-    #content {
-        padding-right:35%;
+        max-width:none !important;
     }
 
-
-    
     section ul, section li {
         list-style-type:none;
     }
-    
-    ul.issues {
-        width:718px;
-    }
-    
+
     li.issue {
-        width:220px;
         padding:8px;
-        float:left;
     }
         li.issue:hover {
             background-color:#F8E5E2;
@@ -87,6 +78,12 @@
         padding:2px;
         margin:4px;
         display:block;
+    }
+    
+    .errorlist {
+        background-color:red;
+        color:white;
+        border:solid 5px red;
     }
     
 </style>

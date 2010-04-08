@@ -226,6 +226,13 @@ class RealSMSABallotTest(OEBallotTestCase):
         self.assertContains(res, 'Luo')
         self.assertContains(res, 'Kerry')
         self.assertContains(res, 'Roxana')
+        
+    def test_shows_csac(self):
+        self.webauthLoginAndMakeBallot('smsa1pc', smsa1pc)
+        res = self.client.get('/ballot/')
+        self.assertContains(res, 'Eisenhut')
+        self.assertContains(res, 'Harrysson')
+        self.assertContains(res, 'Stein')
 
 class BallotCandidatesChoiceTest(OEBallotTestCase):
     def test_only_15_senators(self):

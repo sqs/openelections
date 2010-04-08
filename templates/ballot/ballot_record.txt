@@ -1,43 +1,44 @@
+=======================================
 ASSU BALLOT
 SUNet ID: {{ sunetid }}
 Voter ID: {{ ballot.voter_id }}
-ASSU populations: {% for p in ballot.assu_populations.all %}{{ p.name }}{% endfor %}
-Undergrad class year: {{ ballot.undergrad_class_year.name }}
+ASSU populations: {% for p in ballot.assu_populations.all %}{{ p.name }} {% endfor %}
+Undergrad class year: {{ ballot.undergrad_class_year.voter_name }}
 GSC district: {{ ballot.gsc_district.name }}
 
 ---------------------------------------
 ASSU Exec:
-1. {{ ballot.vote_exec1 }} (write-in: {{ ballot.vote_exec1_writein }})
-2. {{ ballot.vote_exec2 }} (write-in: {{ ballot.vote_exec2_writein }})
-3. {{ ballot.vote_exec3 }} (write-in: {{ ballot.vote_exec3_writein }})
-4. {{ ballot.vote_exec4 }} (write-in: {{ ballot.vote_exec4_writein }})
-5. {{ ballot.vote_exec5 }} (write-in: {{ ballot.vote_exec5_writein }})
-6. {{ ballot.vote_exec6 }} (write-in: {{ ballot.vote_exec6_writein }})
+1. {{ ballot.vote_exec1 }} (write-in: {{ ballot.vote_exec1_writein|default:"none" }})
+2. {{ ballot.vote_exec2 }} (write-in: {{ ballot.vote_exec2_writein|default:"none" }})
+3. {{ ballot.vote_exec3 }} (write-in: {{ ballot.vote_exec3_writein|default:"none" }})
+4. {{ ballot.vote_exec4 }} (write-in: {{ ballot.vote_exec4_writein|default:"none" }})
+5. {{ ballot.vote_exec5 }} (write-in: {{ ballot.vote_exec5_writein|default:"none" }})
+6. {{ ballot.vote_exec6 }} (write-in: {{ ballot.vote_exec6_writein|default:"none" }})
 
 ---------------------------------------
 ASSU Undergrad Senate:
 {% for s in ballot.votes_senate.all %}- {{ s }}
 {% empty %}(none){% endfor %}
-(write-in: {{ ballot.votes_senate_writein }})
+(write-ins: {{ ballot.votes_senate_writein|default:"none" }})
 
 ---------------------------------------
 ASSU Undergrad {{ ballot.assu_class_year.name }} Class Presidents:
-1. {{ ballot.vote_classpres1 }} (write-in: {{ ballot.vote_classpres1_writein }})
-2. {{ ballot.vote_classpres2 }} (write-in: {{ ballot.vote_classpres2_writein }})
-3. {{ ballot.vote_classpres3 }} (write-in: {{ ballot.vote_classpres3_writein }})
-4. {{ ballot.vote_classpres4 }} (write-in: {{ ballot.vote_classpres4_writein }})
+1. {{ ballot.vote_classpres1 }} (write-in: {{ ballot.vote_classpres1_writein|default:"none" }})
+2. {{ ballot.vote_classpres2 }} (write-in: {{ ballot.vote_classpres2_writein|default:"none" }})
+3. {{ ballot.vote_classpres3 }} (write-in: {{ ballot.vote_classpres3_writein|default:"none" }})
+4. {{ ballot.vote_classpres4 }} (write-in: {{ ballot.vote_classpres4_writein|default:"none" }})
 
 ---------------------------------------
 ASSU Grad Student Council {{ ballot.gsc_district.name }} District:
 {% for s in ballot.votes_gsc_district.all %}- {{ s }}
 {% empty %}(none){% endfor %}
-(write-in: {{ ballot.votes_gsc_district_writein }})
+(write-ins: {{ ballot.votes_gsc_district_writein|default:"none" }})
 
 ---------------------------------------
 ASSU Grad Student Council At-Large:
 {% for s in ballot.votes_gsc_atlarge.all %}- {{ s }}
 {% empty %}(none){% endfor %}
-(write-in: {{ ballot.votes_gsc_atlarge_writein }})
+(write-ins: {{ ballot.votes_gsc_atlarge_writein|default:"none" }})
 
 ---------------------------------------
 ASSU Special Fees:
@@ -54,3 +55,4 @@ ABSTAIN on all Special Fee requests not listed
 ---------------------------------------
 IP address: {{ request.META.REMOTE_ADDR }}
 Last updated: {{ ballot.date_updated }}
+=======================================
