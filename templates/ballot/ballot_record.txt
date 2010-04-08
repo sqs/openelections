@@ -51,6 +51,9 @@ NO on Special Fee requests:
 {% empty %}(none){% endfor %}
 
 ABSTAIN on all Special Fee requests not listed
+---------------------------------------
+SMSA:
+Your SMSA votes have been recorded.
 
 ---------------------------------------
 IP address: {{ request.META.REMOTE_ADDR }}
