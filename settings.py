@@ -33,12 +33,12 @@ USE_I18N = False
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = 'http://voterguide.stanford.edu/media/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/media/admin/'
+ADMIN_MEDIA_PREFIX = 'http://voterguide.stanford.edu/media/admin/'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = 'qszo)3canz!+28v)6ha)6*8oe$2hpjibn0il$@2sk$tqp&5)lv'
