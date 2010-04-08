@@ -114,6 +114,20 @@ def ballot_form_factory(ballot):
                 raise forms.ValidationError('You may only cast %d at-large votes for GSC reps (you chose %d).' % (max_choices, len(v)))
             return self.cleaned_data['votes_gsc_atlarge']
         
+        def clean_votes_smsa_classrep(self):
+            v = self.cleaned_data['votes_smsa_classrep']
+            max_choices = self.fields['votes_smsa_classrep'].max_choices
+            if len(v) > max_choices:
+                raise forms.ValidationError('You may only cast %d votes for SMSA Class Rep (you chose %d).' % (max_choices, len(v)))
+            return self.cleaned_data['votes_smsa_classrep']
+        
+        def clean_votes_smsa_ccap(self):
+            v = self.cleaned_data['votes_smsa_ccap']
+            max_choices = self.fields['votes_smsa_ccap'].max_choices
+            if len(v) > max_choices:
+                raise forms.ValidationError('You may only cast %d votes for SMSA CCAP Rep (you chose %d).' % (max_choices, len(v)))
+            return self.cleaned_data['votes_smsa_ccap']
+        
         def clean_special_fee_votes(self):
             yes_votes = []
             no_votes = []
@@ -205,9 +219,7 @@ def ballot_form_factory(ballot):
             ('vote_smsa_mentorship', 'SMSA-MC'),
             ('vote_smsa_psrc', 'SMSA-PSRC'),
             ('vote_smsa_ossosr', 'SMSA-OSS-OSR'),
-            ('vote_smsa_classrep', 'SMSA-ClassRep'),
             ('vote_smsa_socialchair', 'SMSA-SocChair'),
-            ('vote_smsa_ccap', 'SMSA-CCAP'),
             ('vote_smsa_pachair', 'SMSA-PAC'),
         )
         
@@ -219,6 +231,18 @@ def ballot_form_factory(ballot):
             if len(qs) == 1: # default to selected if only one candidate
                 setattr(ballot, f_id, qs[0])
             _BallotForm.base_fields[f_id] = SMSACandidatesChoiceField(queryset=qs, required=False, initial=sel)
+        
+        # smsa positions with multiple votes
+        smsa_multi_data = (
+            ('votes_smsa_ccap', 'SMSA-CCAP'),
+            ('votes_smsa_classrep', 'SMSA-ClassRep'),
+        )
+        
+        # set querysets
+        for f_id, kind in smsa_multi_data:
+            qs = kinds_classes[kind].objects.filter(kind=kind, electorates__in=smsa_electorates).all()
+            _BallotForm.base_fields[f_id] = SMSACandidatesMultiChoiceField(queryset=qs, required=False, label='Choose up to 2.')
+        
     else:
         for k,v in _BallotForm.base_fields.items():
             if 'smsa' in k:
@@ -300,6 +324,10 @@ class GSCAtLargeCandidatesField(GSCCandidatesField):
     
     def label_from_instance(self, instance):
         return "%s (%s)" % (instance.ballot_name(), instance.get_typed().district().name)
+
+class SMSACandidatesMultiChoiceField(CandidatesField):
+    max_choices = 2
+    
 
 class SMSACandidatesChoiceField(forms.ModelChoiceField):
     widget = forms.RadioSelect

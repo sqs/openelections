@@ -244,9 +244,10 @@ $(window).load(function() {
     <div class="fillin">{{ ballotform.vote_smsa_ossosr }} {{ ballotform.vote_smsa_ossosr.errors }}</div>
 {% endif %}
 
-{% if ballotform.vote_smsa_classrep %}
+{% if ballotform.votes_smsa_classrep %}
     <h3>{{ ballot.smsa_class_year.name|cut:"SMSA " }} Class Rep</h3>
-    <div class="fillin">{{ ballotform.vote_smsa_classrep }} {{ ballotform.vote_smsa_classrep.errors }}</div>
+    <p>{{ ballotform.votes_smsa_ccap.label }}</p>
+    <div class="fillin">{{ ballotform.votes_smsa_classrep }} {{ ballotform.votes_smsa_classrep.errors }}</div>
 {% endif %}
 
 {% if ballotform.vote_smsa_socialchair %}
@@ -254,9 +255,10 @@ $(window).load(function() {
     <div class="fillin">{{ ballotform.vote_smsa_socialchair }} {{ ballotform.vote_smsa_socialchair.errors }}</div>
 {% endif %}
 
-{% if ballotform.vote_smsa_ccap %}
+{% if ballotform.votes_smsa_ccap %}
     <h3>{{ ballot.smsa_population.name|cut:"SMSA " }} CCAP Rep</h3>
-    <div class="fillin">{{ ballotform.vote_smsa_ccap }} {{ ballotform.vote_smsa_ccap.errors }}</div>
+    <p>{{ ballotform.votes_smsa_ccap.label }}</p>
+    <div class="fillin">{{ ballotform.votes_smsa_ccap }} {{ ballotform.votes_smsa_ccap.errors }}</div>
 {% endif %}
 
 {% if ballot.smsa_is_mdphd %}

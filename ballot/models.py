@@ -71,11 +71,13 @@ class Ballot(models.Model):
     vote_smsa_psrc = models.ForeignKey(SMSACandidate, related_name='votes_psrc', blank=True, null=True)
     vote_smsa_ossosr = models.ForeignKey(SMSACandidate, related_name='votes_ossosr', blank=True, null=True)
     vote_smsa_classrep = models.ForeignKey(SMSAClassRepCandidate, related_name='votes', blank=True, null=True)
-    #vote_smsa_classrep2 = models.ForeignKey(SMSAClassRepCandidate, related_name='votes2', blank=True, null=True)
     vote_smsa_socialchair = models.ForeignKey(SMSASocialChairCandidate, related_name='votes', blank=True, null=True)
     vote_smsa_ccap = models.ForeignKey(SMSACCAPRepCandidate, related_name='votes', blank=True, null=True)
     vote_smsa_pachair = models.ForeignKey(SMSAPolicyAndAdvocacyChairCandidate, related_name='votes', blank=True, null=True)
         
+    votes_smsa_classrep = models.ManyToManyField(SMSAClassRepCandidate, related_name='votes_smsa_classrep', blank=True)
+    votes_smsa_ccap = models.ManyToManyField(SMSACCAPRepCandidate, related_name='votes_smsa_ccap', blank=True)
+    
     def needs_ballot_choice(self):
         if not self.is_grad() and not self.is_undergrad():
             return 'You must select either "Grad" or "Undergrad," or both.'
