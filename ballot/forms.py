@@ -37,32 +37,32 @@ class BallotElectorateForm(forms.ModelForm):
         if not kwargs['instance']:
             raise Exception("no instance for BallotElectorateForm")
         super(BallotElectorateForm, self).__init__(*args, **kwargs)
-
+    
     assu_populations = ElectorateMultipleChoiceField(
         queryset=Electorate.queryset_with_slugs(Electorate.ASSU_POPULATIONS), 
         label='ASSU populations', help_text="Choose both if you are a coterm and currently registered as both an undergrad and a grad.",
-        required=True)
+        required=False)
         
     undergrad_class_year = ElectorateChoiceField(
         queryset=Electorate.queryset_with_slugs(Electorate.UNDERGRAD_CLASS_YEARS),
         label='Undergraduate class year',
         help_text='If unsure, choose the class year that you currently (this year) socially identify as a member of.',
-        empty_label='N/A', required=False)
+        empty_label='(I am not an undergrad)', required=False)
     
     gsc_district = ElectorateChoiceField(
         queryset=Electorate.queryset_with_slugs(Electorate.GSC_DISTRICTS_NO_ATLARGE),
         label='GSC district', help_text='If you are in multiple GSC districts, choose the one in which you want to select your local GSC rep.',
-        empty_label='N/A', required=False)
+        empty_label='(I am not a grad student)', required=False)
     
     smsa_class_year = ElectorateChoiceField(
         queryset=Electorate.queryset_with_slugs(Electorate.SMSA_CLASS_YEARS),
-        label='School of Medicine class year',
-        empty_label='N/A', required=False)
+        label='School of Medicine MD class year (SMSA)',
+        empty_label='(I am not in SMSA--not a School of Med MD candidate)', required=False)
                                              
     smsa_population = ElectorateChoiceField(
         queryset=Electorate.queryset_with_slugs(Electorate.SMSA_ALL_POPULATIONS),
-        label='School of Medicine population',
-        empty_label='N/A', required=False)
+        label='School of Medicine MD population (SMSA)',
+        empty_label='(I am not in SMSA--not a School of Med MD candidate)', required=False)
 
 def ballot_form_factory(ballot):
     class _BallotForm(forms.ModelForm):

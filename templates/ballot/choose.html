@@ -9,6 +9,12 @@
 
 <form id="choose_ballot" method="post" action="{% url ballot.views.choose_ballot %}">
 
+{% if ballot.needs_ballot_choice %}
+<ul class="errorlist">
+    <li>{{ ballot.needs_ballot_choice }}<li>
+</ul>
+{% endif %}
+
 <dl>
 {% for field in form %}
     {% if field.is_hidden %}

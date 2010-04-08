@@ -57,7 +57,7 @@ def choose_ballot(request):
             return HttpResponseRedirect('/ballot/')
     else:
         form = BallotElectorateForm(instance=ballot)
-    return render_to_response('ballot/choose.html', {'form': form},
+    return render_to_response('ballot/choose.html', {'form': form, 'ballot': ballot},
                               context_instance=RequestContext(request))
 
 @webauth_required
@@ -71,12 +71,13 @@ def record(request):
 @webauth_required
 def vote_all(request):
     # protect against XSS
-    if settings.DEBUG:
+    if not settings.DEBUG:
         h = request.META.get('HTTP_REFERER', 'not')
         if not (
-                h.startswith('http://sqs-koi.stanford.edu') or \
-                h.startswith('http://ballot.stanford.edu') or \
-                h.startswith('http://ballot')):
+                h.startswith('http://sqs-koi.stanford.edu:8000/') or \
+                h.startswith('http://ballot.stanford.edu/') or \
+                h.startswith('http://ballot/') or\
+                h.startswith('http://ec:82/')):
            return HttpResponseForbidden()
        
     form = None
@@ -93,7 +94,8 @@ def vote_all(request):
     record = render_to_string('ballot/ballot_record.txt', {'ballot': ballot, 'request': request, 'form': form, 'sunetid': sunetid})
     
     f = open('/tmp/ballot/%s' % sunetid, 'a')
-    f.write(record)
+    f.write(record.encode('utf8'))
+    f.write("\nPOSTDATA: %s\n\n" % request.POST.copy())
     f.close()
     
     do_logout(request)
