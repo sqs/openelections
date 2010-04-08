@@ -75,15 +75,18 @@ class Ballot(models.Model):
         
     def needs_ballot_choice(self):
         if not self.is_grad() and not self.is_undergrad():
-            return True
+            return 'You must select either "Grad" or "Undergrad," or both.'
         if self.is_grad():
             if not self.gsc_district:
-                return True
-            if self.is_smsa() and ((not self.smsa_population) or (not self.smsa_class_year)):
-                return True
+                return 'You must select your GSC district, or uncheck "Grad" if you are not a grad student.'
+            if self.is_smsa():
+                if not self.smsa_population:
+                    return 'You must select your SMSA population, or deselect the SMSA class year if you are not in SMSA.'
+                elif not self.smsa_class_year:
+                    return 'You must select your SMSA class year, or deselect the SMSA population if you are not in SMSA.'
         elif self.is_undergrad():
             if not self.undergrad_class_year:
-                return True
+                return 'You must select your undergrad class year, or uncheck "Undergrad" if you are not an undergrad.'
         return False
     
     def electorate_slugs(self):
@@ -96,8 +99,7 @@ class Ballot(models.Model):
         return bool(self.assu_populations.filter(slug='graduate').all())
     
     def is_smsa(self):
-        return (self.gsc_district and self.gsc_district.slug == 'gsc-med') or \
-               self.smsa_population or self.smsa_class_year
+        return self.smsa_population or self.smsa_class_year
     
     def __unicode__(self):
         return "Ballot: voter %s [%s]" % (self.voter_id, ','.join(self.electorate_slugs()))

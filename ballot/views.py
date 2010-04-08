@@ -57,7 +57,7 @@ def choose_ballot(request):
             return HttpResponseRedirect('/ballot/')
     else:
         form = BallotElectorateForm(instance=ballot)
-    return render_to_response('ballot/choose.html', {'form': form},
+    return render_to_response('ballot/choose.html', {'form': form, 'ballot': ballot},
                               context_instance=RequestContext(request))
 
 @webauth_required
