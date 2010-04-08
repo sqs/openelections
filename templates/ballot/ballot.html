@@ -125,8 +125,13 @@ function getIssueElemPk(e) {
 
 function issueTooltipBody(e) {
     var pk = getIssueElemPk(e);
-    stmt = issues[pk]["statement"];
-    return stmt;
+    var issue = issues[pk];
+    if (issue) {
+        stmt = issue["statement"];
+        return stmt;
+    } else {
+        return null;
+    }
 }
 
 var iphone = false;
@@ -147,7 +152,9 @@ $(window).load(function() {
         function() {
             var e = this.target;
             var stmt = issueTooltipBody(this);
-            $('#stmt_body').html(stmt);
+            if (stmt) {
+                $('#stmt_body').html(stmt);
+            }
         }
     );
     
@@ -362,6 +369,18 @@ $(window).load(function() {
 {% if ballotform.vote_classpres1 %}
 <section class="slates">
     <h2>Undergraduate Class President</h2>
+    
+    <p>
+        Mouse over slate names to see statements: 
+    </p>
+    
+        <ul>
+        {% for s in cp_slates %}
+            <li class="has_stmt" data-pk="{{ s.pk }}">&bull; {{ s.name_and_office }}</li>
+        {% endfor %}
+        </ul>
+    <br>
+    
     <p>Rank your choices for Class President. Uses <a target="_blank" href="http://en.wikipedia.org/wiki/Instant-runoff_voting">instant-runoff voting</a>.</p>
     <table class="fillin">
         <thead>

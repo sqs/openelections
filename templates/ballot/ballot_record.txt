@@ -22,7 +22,7 @@ ASSU Undergrad Senate:
 (write-ins: {{ ballot.votes_senate_writein|default:"none" }})
 
 ---------------------------------------
-ASSU Undergrad {{ ballot.assu_class_year.name }} Class Presidents:
+ASSU Undergrad {{ ballot.undergrad_class_year.name }} Class Presidents:
 1. {{ ballot.vote_classpres1 }} (write-in: {{ ballot.vote_classpres1_writein|default:"none" }})
 2. {{ ballot.vote_classpres2 }} (write-in: {{ ballot.vote_classpres2_writein|default:"none" }})
 3. {{ ballot.vote_classpres3 }} (write-in: {{ ballot.vote_classpres3_writein|default:"none" }})

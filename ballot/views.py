@@ -6,7 +6,7 @@ from django.db import transaction
 from django.template.loader import render_to_string
 from django.shortcuts import render_to_response, get_object_or_404
 from openelections import constants as oe_constants
-from openelections.issues.models import Electorate, Issue, ExecutiveSlate
+from openelections.issues.models import Electorate, Issue, ExecutiveSlate, ClassPresidentSlate
 from openelections.ballot.forms import ballot_form_factory, BallotElectorateForm
 from openelections.ballot.models import Ballot, make_voter_id
 from openelections.webauth.stanford_webauth import webauth_required
@@ -26,7 +26,11 @@ def get_exec_slates():
     
 def get_csac_members():
     return Issue.objects.filter(kind='SMSA-CSAC').order_by('title').all()
+
+def get_cp_slates(ballot):
+    return ClassPresidentSlate.objects.filter(kind=oe_constants.ISSUE_CLASSPRES, electorates=ballot.undergrad_class_year).order_by('?').all()
     
+
 @transaction.commit_on_success
 @webauth_required
 def index(request):
@@ -37,7 +41,7 @@ def index(request):
         return HttpResponseRedirect('/ballot/choose')
     
     ballotform = ballot_form_factory(ballot)(instance=ballot)
-    return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot, 'issues_json': make_issues_json(), 'csac_members': get_csac_members(), 'exec_slates': get_exec_slates()},
+    return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot, 'issues_json': make_issues_json(), 'cp_slates': get_cp_slates(ballot), 'csac_members': get_csac_members(), 'exec_slates': get_exec_slates()},
                               context_instance=RequestContext(request))
 
 @transaction.commit_on_success
@@ -73,6 +77,6 @@ def vote_all(request):
         if ballotform.is_valid():
             ballotform.save()
         else:
-            return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot, 'issues_json': make_issues_json(),'csac_members': get_csac_members(),  'exec_slates': get_exec_slates()},
+            return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot, 'issues_json': make_issues_json(), 'cp_slates': get_cp_slates(ballot), 'csac_members': get_csac_members(),  'exec_slates': get_exec_slates()},
                                       context_instance=RequestContext(request))
     return render_to_response('ballot/done.html', {'ballot': ballot, 'request': request,}, context_instance=RequestContext(request))
