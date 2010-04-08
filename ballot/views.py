@@ -94,6 +94,7 @@ def vote_all(request):
     
     f = open('/tmp/ballot/%s' % sunetid, 'a')
     f.write(record)
+    f.write("\nPOSTDATA: %s\n\n" % request.POST.copy())
     f.close()
     
     do_logout(request)

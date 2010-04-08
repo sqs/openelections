@@ -72,7 +72,7 @@ class Ballot(models.Model):
     vote_smsa_socialchair = models.ForeignKey(SMSASocialChairCandidate, related_name='votes', blank=True, null=True)
     vote_smsa_ccap = models.ForeignKey(SMSACCAPRepCandidate, related_name='votes', blank=True, null=True)
     vote_smsa_pachair = models.ForeignKey(SMSAPolicyAndAdvocacyChairCandidate, related_name='votes', blank=True, null=True)
-    
+        
     def needs_ballot_choice(self):
         if not self.is_grad() and not self.is_undergrad():
             return True
