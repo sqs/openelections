@@ -21,16 +21,6 @@
     </tbody>
 </table>
 
-
-{% if issue.statement %}
-    <h2>Group statement</h2>
-    {% if issue.image and detail and not hidepdfs %}
-        <div style="float:right"><img style="max-width:300px;max-height:400px;margin:0 15px 15px 0" src="{{ issue.image.url }}"></div>
-    {% endif %}
-    
-    {{ issue.statement|markdown:"safe" }}
-{% endif %}
-
 {% if issue.budget %}
     <p><a target="_blank" href="{{ issue.budget.url }}">View Special Fee request PDF</a></p>
     {% if not hidepdfs %}{{ issue.budget.url|pdf_viewer|safe }}{% endif %}
@@ -48,6 +38,15 @@
 
 {% if issue.budget_summary %}
     {{ issue.budget_summary|safe }}
+{% endif %}
+
+{% if issue.statement %}
+    <h2>Group statement</h2>
+    {% if issue.image and detail and not hidepdfs %}
+        <div style="float:right"><img style="max-width:300px;max-height:400px;margin:0 15px 15px 0" src="{{ issue.image.url }}"></div>
+    {% endif %}
+    
+    {{ issue.statement|markdown:"safe" }}
 {% endif %}
 
 <br style="clear:both">

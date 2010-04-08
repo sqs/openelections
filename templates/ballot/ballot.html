@@ -30,7 +30,6 @@ body {
 
 #stmt_body {
     overflow:auto;
-    font-size:0.9em;
     padding:5px 0;
 }
 
@@ -45,13 +44,13 @@ body {
     margin:0 auto;
     text-align:center;
     border-bottom:solid 1px #fff;
-    font-size:0.9em;
+    font-size:0.95em;
 }
 
 #stmt_header p.info {
     padding:3px;
     margin:0;
-    font-size:0.8em;
+    font-size:0.9em;
 }
 
 a.stmt_toggle {
@@ -60,7 +59,7 @@ a.stmt_toggle {
 
 .writein input {
     margin:9px 3px;
-    font-size:0.8em;
+    font-size:0.9em;
     padding:1px;
 }
 
@@ -69,7 +68,7 @@ p {
 }
 
 table.slate_list {
-    font-size:0.8em;
+    font-size:0.9em;
 }
 table.slate_list tr th:first-child { max-width:250px;}
 table.slate_list tbody th { text-align:right !important; }
@@ -84,7 +83,17 @@ table.slate_list td, table.slate_list th {
 }
 
 .squeeze {
-    font-size:0.85em;
+    font-size:0.92em;
+}
+
+label {
+    font-size:1.2em;
+    font-weight:normal;
+}
+
+.candidates label {
+    padding:5px;
+    line-height:160%;
 }
 </style>
 
@@ -98,7 +107,7 @@ table.slate_list td, table.slate_list th {
     </div>
     
     <div id="stmt_body_c"><div id="stmt_body">
-        <p>adsf</p>
+        <p style="margin-top:100px;font-size:1.3em;text-align:center">Mouse over items on the left to view more information here.</p>
     </div></div>
 </div>
 
@@ -129,7 +138,7 @@ $(window).load(function() {
     }
     
     $('#stmt').show();
-    $('#content').css('width', 0.64 * $(window).width());
+    $('#content').css('width', $(window).width() - $('#stmt').width() - 25);
     $('a.stmt_toggle').click(function() { $('#stmt_body_c').toggle() });
     $('#stmt_toggle_hide').click(function () { $('#stmt_toggle_hide').hide(); $('#stmt_toggle_show').show(); })
     $('#stmt_toggle_show').click(function () { $('#stmt_toggle_hide').show(); $('#stmt_toggle_show').hide(); })
