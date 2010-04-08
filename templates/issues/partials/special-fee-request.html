@@ -36,8 +36,9 @@
     {% if not hidepdfs %}{{ issue.account_statement.url|pdf_viewer|safe }}{% endif %}
 {% endif %}
 
-{% if issue.budget_summary %}
-    {{ issue.budget_summary|safe }}
+{% if issue.statement_short %}
+    <h2>Group summary statement</h2>
+    <p>{{ issue.statement_short }}</p>
 {% endif %}
 
 {% if issue.statement %}
@@ -47,6 +48,10 @@
     {% endif %}
     
     {{ issue.statement|markdown:"safe" }}
+{% endif %}
+
+{% if issue.budget_summary %}
+    {{ issue.budget_summary|safe }}
 {% endif %}
 
 <br style="clear:both">
