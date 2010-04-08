@@ -4,6 +4,9 @@ from openelections.ballot.models import Ballot
 from openelections.issues.models import Electorate, Issue
 from test_utils.utils import twill_runner as twill
 from openelections.webauth.stanford_webauth import make_secret_hash
+from django.conf import settings
+
+settings.DEBUG = True
 
 def issue(slug):
     return Issue.objects.get(slug=slug).get_typed()

@@ -455,7 +455,7 @@ $(window).load(function() {
                         </th>
                         <td class="vote fillin">{{ f }} {{ f.errors }}</td>
                         <td class="figure">
-                            {% if issue.budget %}<a target="_blank" href="http://voterguide.stanford.edu/{{ issue.budget.url|cut:"http://corn24.stanford.edu:32145/" }}">{% endif %}
+                            {% if issue.budget %}<a target="_blank" href="{{ issue.budget.url }}">{% endif %}
                                 {{ issue.total_request_amount|currency }}
                             {% if issue.budget %}</a>{% endif %}
                         </td>

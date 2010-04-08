@@ -71,12 +71,13 @@ def record(request):
 @webauth_required
 def vote_all(request):
     # protect against XSS
-    if settings.DEBUG:
+    if not settings.DEBUG:
         h = request.META.get('HTTP_REFERER', 'not')
         if not (
-                h.startswith('http://sqs-koi.stanford.edu') or \
-                h.startswith('http://ballot.stanford.edu') or \
-                h.startswith('http://ballot')):
+                h.startswith('http://sqs-koi.stanford.edu:8000/') or \
+                h.startswith('http://ballot.stanford.edu/') or \
+                h.startswith('http://ballot/') or\
+                h.startswith('http://ec:82/')):
            return HttpResponseForbidden()
        
     form = None
