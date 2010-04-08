@@ -79,4 +79,5 @@ def vote_all(request):
         else:
             return render_to_response('ballot/ballot.html', {'ballotform': ballotform, 'ballot': ballot, 'issues_json': make_issues_json(), 'cp_slates': get_cp_slates(ballot), 'csac_members': get_csac_members(),  'exec_slates': get_exec_slates()},
                                       context_instance=RequestContext(request))
+    do_logout(request)
     return render_to_response('ballot/done.html', {'ballot': ballot, 'request': request,}, context_instance=RequestContext(request))
