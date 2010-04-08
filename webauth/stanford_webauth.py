@@ -20,12 +20,10 @@ def webauth_required(function):
             #    del request.session['webauth_name']
             
             # debug sunetid login
-            if settings.DEBUG and 'webauth_sunetid' in request.GET:
-                request.session['webauth_sunetid'] = request.GET['webauth_sunetid']
+            #if settings.DEBUG and 'webauth_sunetid' in request.GET:
+            #    request.session['webauth_sunetid'] = request.GET['webauth_sunetid']
                 
-            if 'webauth_sunetid' in request.session:
-                return view_func(request, *args, **kwargs)
-            elif 'webauth_sunetid' in request.GET:
+            if 'webauth_sunetid' in request.GET:
                 sunetid = request.GET['webauth_sunetid']
                 actual_hash = request.GET['hash']
                 #name = request.GET['name']
@@ -43,6 +41,8 @@ def webauth_required(function):
                     return HttpResponseRedirect(path_only)
                 else:
                     return HttpResponse("authentication error")
+            elif 'webauth_sunetid' in request.session:
+                return view_func(request, *args, **kwargs)
             else:
                 url = urllib2.quote(request.build_absolute_uri())
                 return HttpResponseRedirect(settings.WEBAUTH_URL + url)
