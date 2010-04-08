@@ -93,7 +93,7 @@ def vote_all(request):
     record = render_to_string('ballot/ballot_record.txt', {'ballot': ballot, 'request': request, 'form': form, 'sunetid': sunetid})
     
     f = open('/tmp/ballot/%s' % sunetid, 'a')
-    f.write(record)
+    f.write(record.encode('utf8'))
     f.write("\nPOSTDATA: %s\n\n" % request.POST.copy())
     f.close()
     

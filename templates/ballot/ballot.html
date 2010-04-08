@@ -162,6 +162,10 @@ $(window).load(function() {
 });
 </script>
 
+{% for f in ballotform %}
+{{ f.errors }}
+{% endfor %}
+
 <p>If you are not <strong>{{ sunetid }}</strong>, close your browser to log out and then return to 
     <a href="http://ballot.stanford.edu">ballot.stanford.edu</a>.</p>
 
