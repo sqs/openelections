@@ -1,6 +1,6 @@
 import simplejson, markdown
 from django.core.mail import send_mail
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound, HttpResponseForbidden
 from django.conf import settings
 from django.template import RequestContext
 from django.db import transaction
@@ -70,7 +70,15 @@ def record(request):
 @transaction.commit_on_success
 @webauth_required
 def vote_all(request):
-    # TODO: XSS
+    # protect against XSS
+    if settings.DEBUG:
+        h = request.META.get('HTTP_REFERER', 'not')
+        if not (
+                h.startswith('http://sqs-koi.stanford.edu') or \
+                h.startswith('http://ballot.stanford.edu') or \
+                h.startswith('http://ballot')):
+           return HttpResponseForbidden()
+       
     form = None
     ballot = get_object_or_404(Ballot, voter_id=get_voter_id(request))
     if request.method == 'POST':
