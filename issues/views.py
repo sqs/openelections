@@ -29,6 +29,7 @@ index_filters = {
 }
 
 def index(request, show=None):
+    return HttpResponseRedirect('http://ballot.stanford.edu/ballot/')
     issues = None
     if show:
         kind_filter = index_filters.get(show, None)
