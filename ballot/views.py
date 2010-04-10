@@ -90,4 +90,4 @@ def vote_all(request):
     f.close()
     
     do_logout(request)
-    return render_to_response('ballot/done.html', {'ballot': ballot, 'request': request,}, context_instance=RequestContext(request))
+    return render_to_response('ballot/done.html', {'sunetid': sunetid, 'ballot': ballot, 'request': request,}, context_instance=RequestContext(request))
