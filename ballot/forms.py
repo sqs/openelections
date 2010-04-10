@@ -64,7 +64,8 @@ class BallotElectorateForm(forms.ModelForm):
     smsa_population = ElectorateChoiceField(
         queryset=Electorate.queryset_with_slugs(Electorate.SMSA_POPULATIONS),
         label='School of Medicine MD population (SMSA)',
-        empty_label='(I am not in SMSA--not a School of Med MD candidate)', required=False)
+        empty_label='(I am not in SMSA--not a School of Med MD candidate)', required=False,
+        help_text='Indicate what you will be NEXT YEAR, not what you are currently.')
     
     smsa_is_mdphd = forms.BooleanField(label='MD-PhD', required=False)
     smsa_is_mdplus = forms.BooleanField(label='MD+', required=False)
